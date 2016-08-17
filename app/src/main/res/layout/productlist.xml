@@ -28,7 +28,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Product Info (tmp)"
-        android:onClick="displayProductInfo"
+        android:text="See Product Info (mock)"
+        android:id="@+id/button_productinfo"
+        android:onClick="buttonTmp"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Scroll Product List"
+        android:id="@+id/button_productlist"
+        android:onClick="buttonTmp"
         />
 </LinearLayout>

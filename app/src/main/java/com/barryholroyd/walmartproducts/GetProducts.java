@@ -5,9 +5,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-
-import org.json.simple.JSONArray;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,30 +51,24 @@ public class GetProducts
 
 	public void reset() { page = 1; }
 
-	public ProductInfoArrayList getNextBatch() {
-		if ((maxProducts != 0) && (page * batchSize > maxProducts)) {
-			return null;
+	public void getNextBatch() {
+		if ((maxProducts == 0) || (page * batchSize <= maxProducts)) {
+			getProducts(page++, batchSize);
 		}
-		return getProducts(page++, batchSize);
 	}
 
 	/**
 	 * Get the next batch of products.
 	 */
-	private ProductInfoArrayList getProducts(int page, int count) {
-		JSONArray products =
-			if (products == null)
-
-				return null;
-	}
-
-	private JSONArray getListOfProducts(int page, int count) {
+	private void getProducts(int page, int count) {
 		String urlString = String.format(
 			"%s%s/%d/%d", API_PREFIX, API_KEY, page, count);
-		String jsonString = null;
-			jsonString = getJsonString(urlString);
-
-		return convertToJsonArray(jsonString);
+		if (!checkNetworkConnectivity()) {
+			Support.loge("No network connection.");
+		}
+		else {
+			new DownloadJsonTask().execute(urlString);
+		}
 	}
 
 	private boolean checkNetworkConnectivity() {
@@ -86,39 +79,35 @@ public class GetProducts
 		return networkInfo != null && networkInfo.isConnected();
 	}
 
-	private String getJsonString(String urlString) {
-		if (!checkNetworkConnectivity()) {
-			Support.loge("No network connection.");
-			return null;
-		}
-
-		new DownloadJsonTask().execute(urlString);
-
-	}
-
-	private class DownloadJsonTask extends AsyncTask<String, Void, String>
+	private class DownloadJsonTask extends AsyncTask<String, Void, ProductInfoArrayList>
 	{
 		@Override
-		protected String doInBackground(String urls[]) {
-			return download(urls[0]);
+		protected ProductInfoArrayList doInBackground(String urls[]) {
+			InputStream is = getInputStream(urls[0]);
+			if (is == null)
+				return null;
+			return parseJsonStream(is);
 		}
 
 		/**
-		 * Process downloaded JSON string.
+		 * Add the list of products to the list backing array and display it.
 		 *
-		 * @param result the downloaded JSON string, as returned by doInBackground().
+		 * @param pial the list of products, as returned by doInBackground().
 		 */
 		@Override
-		protected void onPostExecute(String result) {
-			if (result == null)
+		protected void onPostExecute(ProductInfoArrayList pial) {
+			if (pial == null)
 				return;
-			// TBD.
+			RecyclerView rv = ActivityProductList.mRecyclerView;
+			ProductListRecyclerAdapter plra =
+				(ProductListRecyclerAdapter) rv.getAdapter();
+			plra.updateData(pial);
 		}
 
 		/**
 		 * Download the JSON string from the network.
 		 */
-		private String download(String urlString) {
+		private InputStream getInputStream(String urlString) {
 			try {
 				URL url = new URL(urlString);
 				HttpURLConnection c = (HttpURLConnection) url.openConnection();
@@ -129,8 +118,7 @@ public class GetProducts
 				c.connect();
 				int response = c.getResponseCode();
 				Support.logd(String.format("Http response code: %d.", response));
-				InputStream is = c.getInputStream();
-				return getString(is);
+				return c.getInputStream();
 			}
 			catch (MalformedURLException e) {
 				Support.loge(String.format("Malformed url: %s", urlString));
@@ -142,8 +130,32 @@ public class GetProducts
 			}
 		}
 
-		private String
-		ProductInfoArrayList pial = new ProductInfoArrayList();
+		/**
+		 * Parse the JSON stream from the network into an array of ProductInfo objects.
+		 *
+		 * @param is the input stream.
+		 * @return   the list of ProductInfo objects.
+		 */
+		private ProductInfoArrayList parseJsonStream(InputStream is) {
+			JsonReader jr = new JsonReader(is);
 
+
+			return jr.parse();
+		}
+	}
+
+	private class JsonReader
+	{
+		private InputStream is = null;
+
+		JsonReader(InputStream _is) {
+			is = _is;
+		}
+
+		ProductInfoArrayList parse() {
+			ProductInfoArrayList pial = new ProductInfoArrayList();
+			// TBD: parse everything
+			return pial;
+		}
 	}
 }

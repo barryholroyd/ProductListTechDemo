@@ -11,7 +11,8 @@ import android.view.View;
 public class ActivityProductList extends AppCompatActivity
 {
 	static final public String LOGTAG = "WalmartProduct";
-	private static RecyclerView mRecyclerView = null;
+	static RecyclerView mRecyclerView = null;
+	static GetProducts getProducts = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +20,7 @@ public class ActivityProductList extends AppCompatActivity
 		new Support(this);
 		setContentView(R.layout.productlist);
 		init();
+		getProducts.getNextBatch();
 	}
 
 	private void init() {
@@ -26,6 +28,8 @@ public class ActivityProductList extends AppCompatActivity
 		LinearLayoutManager llm = new LinearLayoutManager(this);
 		mRecyclerView.setLayoutManager(llm);
 		mRecyclerView.setAdapter(new ProductListRecyclerAdapter(mRecyclerView, llm));
+
+		getProducts = new GetProducts();
 	}
 
 	/**
@@ -33,7 +37,16 @@ public class ActivityProductList extends AppCompatActivity
 	 *
 	 * @param view
 	 */
-	public void displayProductInfo(View view) {
-		startActivity(new Intent(this, ActivityProductInfo.class));
+
+	public void buttonTmp(View view) {
+		int rid = view.getId();
+		switch (view.getId()) {
+			case R.id.button_productinfo:
+				startActivity(new Intent(this, ActivityProductInfo.class));
+				break;
+			case R.id.button_productlist:
+				getProducts.getNextBatch();
+				break;
+		}
 	}
 }
