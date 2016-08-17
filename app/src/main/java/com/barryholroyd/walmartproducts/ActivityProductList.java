@@ -10,13 +10,13 @@ import android.view.View;
 
 public class ActivityProductList extends AppCompatActivity
 {
+	static final public String LOGTAG = "WalmartProduct";
 	private static RecyclerView mRecyclerView = null;
-	static private Activity a = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		a = this;
+		new Support(this);
 		setContentView(R.layout.productlist);
 		init();
 	}
@@ -26,12 +26,6 @@ public class ActivityProductList extends AppCompatActivity
 		LinearLayoutManager llm = new LinearLayoutManager(this);
 		mRecyclerView.setLayoutManager(llm);
 		mRecyclerView.setAdapter(new ProductListRecyclerAdapter(mRecyclerView, llm));
-	}
-
-	static Activity getActivity() {
-		if (a == null)
-			throw new IllegalStateException("getActivity() called before activity initialized.");
-		return a;
 	}
 
 	/**

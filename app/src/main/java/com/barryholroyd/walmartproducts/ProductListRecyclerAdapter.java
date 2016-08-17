@@ -94,7 +94,7 @@ class OnClickRow implements View.OnClickListener
 	public void onClick(View v) {
 		TextView tvId = (TextView) v.findViewById(R.id.id);
 		String id = (String) tvId.getText();
-		Activity a = ActivityProductList.getActivity();
+		Activity a = Support.getActivity();
 		Intent intent = new Intent(a, ActivityProductList.class);
 		intent.putExtra(Support.getKeyId(), id);
 		a.startActivity(intent);

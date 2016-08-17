@@ -10,6 +10,7 @@ public class ActivityProductInfo extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		new Support(this);
 		setContentView(R.layout.productinfo);
 
 		Intent intent = getIntent();
