@@ -16,7 +16,7 @@ public class ProductListRecyclerAdapter extends RecyclerView.Adapter<ProductList
 {
 	private final RecyclerView mRecyclerView;
 	private final LinearLayoutManager llm;
-	private ProductInfoArrayList pial;
+	private ProductInfoArrayList pial = new ProductInfoArrayList();
 
 	ProductListRecyclerAdapter(RecyclerView _mRecyclerView, LinearLayoutManager _llm) {
 		mRecyclerView = _mRecyclerView;

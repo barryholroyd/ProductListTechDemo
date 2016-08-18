@@ -5,6 +5,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+/*
+ * TBD:
+ *   o Click on item in list to display product.
+ *   o Display product page (including image).
+ */
+
 public class ActivityProductInfo extends AppCompatActivity
 {
 	@Override
