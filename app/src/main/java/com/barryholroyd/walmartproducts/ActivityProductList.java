@@ -1,6 +1,5 @@
 package com.barryholroyd.walmartproducts;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,11 +7,20 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+/**
+ * List the Walmart products.
+ */
 public class ActivityProductList extends AppCompatActivity
 {
+	/**
+	 * Logger tag for this application.
+	 */
 	static final public String LOGTAG = "WalmartProduct";
-	static RecyclerView mRecyclerView = null;
-	static GetProducts getProducts = null;
+	/**
+	 * RecyclerView used to display the list of products pulled from the cloud.
+	 */
+	static RecyclerView recyclerView;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -20,32 +28,28 @@ public class ActivityProductList extends AppCompatActivity
 		new Support(this);
 		setContentView(R.layout.productlist);
 		init();
-		getProducts.getNextBatch();
+		GetProducts.instance.getNextBatch();
 	}
 
 	private void init() {
-		mRecyclerView = (RecyclerView) findViewById(R.id.list);
-		LinearLayoutManager llm = new LinearLayoutManager(this);
-		mRecyclerView.setLayoutManager(llm);
-		mRecyclerView.setAdapter(new ProductListRecyclerAdapter(mRecyclerView, llm));
-
-		getProducts = new GetProducts();
+		recyclerView = (RecyclerView) findViewById(R.id.list);
+		recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		recyclerView.setAdapter(new ProductListRecyclerAdapter());
 	}
 
 	/**
+	 * Temporary callback for button clicks in the Product List.
 	 * TBD: delete when no longer needed.
 	 *
-	 * @param view
+	 * @param view The button clicked on.
 	 */
-
 	public void buttonTmp(View view) {
-		int rid = view.getId();
 		switch (view.getId()) {
 			case R.id.button_productinfo:
 				startActivity(new Intent(this, ActivityProductInfo.class));
 				break;
 			case R.id.button_productlist:
-				getProducts.getNextBatch();
+				GetProducts.instance.getNextBatch();
 				break;
 		}
 	}

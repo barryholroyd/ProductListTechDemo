@@ -19,7 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Get a list of products.
+ * Get a list of Walmart products.
  *
  * @author Barry Holroyd
  * @see    <a href="https://walmartlabs-test.appspot.com">Walmart Products API (mock)</a>
@@ -27,25 +27,42 @@ import java.net.URL;
  */
 public class GetProducts
 {
+	/** Singleton */
+	static public final GetProducts instance = new GetProducts();
+
 	/**
-	 * The "page" of the next set of "batchSize" products to get.
+	 * Private constructor to prevent external instantiation. The check for null isn't
+	 * strictly necessary, but theoretically prevents someone from using reflection
+	 * and Constructor.setAccessible() from creating one, or from one being created internally
+	 * (within this class) by mistake.
 	 */
-	static private int page = 1;
+	private GetProducts() {
+		if (instance != null)
+			throw new IllegalStateException("Only a single instance of GetProducts is allowed");
+	}
+
 	/**
-	 * Number of products to request in a single batch. Maximum is 30.
+	 * Number of products to request in a single nextBatch. Maximum is 30.
 	 */
 	static final private int batchSize = 10;
+
 	/**
 	 * API key.
 	 * This was sent to me by Walmart for the test taken in August, 2016.
 	 */
 	static final private String API_KEY = "cec8e676-d56f-49b9-987a-989a9d23a724";
+
 	/**
 	 * URL Prefix.
-	 * Full URL is: API_PREFIX + API_KEY + "/<page>/<batchSize>"
+	 * Full URL is: API_PREFIX + API_KEY + "/&lt;nextBatch&gt;/&lt;batchSize&gt;"
 	 */
 	static final private String API_PREFIX =
 		"https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/walmartproducts/";
+
+	/**
+	 * The "nextBatch" of the next set of "batchSize" products to get.
+	 */
+	private int nextBatch = 1;
 
 	/**
 	 * The total number of products available.
@@ -53,20 +70,36 @@ public class GetProducts
 	 */
 	static private int maxProducts = 0;
 
-	public void reset() { page = 1; }
+	/**
+	 * Reset the "nextBatch" of products to be displayed to the first nextBatch.
+	 */
+	public void reset() { nextBatch = 1; }
 
+	/**
+	 * Get the next "nextBatch" of products to be displayed. The size of each nextBatch is determined
+	 * by "batchSize".
+	 */
 	public void getNextBatch() {
-		if ((maxProducts == 0) || (page * batchSize <= maxProducts)) {
-			getProducts(page++, batchSize);
+		if ((maxProducts == 0) || (nextBatch * batchSize <= maxProducts)) {
+			getProducts(nextBatch++, batchSize);
 		}
 	}
 
 	/**
 	 * Get the next batch of products.
+	 *
+	 * TBD:
+	 *   1. What happens if several calls to this run simultaneously?
+	 *   2. How to we display the correct image for a row about to be displayed
+	 *      (given that the ViewHolder could have an old URL in it? (Probably
+	 *      use the url in the surrounding closure when the runnable is issued (???).
+	 *
+	 * @param batch The batch to be downloaded.
+	 * @param count the number of items in the batch to be downloaded.
 	 */
-	private void getProducts(int page, int count) {
+	private void getProducts(int batch, int count) {
 		String urlString = String.format(
-			"%s%s/%d/%d", API_PREFIX, API_KEY, page, count);
+			"%s%s/%d/%d", API_PREFIX, API_KEY, batch, count);
 		if (!checkNetworkConnectivity()) {
 			Support.loge("No network connection.");
 		}
@@ -101,7 +134,7 @@ public class GetProducts
 		protected void onPostExecute(ProductInfoArrayList pial) {
 			if (pial == null)
 				return;
-			RecyclerView rv = ActivityProductList.mRecyclerView;
+			RecyclerView rv = ActivityProductList.recyclerView;
 			ProductListRecyclerAdapter plra =
 				(ProductListRecyclerAdapter) rv.getAdapter();
 			plra.updateData(pial);
@@ -109,6 +142,9 @@ public class GetProducts
 
 		/**
 		 * Download the JSON string from the network.
+		 *
+		 * @param urlString the URL (in String form) to get the JSON product info. from.
+		 * @return the input stream created to read data from the specified URL.
 		 */
 		private InputStream getInputStream(String urlString) {
 			try {
@@ -159,7 +195,7 @@ public class GetProducts
 			JsonReader jr = null;
 			try {
 				jr = new JsonReader(new InputStreamReader(is, "UTF-8"));
-				return readProductsArray(jr);
+				return readProductsInfo(jr);
 			}
 			catch (UnsupportedEncodingException e) {
 				Support.loge("Error: problem parsing network data - unsupported coding exception.");
@@ -171,12 +207,32 @@ public class GetProducts
 			}
 		}
 
-		ProductInfoArrayList readProductsArray(JsonReader reader) throws IOException
+		/**
+		 * Process the product info returned from Walmart. Specially, break out any generic
+		 * information from the array of products.
+		 *
+		 * @param reader    JSON reader containing the JSON description of the products.
+		 * @return          returns the ArrayList of products, with each product represented
+		 *                  by a ProductInfo instance.
+		 * @throws IOException IOException can be thrown by the JsonReader instance.
+		 */
+		ProductInfoArrayList readProductsInfo(JsonReader reader) throws IOException
 		{
 			TopObject to = readTopObject(reader);
+			maxProducts = to.totalProducts;
+			Log.d(ActivityProductList.LOGTAG, "Max Products: " + maxProducts); // DEL: when done.
 			return to.pial;
 		}
 
+		/**
+		 * Decode the product info returned from Walmart. It contains some general information
+		 * as well as the set of products included in the next "batch".
+		 *
+		 * @param reader    JSON reader containing the JSON description of the products.
+		 * @return          returns the ArrayList of products, with each product represented
+		 *                  by a ProductInfo instance.
+		 * @throws IOException IOException can be thrown by the JsonReader instance.
+		 */
 		private TopObject readTopObject(JsonReader reader) throws IOException {
 			TopObject to = new TopObject();
 

@@ -6,11 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 /*
- * TBD:
- *   o Click on item in list to display product.
- *   o Display product page (including image).
+ * Display the information about a specific product.
  */
-
 public class ActivityProductInfo extends AppCompatActivity
 {
 	@Override
@@ -24,9 +21,9 @@ public class ActivityProductInfo extends AppCompatActivity
 	}
 
 	/**
-	 * TBD: delete when no longer needed.
+	 * Callback method to start the activity which displays the full list of products.
 	 *
-	 * @param view
+	 * @param view the button which was pressed to call this callback.
 	 */
 	public void displayProductList(View view) {
 		startActivity(new Intent(this, ActivityProductList.class));

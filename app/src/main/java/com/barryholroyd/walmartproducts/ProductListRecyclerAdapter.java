@@ -2,7 +2,6 @@ package com.barryholroyd.walmartproducts;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,21 +9,30 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
- * Created by Barry on 8/17/2016.
+ * Recycler adapter to display the list of products.
+ *
+ * @author Barry Holroyd
  */
-public class ProductListRecyclerAdapter extends RecyclerView.Adapter<ProductListViewHolder>
+public class ProductListRecyclerAdapter
+	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
-	private final RecyclerView mRecyclerView;
-	private final LinearLayoutManager llm;
+	/**
+	 * Array of products. Each cell contains information about the specific product.
+	 * This is filled in, in batches, from JSON pulled from the cloud.
+	 */
 	private ProductInfoArrayList pial = new ProductInfoArrayList();
 
-	ProductListRecyclerAdapter(RecyclerView _mRecyclerView, LinearLayoutManager _llm) {
-		mRecyclerView = _mRecyclerView;
-		llm = _llm;
-	}
-
+	/**
+	 * Create a ViewHolder to contain a View for each row, inflated from an XML layout file.
+	 *
+	 * @param vg the ViewGroup into which the new View will be added after
+	 *              it is bound to an adapter position
+	 * @param viewType the viewType of the new View.
+	 *                    See RecyclerView.Adapter.getItemViewType().
+	 * @return a new ViewHolder that holds a View of the given view type new ViewHolder.
+	 */
 	@Override
-	public ProductListViewHolder onCreateViewHolder(ViewGroup vg, int position) {
+	public ProductListViewHolder onCreateViewHolder(ViewGroup vg, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(vg.getContext());
 		View v = inflater.inflate(R.layout.product_row, vg, false);
 		return new ProductListViewHolder(v);
@@ -35,6 +43,10 @@ public class ProductListRecyclerAdapter extends RecyclerView.Adapter<ProductList
 	 *
 	 * This is done by calling a method on the ViewHolder itself, so that that
 	 * data can remain private to the ViewHolder.
+	 *
+	 * @param viewHolder ViewHolder which should be updated to represent the contents of
+	 *                      the item at the given position in the data set.
+     * @param position the position of the item within the adapter's data set.
 	 */
 	@Override
 	public void onBindViewHolder(ProductListViewHolder viewHolder, int position) {
@@ -48,6 +60,8 @@ public class ProductListRecyclerAdapter extends RecyclerView.Adapter<ProductList
 
 	/**
 	 * Return the number of items in the backing array.
+	 *
+	 * @return the number of items in the backing array.
 	 */
 	@Override
 	public int getItemCount() {
@@ -55,48 +69,92 @@ public class ProductListRecyclerAdapter extends RecyclerView.Adapter<ProductList
 	}
 
 	/**
-	 * Update the data set.
+	 * Update the array of products and redisplay the product list.
+	 *
+	 * @param pialNew the array of new products to add to the data set.
 	 */
 	void updateData(ProductInfoArrayList pialNew) {
 		pial.addAll(pialNew);
 		notifyDataSetChanged();
 	}
-}
-
-class ProductListViewHolder extends RecyclerView.ViewHolder
-{
-	private final TextView id;
-	private final TextView name;
-	private final TextView  shortDescription;
-	private final OnClickRow onClickRow;
-
-	ProductListViewHolder(View itemView) {
-		super(itemView);
-		id = (TextView) itemView.findViewById(R.id.id);
-		name = (TextView) itemView.findViewById(R.id.name);
-		shortDescription = (TextView) itemView.findViewById(R.id.short_description);
-		onClickRow = new OnClickRow();
-	}
 
 	/**
-	 * Binds actual data passed in by the adapter.
+	 * ViewHolder class specific to ProductListRecyclerAdapter.
 	 */
-	void bindData(ProductInfo pi) {
-		id.setText(pi.id);
-		name.setText(pi.name);
-		shortDescription.setText(pi.shortDescription);
+	protected class ProductListViewHolder extends RecyclerView.ViewHolder
+	{
+		/**
+		 * The "id" field contains the identifier for the product. It is provided
+		 * within the is hidden ("gone") in the text view.
+		 */
+		private final TextView id;
+		/**
+		 * The product name.
+		 */
+		private final TextView name;
+		/**
+		 * A short description of the product.
+		 */
+		private final TextView  shortDescription;
+
+		/**
+		 * A single instance of OnClickListener that can be used for all rows
+		 * in the displayed product list. We could use a lambda expression instead
+		 * of creating a
+		 */
+		private final OnClickListenerRow onClickListenerRow = new OnClickListenerRow();
+
+		/**
+		 * Constructor for the ViewHolder. Save references to the relevant fields
+		 * within the View.
+		 *
+		 * @param itemView the View (row) to be managed by this ViewHolder.
+		 */
+		ProductListViewHolder(View itemView) {
+			super(itemView);
+			id = (TextView) itemView.findViewById(R.id.id);
+			name = (TextView) itemView.findViewById(R.id.name);
+			shortDescription = (TextView) itemView.findViewById(R.id.short_description);
+			itemView.setOnClickListener(onClickListenerRow);
+		}
+
+		/**
+		 * Binds actual data passed in by the adapter. Called directly by the
+		 * adapter's onBindViewHolder() method. This exists so that the data
+		 * can be kept privately within this ViewHolder.
+		 *
+		 * @param pi the product info for a specific product,
+		 *                 read in as JSON from the cloud.
+		 */
+		protected void bindData(ProductInfo pi) {
+			id.setText(pi.id);
+			name.setText(pi.name);
+			shortDescription.setText(pi.shortDescription);
+		}
+
+		/**
+		 * Handle clicks on rows within the product list.
+		 */
+		private class OnClickListenerRow implements View.OnClickListener
+		{
+			/**
+			 * Clicking on a row will call this method to start up an activity
+			 * to display the selected product's information.
+			 *
+			 * @param v The View for the row to be displayed.
+			 */
+			@Override
+			public void onClick(View v) {
+				TextView tvId = (TextView) v.findViewById(R.id.id);
+				String id = (String) tvId.getText();
+				Activity a = Support.getActivity();
+				Intent intent = new Intent(a, ActivityProductInfo.class);
+				intent.putExtra(Support.getKeyId(), id);
+				a.startActivity(intent);
+			}
+		}
 	}
 }
 
-class OnClickRow implements View.OnClickListener
-{
-	@Override
-	public void onClick(View v) {
-		TextView tvId = (TextView) v.findViewById(R.id.id);
-		String id = (String) tvId.getText();
-		Activity a = Support.getActivity();
-		Intent intent = new Intent(a, ActivityProductList.class);
-		intent.putExtra(Support.getKeyId(), id);
-		a.startActivity(intent);
-	}
-}
+
+

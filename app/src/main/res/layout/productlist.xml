@@ -18,12 +18,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/list">
     </android.support.v7.widget.RecyclerView>
-    <!-- DEL: when no longer needed. -->
-    <!--<ListView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/list">-->
-    <!--</ListView>-->
+    <!-- DEL: delete the following button, button_productinfo, when no longer needed. -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,6 +27,7 @@
         android:id="@+id/button_productinfo"
         android:onClick="buttonTmp"
         />
+    <!-- DEL: delete the following button, button_productlist, when no longer needed. -->
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
