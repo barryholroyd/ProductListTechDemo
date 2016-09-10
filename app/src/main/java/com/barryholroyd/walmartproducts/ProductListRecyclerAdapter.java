@@ -17,6 +17,13 @@ public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
 	/**
+	 * Enum to communicate the type of the row that a given ViewHolder is initialized
+	 * for. The View itself is the same for both the header and each item; however,
+	 * the header does not have an OnClickListener callback assigned to it.
+	 */
+	private enum ViewType { HEADER, ITEM };
+
+	/**
 	 * Array of products. Each cell contains information about the specific product.
 	 * This is filled in, in batches, from JSON pulled from the cloud.
 	 */
@@ -27,15 +34,15 @@ public class ProductListRecyclerAdapter
 	 *
 	 * @param vg the ViewGroup into which the new View will be added after
 	 *              it is bound to an adapter position
-	 * @param viewType the viewType of the new View.
-	 *                    See RecyclerView.Adapter.getItemViewType().
+	 * @param viewType the viewType of the new View. In this implementation, it is
+	 *                 actually a value from the {@link .ViewType} enum.
 	 * @return a new ViewHolder that holds a View of the given view type new ViewHolder.
 	 */
 	@Override
 	public ProductListViewHolder onCreateViewHolder(ViewGroup vg, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(vg.getContext());
 		View v = inflater.inflate(R.layout.product_row, vg, false);
-		return new ProductListViewHolder(v);
+		return new ProductListViewHolder(v, ViewType.values()[viewType]);
 	}
 
 	/**
@@ -46,26 +53,42 @@ public class ProductListRecyclerAdapter
 	 *
 	 * @param viewHolder ViewHolder which should be updated to represent the contents of
 	 *                      the item at the given position in the data set.
-     * @param position the position of the item within the adapter's data set.
+     * @param position the position of the item within the adapter's data set. Position 0
+	 *                 represents the header and so isn't actually in the data set; Position
+	 *                 1 represents the first item in the actual data set, so we subtract 1
+	 *                 from any position value greater than 0.
 	 */
 	@Override
 	public void onBindViewHolder(ProductListViewHolder viewHolder, int position) {
-		if (position >= pial.size()) {
+		if (position >= (getItemCount())) {
 			throw new IndexOutOfBoundsException(
 				String.format("ProductInfo has %d products; product %d requested.",
 					pial.size(), position));
 		}
-		viewHolder.bindData(pial.get(position));
+		if (position == 0) {
+			viewHolder.bindHeader();
+		}
+		else {
+			viewHolder.bindData(pial.get(position - 1));
+		}
+	}
+
+	@Override
+	public int getItemViewType(int position) {
+		if (position == 0)
+			return ViewType.HEADER.ordinal();
+		else
+			return ViewType.ITEM.ordinal();
 	}
 
 	/**
 	 * Return the number of items in the backing array.
 	 *
-	 * @return the number of items in the backing array.
+	 * @return the number of items in the backing array (plus 1 for the header).
 	 */
 	@Override
 	public int getItemCount() {
-		return pial.size();
+		return pial.size() + 1; // account for the header
 	}
 
 	/**
@@ -110,12 +133,24 @@ public class ProductListRecyclerAdapter
 		 *
 		 * @param itemView the View (row) to be managed by this ViewHolder.
 		 */
-		ProductListViewHolder(View itemView) {
+		ProductListViewHolder(View itemView, ViewType viewType) {
 			super(itemView);
 			id = (TextView) itemView.findViewById(R.id.id);
 			name = (TextView) itemView.findViewById(R.id.name);
 			shortDescription = (TextView) itemView.findViewById(R.id.short_description);
-			itemView.setOnClickListener(onClickListenerRow);
+			if (viewType == ViewType.ITEM) {
+				itemView.setOnClickListener(onClickListenerRow);
+			}
+		}
+
+		/**
+		 * Binds column names to the header row.
+		 */
+		protected void bindHeader() {
+			name.setText("Name");
+			name.setTextSize(30);
+			shortDescription.setText("Description");
+			shortDescription.setTextSize(30);
 		}
 
 		/**
