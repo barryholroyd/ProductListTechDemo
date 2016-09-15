@@ -21,7 +21,12 @@ public class ProductListRecyclerAdapter
 	 * for. The View itself is the same for both the header and each item; however,
 	 * the header does not have an OnClickListener callback assigned to it.
 	 */
-	private enum ViewType { HEADER, ITEM };
+	private enum ViewType {
+		/** The row is the header. */
+		HEADER,
+		/** The row is a standard product row. */
+		ITEM
+	};
 
 	/**
 	 * Array of products. Each cell contains information about the specific product.
@@ -30,12 +35,20 @@ public class ProductListRecyclerAdapter
 	private ProductInfoArrayList pial = new ProductInfoArrayList();
 
 	/**
+	 * Getter for the backing array list. Needed for bundling/unbundling across
+	 * device configuration changes.
+	 *
+	 * @return ArrayList backing storage for the adapter.
+	 */
+	ProductInfoArrayList getProductInfoArrayList() { return pial; }
+
+	/**
 	 * Create a ViewHolder to contain a View for each row, inflated from an XML layout file.
 	 *
 	 * @param vg the ViewGroup into which the new View will be added after
 	 *              it is bound to an adapter position
 	 * @param viewType the viewType of the new View. In this implementation, it is
-	 *                 actually a value from the {@link .ViewType} enum.
+	 *                 actually a value from the {@link ProductListRecyclerAdapter.ViewType} enum.
 	 * @return a new ViewHolder that holds a View of the given view type new ViewHolder.
 	 */
 	@Override
@@ -123,7 +136,9 @@ public class ProductListRecyclerAdapter
 		/**
 		 * A single instance of OnClickListener that can be used for all rows
 		 * in the displayed product list. We could use a lambda expression instead
-		 * of creating a
+		 * of creating a whole new class, but Android's support of Java 8
+		 * isn't complete enough yet for it to be worthwhile (even with Jack,
+		 * there are tradeoffs).
 		 */
 		private final OnClickListenerRow onClickListenerRow = new OnClickListenerRow();
 
@@ -132,6 +147,9 @@ public class ProductListRecyclerAdapter
 		 * within the View.
 		 *
 		 * @param itemView the View (row) to be managed by this ViewHolder.
+		 * @param viewType the type of the View for the row. The View is
+		 *                 actually the same for both ViewTypes, but HEADER
+		 *                 doesn't have an OnClickListener callback.
 		 */
 		ProductListViewHolder(View itemView, ViewType viewType) {
 			super(itemView);
@@ -148,9 +166,9 @@ public class ProductListRecyclerAdapter
 		 */
 		protected void bindHeader() {
 			name.setText("Name");
-			name.setTextSize(30);
+			name.setTextSize(20);
 			shortDescription.setText("Description");
-			shortDescription.setTextSize(30);
+			shortDescription.setTextSize(20);
 		}
 
 		/**
