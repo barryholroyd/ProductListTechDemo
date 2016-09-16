@@ -7,8 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.util.ArrayList;
-
 /*
  * BUG: Buttons initially appear and then disappear on startup.
  * BUG: Header fields should be centered horizontally.
@@ -23,7 +21,10 @@ import java.util.ArrayList;
  */
 
 /**
- * List the Walmart products.
+ * Demo to list the Walmart products.
+ *
+ * This is the main activity. The overall app calls this to list products. Clicking on a product
+ * will call ActivityProductInfo to display product-specific information.
  */
 public class ActivityProductList extends AppCompatActivity
 {
@@ -43,6 +44,7 @@ public class ActivityProductList extends AppCompatActivity
 	static final String PIAL = "PIAL";
 
 	/**
+	 * Sandard onCreate method.
 	 *
 	 * @param savedInstanceState used to transfer the backing array for the products
 	 *                           across device rotations.
@@ -52,64 +54,92 @@ public class ActivityProductList extends AppCompatActivity
 		super.onCreate(savedInstanceState);
 		new Support(this);
 		setContentView(R.layout.productlist);
-		init();
+		initRecyclerView();
 		if (savedInstanceState == null) {
+			// Display the product list for the first time.
 			GetProducts.instance.getNextBatch();
 		}
 		else {
-			// Display with existing data.
-
-			/*
-			 * This works:
-			 *   ArrayList<ProductInfo> pial = savedInstanceState.getParcelableArrayList(PIAL);
-			 *   ProductInfoArrayList pial2 = (ProductInfoArrayList) pial;
-			 * Reason: getParcelableArrayList() returns an ArrayList<T extends Parcelable>.
-			 * Since ProductInfo extends Parcelable, it is a valid Target Type for T.
-			 * Since ProductInfoArrayList extends ArrayList<ProductInfo>, pial can
-			 * be assigned to pail2. However, since this is a downcast (pial could actually
-			 * be some other subclass of ArrayList<ProductInfo>), an explicit cast has to
-			 * be used.
-			 *
-			 * This fails:
-			 *   ProductInfoArrayList pial = ((ArrayList<ProductInfo>)
-			 *     savedInstanceState.getParcelableArrayList(PIAL));
-			 * Reason: ArrayList<ProductInfo> is not a subclass of ArrayList<Parcelable>, or
-			 * vice-versa, even though ProductInfo is a subclass of Parcelable.
-			 *
-			 * For the following, see:
-			 *   http://docs.oracle.com/javase/tutorial/java/generics/genTypeInference.html,
-			 *   the discussion of processStringList().
-			 *
-			 * This fails:
-			 *   ArrayList<ProductInfo> pialBad =
-			 *     (ArrayList<ProductInfo>) savedInstanceState.getParcelableArrayList(PIAL);
-			 * Interestingly, this version using an explicit instead of implicit cast fails.
-			 * Reason: I believe it fails because, in Java 7, (explicit) casts apparently aren't
-			 * used to determine Target Types. The explicit cast "hides" whatever the potential
-			 * Target Type for T might be, so the compiler can't determine the Target Type.
-			 * Per the link above (genTypeInference.html), I suspect this would work with
-			 * Java 8.
-			 *
-			 * This works:
-			 *   ArrayList<ProductInfo> pial = (ArrayList<ProductInfo>)
-			 *   savedInstanceState.<ProductInfo>getParcelableArrayList(PIAL);
-			 * Reason: This version works, even in Java 7, because the Target Type for T is
-			 * explicitly provided ("<ProductInfo>").
-			 */
-
-			// TBD: How to know which rows to display?
-			ProductInfoArrayList pial =
-				(ProductInfoArrayList) savedInstanceState.<ProductInfo>getParcelableArrayList(PIAL);
-			((ProductListRecyclerAdapter) recyclerView.getAdapter()).updateData(pial);
+			// Display the product list on device reconfiguration.
+			refreshListDisplay(savedInstanceState);
 		}
 	}
 
-	private void init() {
+	/**
+	 * Display the existing product list (e.g., after a device rotation).
+	 * <p>
+	 * There are a number of interesting issues with casting here.
+	 * <p>
+	 * This works:
+	 *   <code>
+	 *   ArrayList<ProductInfo> pial = savedInstanceState.getParcelableArrayList(PIAL);
+	 *   ProductInfoArrayList pial2 = (ProductInfoArrayList) pial;
+	 *   </code>
+	 * Reason: getParcelableArrayList() returns an ArrayList{@literal <T extends Parcelable>}.
+	 * Since ProductInfo extends Parcelable, it is a valid Target Type for T.
+	 * Since ProductInfoArrayList extends ArrayList{@literal <ProductInfo>}, pial can
+	 * be assigned to pail2. However, since this is a downcast (pial could actually
+	 * be some other subclass of ArrayList{@literal <ProductInfo>}), an explicit cast has to
+	 * be used.
+	 * <p>
+	 * This fails:
+	 *   <code>
+	 *   ProductInfoArrayList pial = ((ArrayList<ProductInfo>)
+	 *     savedInstanceState.getParcelableArrayList(PIAL));
+	 *   </code>
+	 * Reason: ArrayList{@literal <ProductInfo>} is not a subclass of ArrayList{@literal <Parcelable>}, or
+	 * vice-versa, even though ProductInfo is a subclass of Parcelable.
+	 * <p>
+	 * For the following, see:
+	 *   http://docs.oracle.com/javase/tutorial/java/generics/genTypeInference.html,
+	 *   the discussion of processStringList().
+	 * <p>
+	 * This fails:
+	 *   <code>
+	 *   ArrayList<ProductInfo> pialBad =
+	 *     (ArrayList<ProductInfo>) savedInstanceState.getParcelableArrayList(PIAL);
+	 *   </code>
+	 * Interestingly, this version using an explicit instead of implicit cast fails.
+	 * Reason: I believe it fails because, in Java 7, (explicit) casts apparently aren't
+	 * used to determine Target Types. The explicit cast "hides" whatever the potential
+	 * Target Type for T might be, so the compiler can't determine the Target Type.
+	 * Per the link above (genTypeInference.html), I suspect this would work with
+	 * Java 8.
+	 * <p>
+	 * This works:
+	 *   <code>
+	 *   ArrayList<ProductInfo> pial = (ArrayList<ProductInfo>)
+	 *   savedInstanceState.<ProductInfo>getParcelableArrayList(PIAL);
+	 *   </code>
+	 * Reason: This version works, even in Java 7, because the Target Type for T is
+	 * explicitly provided ("{@literal <ProductInfo>}").
+	 *
+	 * @param savedInstanceState Bundle passed in to onCreate(), e.g., after a
+	 *                           device rotation.
+	 */
+	private void refreshListDisplay(Bundle savedInstanceState) {
+		// TBD: How to know which rows to display?
+		ProductInfoArrayList pial =
+			(ProductInfoArrayList) savedInstanceState.<ProductInfo>getParcelableArrayList(PIAL);
+		((ProductListRecyclerAdapter) recyclerView.getAdapter()).updateData(pial);
+	}
+
+	/**
+	 * Create and initialize the RecyclerView.
+	 */
+	private void initRecyclerView() {
 		recyclerView = (RecyclerView) findViewById(R.id.list);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(new ProductListRecyclerAdapter());
 	}
 
+	/**
+	 * Save the array of products already pulled from the cloud so that it can be used
+	 * immediately by onCreate() after a device reconfiguration.
+	 *
+	 * @param outState  Bundle to be passed in to onCreate(), e.g., after a
+	 *                     device rotation.
+	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);

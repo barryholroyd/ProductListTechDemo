@@ -1,7 +1,6 @@
 package com.barryholroyd.walmartproducts;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,11 +11,16 @@ import android.widget.Toast;
  */
 public class Support
 {
-	static private String KEY_ID = null;
+	/**
+	 * "Intent extra" key: identifies product when starting ActivityProductInfo activity.
+	 */
+	static private String KEY_PRODUCTID = null;
 
 	/**
-	 * This is a handle to the current activity.
-	 *
+	 * This is a handle to the current activity. It must be set in a constructor
+	 * because the Activity instance hasn't yet been created a static initialization
+	 * time.
+	 * <p>
 	 * This would cause a memory leak after each device configuration change,
 	 * except that it is re-initialized by each activity upon start up.
 	 */
@@ -24,10 +28,10 @@ public class Support
 
 	Support(Activity _a) {
 		a = _a;
-		KEY_ID = a.getPackageName() + "KEY_ID";
+		KEY_PRODUCTID = a.getPackageName() + "KEY_PRODUCTID";
 	}
 
-	static public String getKeyId() { return KEY_ID; }
+	static public String getKeyProductId() { return KEY_PRODUCTID; }
 	static Activity getActivity() {
 		if (a == null)
 			throw new IllegalStateException("getActivity() called before activity initialized.");

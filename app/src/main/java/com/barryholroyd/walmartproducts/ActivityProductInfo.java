@@ -17,7 +17,7 @@ public class ActivityProductInfo extends AppCompatActivity
 		setContentView(R.layout.productinfo);
 
 		Intent intent = getIntent();
-		String productId = intent.getStringExtra(Support.getKeyId());
+		String productId = intent.getStringExtra(Support.getKeyProductId());
 	}
 
 	/**

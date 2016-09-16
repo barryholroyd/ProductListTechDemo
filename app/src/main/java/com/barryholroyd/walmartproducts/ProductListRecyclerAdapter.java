@@ -199,10 +199,10 @@ public class ProductListRecyclerAdapter
 			@Override
 			public void onClick(View v) {
 				TextView tvId = (TextView) v.findViewById(R.id.id);
-				String id = (String) tvId.getText();
+				String productId = (String) tvId.getText();
 				Activity a = Support.getActivity();
 				Intent intent = new Intent(a, ActivityProductInfo.class);
-				intent.putExtra(Support.getKeyId(), id);
+				intent.putExtra(Support.getKeyProductId(), productId);
 				a.startActivity(intent);
 			}
 		}
