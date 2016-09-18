@@ -1,6 +1,8 @@
 package com.barryholroyd.walmartproducts;
 
 import android.app.Activity;
+import android.os.Build;
+import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -58,4 +60,24 @@ public class Support
 	static public void logd(String msg) {
 		Log.d(ActivityProductList.LOGTAG, msg);
 	}
+
+	/**
+	 * Translate HTML tags (embedded in text) to simple text.
+	 *
+	 * Poor man's version -- mostly, just removes tags.
+	 *
+	 * @param in    input text (e.g., pulled from JSON).
+	 * @return      output text (without HTML tags).
+	 */
+	@SuppressWarnings("deprecation")
+	public static String htmlToText(String in) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+			return Html.fromHtml(in).toString();
+		}
+		else {
+			return Html.fromHtml(in, 0).toString();
+		}
+	}
+
+
 }

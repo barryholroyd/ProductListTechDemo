@@ -20,6 +20,20 @@ public class ProductInfo implements Parcelable
 	int     reviewCount;
 	boolean inStock;
 
+	ProductInfo() {}
+
+	private ProductInfo(Parcel in) {
+		id = in.readString();
+		name = in.readString();
+		shortDescription = Support.htmlToText(in.readString());
+		longDescription = Support.htmlToText(in.readString());
+		price = in.readString();
+		imageUrl = in.readString();
+		reviewRating = in.readDouble();
+		reviewCount = in.readInt();
+		inStock = (in.readInt() == 1);
+	}
+
 	public int describeContents() {
 		return 0;
 	}
@@ -50,16 +64,4 @@ public class ProductInfo implements Parcelable
 				return new ProductInfo[size];
 			}
 		};
-
-	private ProductInfo(Parcel in) {
-		id = in.readString();
-		name = in.readString();
-		shortDescription = in.readString();
-		longDescription = in.readString();
-		price = in.readString();
-		imageUrl = in.readString();
-		reviewRating = in.readDouble();
-		reviewCount = in.readInt();
-		inStock = (in.readInt() == 1);
-	}
 }

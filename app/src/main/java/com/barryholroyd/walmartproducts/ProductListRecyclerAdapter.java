@@ -124,13 +124,11 @@ public class ProductListRecyclerAdapter
 		 * within the is hidden ("gone") in the text view.
 		 */
 		private final TextView id;
-		/**
-		 * The product name.
-		 */
+
+		/** The product name. */
 		private final TextView name;
-		/**
-		 * A short description of the product.
-		 */
+
+		/** A short description of the product. */
 		private final TextView  shortDescription;
 
 		/**
@@ -138,7 +136,7 @@ public class ProductListRecyclerAdapter
 		 * in the displayed product list. We could use a lambda expression instead
 		 * of creating a whole new class, but Android's support of Java 8
 		 * isn't complete enough yet for it to be worthwhile (even with Jack,
-		 * there are tradeoffs).
+		 * there are trade offs).
 		 */
 		private final OnClickListenerRow onClickListenerRow = new OnClickListenerRow();
 

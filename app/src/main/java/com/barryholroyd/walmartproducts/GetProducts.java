@@ -281,8 +281,10 @@ public class GetProducts
 				switch (name) {
 					case "productId":	pi.id	= reader.nextString();	break;
 					case "productName":	pi.name	= reader.nextString();	break;
-					case "shortDescription":	pi.shortDescription	= reader.nextString();	break;
-					case "longDescription":	pi.longDescription	= reader.nextString();	break;
+					case "shortDescription":	pi.shortDescription	=
+												Support.htmlToText(reader.nextString());	break;
+					case "longDescription":	pi.longDescription	=
+												Support.htmlToText(reader.nextString());	break;
 					case "price":	pi.price	= reader.nextString();	break;
 					case "productImage":	pi.imageUrl	= reader.nextString();	break;
 					case "reviewRating":	pi.reviewRating	= reader.nextDouble();	break;
