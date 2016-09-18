@@ -8,14 +8,15 @@
         />
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:gravity="center"
         android:textSize="30sp"
         android:text="Walmart Products"
         />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:scrollbars="vertical"
         android:id="@+id/list">
     </android.support.v7.widget.RecyclerView>
