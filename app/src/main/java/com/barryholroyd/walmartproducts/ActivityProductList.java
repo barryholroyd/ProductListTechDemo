@@ -8,10 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /*
- * BUG: Buttons initially appear and then disappear on startup.
- * BUG: Header fields should be centered horizontally.
- * BUG: Scrolling: causes spaces between rolls.
- * BUG: HTML in description.
  * BUG: Rotating device adds more rows. Instead, should remember where you are. Same for going list->product->list.
  *      Solution: see http://stackoverflow.com/questions/37238293/display-stored-data-after-rotation-in-a-recyclerview.
  *      Make ProductInfo parcelable and recreate the array.

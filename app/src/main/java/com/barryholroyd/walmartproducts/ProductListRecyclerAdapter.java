@@ -3,6 +3,7 @@ package com.barryholroyd.walmartproducts;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -164,7 +165,9 @@ public class ProductListRecyclerAdapter
 		 */
 		protected void bindHeader() {
 			name.setText("Name");
+			name.setGravity(Gravity.CENTER_HORIZONTAL);
 			name.setTextSize(20);
+			shortDescription.setGravity(Gravity.CENTER_HORIZONTAL);
 			shortDescription.setText("Description");
 			shortDescription.setTextSize(20);
 		}
