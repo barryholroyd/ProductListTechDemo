@@ -127,6 +127,7 @@ public class ActivityProductList extends AppCompatActivity
 		recyclerView = (RecyclerView) findViewById(R.id.list);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(new ProductListRecyclerAdapter());
+		recyclerView.addOnScrollListener(new ProductListOnScrollListener());
 	}
 
 	/**

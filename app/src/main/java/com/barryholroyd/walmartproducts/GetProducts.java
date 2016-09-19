@@ -44,7 +44,7 @@ public class GetProducts
 	/**
 	 * Number of products to request in a single nextBatch. Maximum is 30.
 	 */
-	static final private int batchSize = 10;
+	static final private int batchSize = 25;
 
 	/**
 	 * API key.
@@ -68,7 +68,9 @@ public class GetProducts
 	 * The total number of products available.
 	 * This is included in the response to each request.
 	 */
-	static private int maxProducts = 0;
+	private int maxProducts = 0;
+
+	public int getMaxProducts() { return maxProducts; }
 
 	/**
 	 * Reset the "nextBatch" of products to be displayed to the first nextBatch.
