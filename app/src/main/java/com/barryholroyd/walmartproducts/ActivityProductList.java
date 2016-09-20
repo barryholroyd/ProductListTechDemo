@@ -110,7 +110,6 @@ public class ActivityProductList extends AppCompatActivity
 	 *                           device rotation.
 	 */
 	private void refreshListDisplay(Bundle savedInstanceState) {
-		// TBD: How to know which rows to display?
 		ProductInfoArrayList pial =
 			(ProductInfoArrayList) savedInstanceState.<ProductInfo>getParcelableArrayList(PIAL);
 		((ProductListRecyclerAdapter) recyclerView.getAdapter()).updateData(pial);

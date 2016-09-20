@@ -17,20 +17,30 @@ WebView doesn't work well with RecyclerView.
         android:visibility="gone"
         android:id="@+id/id"
         />
-    <TextView
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_weight="2"
-        android:layout_height="wrap_content"
-        android:layout_margin="3dp"
+        android:layout_margin="1dp"
         android:background="@color/blue_light"
-        android:id="@+id/name"
-        />
-    <TextView
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/name"
+            />
+    </FrameLayout>
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_weight="5"
-        android:layout_height="wrap_content"
-        android:layout_margin="3dp"
+        android:layout_margin="1dp"
         android:background="@color/blue_light"
-        android:id="@+id/short_description"
-        />
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/short_description"
+            />
+    </FrameLayout>
 </LinearLayout>
