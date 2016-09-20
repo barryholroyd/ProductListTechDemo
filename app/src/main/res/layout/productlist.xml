@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue"
     >
         />
     <TextView
@@ -18,7 +19,9 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="vertical"
-        android:id="@+id/list">
+        android:id="@+id/list"
+        android:background="@color/red"
+        >
     </android.support.v7.widget.RecyclerView>
     <!-- DEL: delete the following button, button_productinfo, when no longer needed. -->
     <Button
