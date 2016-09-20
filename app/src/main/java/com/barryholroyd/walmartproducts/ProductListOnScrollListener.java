@@ -86,7 +86,9 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 			Support.logd("All data has been loaded already.");
 			return;
 		}
-		if (totalLoadedRows > GetProducts.instance.getMaxProducts()) {
+
+        // -1 to account for the locally-added header
+		if (totalLoadedRows - 1 > GetProducts.instance.getMaxProducts()) {
 			throw new IllegalStateException("Unhandled: reduction in number of products available");
 		}
 
@@ -102,13 +104,13 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		totalVisibleRows = recyclerView.getChildCount();      // number of rows actively displayed
 		lastVisibleRow = firstVisibleRow + totalVisibleRows;  // last row actively displayed
 
-		Support.logd(String.format("firstVisibleRow:         %d\n", firstVisibleRow));
-		Support.logd(String.format("totalVisibleRows:        %d\n", totalVisibleRows));
-		Support.logd(String.format("lastVisibleRow:          %d\n", lastVisibleRow));
-		Support.logd(String.format("totalLoadedRows:         %d\n", totalLoadedRows));
-		Support.logd(String.format("totalLoadedRowsPrevious: %d\n", totalLoadedRowsPrevious));
-		Support.logd(String.format("loading:                 %b\n", loading));
-		Support.logd("-------------------------------------\n");
+//		Support.logd(String.format("firstVisibleRow:         %d\n", firstVisibleRow));
+//		Support.logd(String.format("totalVisibleRows:        %d\n", totalVisibleRows));
+//		Support.logd(String.format("lastVisibleRow:          %d\n", lastVisibleRow));
+//		Support.logd(String.format("totalLoadedRows:         %d\n", totalLoadedRows));
+//		Support.logd(String.format("totalLoadedRowsPrevious: %d\n", totalLoadedRowsPrevious));
+//		Support.logd(String.format("loading:                 %b\n", loading));
+//		Support.logd("-------------------------------------\n");
 
 		/**
 		 * If a load is underway, check to see if it has completed and update the loading
@@ -129,7 +131,7 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		if (!loading && (lastVisibleRow + TRIGGER_DISTANCE > totalLoadedRows)) {
 			Support.logd("Loading more data...");
 			loading = true;
-			GetProducts.instance.getNextBatch();
+			GetProducts.instance.getNextPage();
 		}
 	}
 }

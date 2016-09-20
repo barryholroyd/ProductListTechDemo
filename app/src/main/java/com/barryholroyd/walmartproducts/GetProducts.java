@@ -70,21 +70,47 @@ public class GetProducts
 	 */
 	private int maxProducts = 0;
 
+	/**
+	 * The total number of products downloaded so far.
+	 */
+	private int totalDownloaded = 0;
+
 	public int getMaxProducts() { return maxProducts; }
 
 	/**
-	 * Reset the "pageNumber" of products to be displayed to the first pageNumber.
+	 * Get the next "pageNumber" of products to be displayed. The size of each pageNumber
+	 * is determined by "PAGE_SIZE".
+	 *
+	 * There appears to be a bug in the server. If you request a full page of products
+	 * that extends beyond the end of the list, it will actually return a full page.
+	 * Interestingly, that doesn't seem to be the case if you use a page size of 1.
+	 * In any case, when we get to the end of the list we only ask for the number of
+	 * remaining products if there aren't enough left to fill a full page.
+     *
+     * NTH: Ideally, we should provide a method for checking to see if the total
+     * number of available products has changed.
 	 */
-	public void reset() { pageNumber = 1; }
+	public void getNextPage() {
+        // If all products have already been downloaded, just return without doing anything.
+        if ((maxProducts != 0) && (totalDownloaded == maxProducts)) {
+            String msg = String.format(
+                    "Download requested but all %d products have already been downloaded.\n",
+                    maxProducts);
+            Support.logd(msg);
+            return;
+        }
 
-	/**
-	 * Get the next "pageNumber" of products to be displayed. The size of each pageNumber is determined
-	 * by "PAGE_SIZE".
-	 */
-	public void getNextBatch() {
-		if ((maxProducts == 0) || ((pageNumber * PAGE_SIZE) <= (maxProducts + PAGE_SIZE))) {
-			getProducts(pageNumber++, PAGE_SIZE);
+        /*
+         * Set the page size. Handle the case where only a part of a page (at the end of
+         * the product set) needs to be downloaded). Note that we already know that there
+         * is are one or more products that have not yet been downloaded.
+         */
+		int pageSize = PAGE_SIZE;
+		if ((maxProducts != 0) && (pageNumber * PAGE_SIZE > maxProducts)) {
+			pageSize = maxProducts - ((pageNumber-1) * PAGE_SIZE);
 		}
+		Support.logd(String.format("Downloading page %d of size %d\n", pageNumber, pageSize));
+		getProducts(pageNumber++, pageSize);
 	}
 
 	/**
@@ -140,6 +166,12 @@ public class GetProducts
 			ProductListRecyclerAdapter plra =
 				(ProductListRecyclerAdapter) rv.getAdapter();
 			plra.updateData(pial);
+            totalDownloaded += pial.size();
+
+            // Sanity check. -1 because of the header added locally.
+            if (totalDownloaded != (plra.getItemCount() - 1)) {
+                throw new IllegalStateException("Total downloaded count corrupted.");
+            }
 		}
 
 		/**

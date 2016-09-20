@@ -58,7 +58,7 @@ public class ActivityProductList extends AppCompatActivity
 		initRecyclerView();
 		if (savedInstanceState == null) {
 			// Display the product list for the first time.
-			GetProducts.instance.getNextBatch();
+			GetProducts.instance.getNextPage();
 		}
 		else {
 			// Display the product list on device reconfiguration.
@@ -162,7 +162,7 @@ public class ActivityProductList extends AppCompatActivity
 				startActivity(new Intent(this, ActivityProductInfo.class));
 				break;
 			case R.id.button_productlist:
-				GetProducts.instance.getNextBatch();
+				GetProducts.instance.getNextPage(); // TBD: incorrect call?
 				break;
 		}
 	}
