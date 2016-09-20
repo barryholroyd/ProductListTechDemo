@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Download the complete set of demo Walmart Products.
+#
+# Assume there are 224 total products, since that is
+# the current number reported with each download.
+#
+# There is a maximum of 30 products per download and
+# each download contains meta-information (in addition
+# to the list of products), such as "totalProducts"
+# and "pageNumber", so each download is kept in a
+# separate file (named after the page number).
+#
+# We attempt to download 8*30=240 products. The
+# first 7 pages of 30 products downloads 210 products.
+# The last page should download the remaiing 14
+# products, but instead appears to download a full
+# 30 products. This appears to be a bug in the server.
+#
+# Downloading 224 products one at a time appears to work
+# (downloading the 225th product yields an empty list).
+#
+# In addition, it appears that there are actually only
+# 37 unique product ids.
+
+init()
+{
+  API_PREFIX='https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/walmartproducts'
+  API_KEY='cec8e676-d56f-49b9-987a-989a9d23a724'
+  PAGE_SIZE=30
+  MAX_PAGES=8
+
+  URL='https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/walmartproducts/cec8e676-d56f-49b9-987a-989a9d23a724'
+}
+
+get_page()
+{
+  PAGE=$1
+  FILE="$PAGE.json"
+  wget -q -O $FILE "$API_PREFIX/$API_KEY/$PAGE/$PAGE_SIZE"
+}
+
+main()
+{
+  init
+  for (( i = 0 ; i < MAX_PAGES ; i++ ))
+  do
+    echo "Getting page: $i..."
+    get_page $i
+  done
+}
+
+main
+
+exit 0
