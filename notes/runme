@@ -1,0 +1,54 @@
+#!/bin/bash
+
+
+init()
+{
+  # Assume 224 total products.
+
+  TMP_FILE="tmp.json"
+  OUTPUT_FILE="products.json"
+  API_PREFIX='https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/walmartproducts'
+  API_KEY='cec8e676-d56f-49b9-987a-989a9d23a724'
+  PAGE_SIZE=25
+  MAX_PAGES=9
+
+  URL='https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/walmartproducts/cec8e676-d56f-49b9-987a-989a9d23a724'
+}
+
+rm_file()
+{
+  FILE=$1
+  if [ -e $FILE ]
+  then
+    echo TMP: rm $FILE
+  fi
+}
+
+# wget
+get_page()
+{
+  PAGE=$1
+  rm_file $TMP_FILE
+
+  wget -O $TMP_FILE "$API_PREFIX/$API_KEY/$PAGE/$PAGE_SIZE"
+  cat $TMP_FILE >> $OUTPUT_FILE
+
+  rm_file $TMP_FILE
+}
+
+main()
+{
+  init
+
+  cat /dev/null > $OUTPUT_FILE
+
+  for (( i = 0 ; i < MAX_PAGES ; i++ ))
+  do
+    echo "Getting page: $i..."
+    get_page $i
+  done
+}
+
+main
+
+exit 0

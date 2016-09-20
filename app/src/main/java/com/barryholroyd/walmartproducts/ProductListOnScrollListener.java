@@ -60,6 +60,11 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	/** True when the adapter is loading more data into the backing array from the cloud. */
 	private boolean loading = true;
 
+	/*
+	 * TBD: only load 201 rows.
+	 * TBD: rotating -- loses totalLoadedRowsPrevious
+	 */
+
 	// This happens many times a second during a scroll, so we want to limit the amount
 	// of processing here as much as possible.
 	/**

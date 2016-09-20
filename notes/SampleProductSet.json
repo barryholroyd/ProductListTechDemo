@@ -1,5 +1,5 @@
 {
- "id": "cfa6e84e-e76e-481b-9607-3afbd22b15d4",
+ "id": "26ca346c-c778-4d14-98ec-864d220c8fe2",
  "products": [
   {
    "productId": "003e3e6a-3f84-43ac-8ef3-a5ae2db0f80e",
@@ -273,66 +273,12 @@
    "reviewRating": 4.4,
    "reviewCount": 5,
    "inStock": true
-  },
-  {
-   "productId": "23f7ff8e-5fa9-47ab-aa8d-41882aa43ccf",
-   "productName": "Sherwood 70-Watt A/V Receiver with HDMI Switching",
-   "longDescription": "\u003cp\u003eToday&#39;s multi-component home theater systems must excel at working with components including DVD and CD players, cassette decks, VCRs, and satellite or cable inputs-- not to mention radio programming. Sherwoods&#39;s A/V receivers are star performers, easily switching between inputs and encoding formats to produce brilliant, accurate sound.\u003c/p\u003e\n",
-   "price": "$149.86",
-   "productImage": "https://walmartlabs-test.appspot.com/images/image8.jpeg",
-   "reviewRating": 5.0,
-   "reviewCount": 1,
-   "inStock": true
-  },
-  {
-   "productId": "240b3848-c12b-4b0d-b5b9-1b42b85d09cc",
-   "productName": "Logitech Harmony 650 Remote",
-   "shortDescription": "\u003cul\u003e\n\t\u003cli\u003eSupport for 8 devices is enabled at software setup\u003c/li\u003e\n\t\u003cli\u003eReplaces up to 8 remotes, reducing complexity and clutter in your living room\u003c/li\u003e\n\t\u003cli\u003eBright color screen shows your channel favorite icons plus commands for easy navigation\u003c/li\u003e\n\t\u003cli\u003eOne-touch Activity buttons, like &quot;Watch a DVD,&quot;&nbsp;automatically switch the right devices to the right settings\u003c/li\u003e\n\t\u003cli\u003eCompatible with 225,000+ devices from 5000+ brands, including devices you own today and add tomorrow\u003c/li\u003e\n\u003c/ul\u003e\n",
-   "longDescription": "\u003cp\u003eOne touch changes everything&mdash;with bright and brilliant control.&nbsp;Say goodbye to juggling remotes and complicated equipment settings. With a bright color screen, one-click activity buttons&nbsp;and control of 5 devices, Harmony 650 lets you access TV, movies and music effortlessly&mdash;even in the dark.\u003c/p\u003e\n",
-   "price": "$59.99",
-   "productImage": "https://walmartlabs-test.appspot.com/images/image1.jpeg",
-   "reviewRating": 3.3333,
-   "reviewCount": 9,
-   "inStock": true
-  },
-  {
-   "productId": "25375f53-2c23-4726-8a8b-b0aa10851b67",
-   "productName": "Google Chromecast Streaming Media Player with $10 Google Play Credit",
-   "shortDescription": "\u003cp\u003eChromecast is the easy way to enjoy online video and music on your TV. Plug it into any HDTV and control it with your existing Android smartphone or tablet, iPhone, iPad, or laptop. No remotes required. Cast your favorites from many popular apps &mdash; Netflix, YouTube, HBO GO, Hulu Plus, Pandora, Crackle, Rdio, MLB.TV, ESPN, MLS, Crunchyroll, Google Play Movies &amp; TV, Google Play Music, Google Photos, and Chrome* &mdash; to your TV with the press of a button.\u003c/p\u003e\n",
-   "longDescription": "\u003cp\u003e\u003cb style=\"line-height: 1.6em;\"\u003eEverything you love, now on your TV\u003c/b\u003e\u003cbr /\u003e\n\u003cspan style=\"line-height: 1.6em;\"\u003eChromecast works with a growing number of apps, including Netflix, HBO GO, YouTube, WatchESPN &amp; Pandora. Find your favorite apps and discover more at chromecast.com/apps.\u003c/span\u003e\u003c/p\u003e\n\n\u003cp\u003eFor everything else, you can mirror what you see on the small screen to the big screen. If you&#39;re on your laptop, you can cast any website in Chrome; and from your Android phone or tablet, you can mirror your screen to the TV.\u003cbr /\u003e\n\u003cbr /\u003e\n\u003cb\u003eA whole new way to TV\u003c/b\u003e\u003cbr /\u003e\nWith Chromecast, your phone is your personalized remote control. Use the apps you know and love on your phone to search and browse, play, pause, rewind, control the volume and even make playlists. While casting, you&#39;re free to use your phone for other things.\u003cbr /\u003e\n\u003cbr /\u003e\nYour friends and family can cast to the TV using their own phone or tablet, too - with no additional set-up required. Everyone can sit back and enjoy together on the biggest screen in the home.\u003cbr /\u003e\n\u003cbr /\u003e\nWhen you&#39;re not casting, you can turn your TV screen into a beautiful backdrop filled with artwork, personal photos, satellite imagery and more. Learn how to set up this feature at chromecast.com/backdrop.\u003cbr /\u003e\n\u003cbr /\u003e\n\u003cb\u003eFor everyone\u003c/b\u003e\u003cbr /\u003e\nIt&#39;s easy for everyone to enjoy Chromecast. It works with the devices you already own including smartphones, tablets and laptops. Plus, it automatically updates with new features and we&#39;re adding more apps all the time, so your Chromecast keeps getting better. It takes only a few minutes to set up, and at $35, it&#39;s affordable to get one for every TV in the house.\u003cbr /\u003e\n\u003cbr /\u003e\n\u003cb\u003ePlug in and play\u003c/b\u003e\u003cbr /\u003e\nGet started in 3 easy steps: Plug Chromecast into your TV, connect it to Wi-Fi, then cast videos and more from your smartphone, tablet, or laptop to your TV.\u003c/p\u003e\n",
-   "price": "$34.86",
-   "productImage": "https://walmartlabs-test.appspot.com/images/image9.jpeg",
-   "reviewRating": 0.0,
-   "reviewCount": 0,
-   "inStock": true
-  },
-  {
-   "productId": "254294a0-8b62-4f59-8dd9-e0451bebd9d1",
-   "productName": "TCL 40\" Class 1080p LED HDTV - 40FD2700",
-   "shortDescription": "\u003cul\u003e\n\t\u003cli\u003eResolution: 1080p\u003c/li\u003e\n\t\u003cli\u003eRefresh Rate: 60Hz\u003c/li\u003e\n\t\u003cli\u003eHDMI Inputs: 2\u003c/li\u003e\n\u003c/ul\u003e\n",
-   "longDescription": "\u003cp\u003eEnjoy The Creative Life with the TCL 40&rdquo; 1080p direct LED HDTV. It delivers premium picture quality and tremendous value in a sophisticated slim frame design perfect for bringing entertainment to any space. This flat screen LED HDTV features Full High Definition 1080p resolution for a sharper image, a 5,000,000:1 dynamic contrast ratio, and TCL True Color Technology for brilliant color and contrast. With direct LED backlighting, view darker blacks and luminous brightness while maintaining the best standards in energy efficiency.\u003cbr /\u003e\n\u003cbr /\u003e\nTwo HDMI inputs allow you to connect to satellite or cable TV, DVD/Blu-ray player, and gaming console or other device. Whether wall mounted like a piece of art or sitting on modern quad pedestal design, this TV is a sleek addition to any room. Color Your World with affordable technology.\u003c/p\u003e\n\n\u003cp\u003e\u003cb\u003eThe Creative Life&nbsp;\u003c/b\u003e\u003cbr /\u003e\nAllow us to introduce ourselves. We&#39;re TCL, The Creative Life. We&#39;re one of the three largest television manufacturers in the world, selling premium consumer electronics in over 130 countries across 6 continents. And we&#39;ve been making high quality CRT, plasma and LCD televisions for over three decades. In fact, we probably made many of the components in your old TV, so even though we may have never officially met, chances are, we&#39;ve been in your home for years. So, it&#39;s nice to meet you. Again.&nbsp;\u003c/p\u003e\n\n\u003cp\u003e\u003cb\u003eThe Ultimate Viewing Experience&nbsp;\u003c/b\u003e\u003cbr /\u003e\nEnjoy The Creative Life with the TCL 40&rdquo; 1080p back-lit LED HDTV. It delivers premium picture quality and tremendous value in a sophisticated slim frame design perfect for bringing entertainment to any space. This flat screen LED HDTV features Full High Definition 1080p resolution and a 5,000,000:1 dynamic contrast ratio for brilliant color and contrast.&nbsp;\u003c/p\u003e\n\n\u003cp\u003e\u003cb\u003eModern, Efficient Design&nbsp;\u003c/b\u003e\u003cbr /\u003e\nUltra-Thin Frame Design The thin frame design of TCL&#39;s TVs gives it high-end appearance without the high-end price. Thin frames maximize the big screen experience, by letting you fit more screen into less space. And images seem bigger without the frame getting in the way.&nbsp;\u003c/p\u003e\n\n\u003cp\u003e\u003cb\u003eSave Money, Energy and the Environment&nbsp;\u003c/b\u003e\u003cbr /\u003e\nAll TCL LED TVs are Energy Star compliant. That means they not only meet energy efficiency standards established by the U.S. Environmental Protection Agency but they save you money. And all TCL LED TVs are both lead and mercury free. Which means TCL LED TVs help consumers save money--and the environment--by efficiently using energy, reducing greenhouse gas emissions and keeping harmful pollutants out of landfills.&nbsp;\u003c/p\u003e\n",
-   "price": "$288.00",
-   "productImage": "https://walmartlabs-test.appspot.com/images/image3.jpeg",
-   "reviewRating": 0.0,
-   "reviewCount": 0,
-   "inStock": true
-  },
-  {
-   "productId": "261a34ec-31fb-4762-9813-860bfd14985e",
-   "productName": "Samsung 65\" Class 4K Ultra HD LED Smart TV - UN65JU650DFXZA ",
-   "shortDescription": "\u003cul\u003e\n\t\u003cli\u003eResolution: 4K Ultra HD\u003c/li\u003e\n\t\u003cli\u003eRefresh Rate: 60Hz w/ 120 Clear Motion Rate\u003c/li\u003e\n\t\u003cli\u003eHDMI Inputs: 4\u003c/li\u003e\n\u003c/ul\u003e\n",
-   "longDescription": "\u003cp\u003eWith 4K UHD resolution, you&rsquo;ll enjoy a picture with 4X the detail of Full HD. Watch and play your way with the advanced Samsung Smart TV platform that lets you quickly and easily access your favorite content. Upgrade all lower-resolution media to a stunning near ultra high-definition experience with enhanced detail and optimized picture quality. Experience UHD picture quality with deeper blacks, purer whites, brighter colors, and enhanced detail in every image. Enjoy improved fast-action moving picture resolution at Motion Rate 120 with outstanding refresh rate, processing speed and backlight technology. The screen mirroring feature allows you to mirror your phone or other compatible mobile device&rsquo;s screen onto the TVs screen wirelessly instead of your devices smaller screen for showing content, media playback, or other function. Have your Samsung Smart TV act as an alarm when synchronized with your other Samsung mobile devices. Use the large screen to display important items such as the time, weather, and your daily schedule.\u003c/p\u003e\n",
-   "price": "$1,978.00",
-   "productImage": "https://walmartlabs-test.appspot.com/images/image7.jpeg",
-   "reviewRating": 0.0,
-   "reviewCount": 0,
-   "inStock": true
   }
  ],
  "totalProducts": 224,
  "pageNumber": 0,
- "pageSize": 30,
+ "pageSize": 25,
  "status": 200,
  "kind": "walmart#resourcesItem",
- "etag": "\"krNS9WyYxEZSV9tcrD2rDpDkwUs/ru1e7DaRHz7oS7NeunRh6itHmLQ\""
+ "etag": "\"krNS9WyYxEZSV9tcrD2rDpDkwUs/IYlpkhz7qHfSgbjI251ULXFOwu0\""
 }

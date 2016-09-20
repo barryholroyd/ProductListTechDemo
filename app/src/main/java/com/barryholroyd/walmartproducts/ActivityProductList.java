@@ -21,7 +21,12 @@ import android.view.View;
  *
  * This is the main activity. The overall app calls this to list products. Clicking on a product
  * will call ActivityProductInfo to display product-specific information.
+ *
+ * @author Barry Holroyd
+ * @see    <a href="https://walmartlabs-test.appspot.com">Walmart Products API (mock)</a>
+ * @see    <a href="https://walmartlabs-test.appspot.com/_ah/api/walmart/v1">Documentation</a>
  */
+
 public class ActivityProductList extends AppCompatActivity
 {
 	/**

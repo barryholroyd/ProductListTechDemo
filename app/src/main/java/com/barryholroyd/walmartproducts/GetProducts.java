@@ -42,9 +42,9 @@ public class GetProducts
 	}
 
 	/**
-	 * Number of products to request in a single nextBatch. Maximum is 30.
+	 * Number of products to request in a single pageNumber. Maximum is 30.
 	 */
-	static final private int batchSize = 25;
+	static final private int PAGE_SIZE = 25;
 
 	/**
 	 * API key.
@@ -54,15 +54,15 @@ public class GetProducts
 
 	/**
 	 * URL Prefix.
-	 * Full URL is: API_PREFIX + API_KEY + "/&lt;nextBatch&gt;/&lt;batchSize&gt;"
+	 * Full URL is: API_PREFIX + API_KEY + "/&lt;pageNumber&gt;/&lt;batchSize&gt;"
 	 */
 	static final private String API_PREFIX =
 		"https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/walmartproducts/";
 
 	/**
-	 * The "nextBatch" of the next set of "batchSize" products to get.
+	 * The "pageNumber" of the next set of "batchSize" products to get.
 	 */
-	private int nextBatch = 1;
+	private int pageNumber = 1;
 
 	/**
 	 * The total number of products available.
@@ -73,17 +73,17 @@ public class GetProducts
 	public int getMaxProducts() { return maxProducts; }
 
 	/**
-	 * Reset the "nextBatch" of products to be displayed to the first nextBatch.
+	 * Reset the "pageNumber" of products to be displayed to the first pageNumber.
 	 */
-	public void reset() { nextBatch = 1; }
+	public void reset() { pageNumber = 1; }
 
 	/**
-	 * Get the next "nextBatch" of products to be displayed. The size of each nextBatch is determined
-	 * by "batchSize".
+	 * Get the next "pageNumber" of products to be displayed. The size of each pageNumber is determined
+	 * by "PAGE_SIZE".
 	 */
 	public void getNextBatch() {
-		if ((maxProducts == 0) || (nextBatch * batchSize <= maxProducts)) {
-			getProducts(nextBatch++, batchSize);
+		if ((maxProducts == 0) || ((pageNumber * PAGE_SIZE) <= (maxProducts + PAGE_SIZE))) {
+			getProducts(pageNumber++, PAGE_SIZE);
 		}
 	}
 
@@ -270,6 +270,8 @@ public class GetProducts
 				pial.add(pi);
 			}
 			reader.endArray();
+
+			Support.logd(String.format("PIAL SIZE: %d\n", pial.size()));
 
 			return pial;
 		}
