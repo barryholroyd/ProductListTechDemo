@@ -78,19 +78,22 @@ public class GetProducts
 	public int getMaxProducts() { return maxProducts; }
 
 	/**
-	 * Get the next "pageNumber" of products to be displayed. The size of each pageNumber
-	 * is determined by "PAGE_SIZE".
-	 *
-	 * There appears to be a bug in the server. If you request a full page of products
-	 * that extends beyond the end of the list, it will actually return a full page.
-	 * Interestingly, that doesn't seem to be the case if you use a page size of 1.
-	 * In any case, when we get to the end of the list we only ask for the number of
-	 * remaining products if there aren't enough left to fill a full page.
-     *
-     * NTH: Ideally, we should provide a method for checking to see if the total
-     * number of available products has changed.
+	 * Get the next batch of products to be displayed.
+	 * <p>
+	 *    This method is synchronized so that any previous calls to getNextPage()
+	 *    complete first. This will the run smoothly, based on information updated
+	 *    from the previous run(s).
+	 * <p>
+	 *     There appears to be a bug in the server. If you request a full page of products
+	 *     that extends beyond the end of the list, it will actually return a full page.
+	 *     Interestingly, that doesn't seem to be the case if you use a page size of 1.
+	 *     In any case, when we get to the end of the list we only ask for the number of
+	 *     remaining products if there aren't enough left to fill a full page.
+     * <p>
+     *     NTH: Ideally, we should provide a method for checking to see if the total
+     *     number of available products has changed.
 	 */
-	public void getNextPage() {
+	public synchronized void getNextPage() {
         // If all products have already been downloaded, just return without doing anything.
         if ((maxProducts != 0) && (totalDownloaded == maxProducts)) {
             return;
@@ -111,9 +114,7 @@ public class GetProducts
 	/**
 	 * Get the next batch of products.
 	 *
-	 * TBD:
-	 *   1. What happens if several calls to this run simultaneously?
-	 *   2. How to we display the correct image for a row about to be displayed
+	 * TBD: How to we display the correct image for a row about to be displayed
 	 *      (given that the ViewHolder could have an old URL in it? (Probably
 	 *      use the url in the surrounding closure when the runnable is issued (???).
 	 *

@@ -42,18 +42,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	/** The look-ahead distance -- triggers preloading from cloud. */
 	private static final int TRIGGER_DISTANCE = 25;
 
-	/** The adapter position of the first row fully displayed by RecyclerView. */
-	private int firstVisibleRow;
-
-	/** The total number of items being actively displayed by RecyclerView. */
-	private int totalVisibleRows;
-
-	/** The adapter position of the last row fully displayed by RecyclerView. */
-	private int lastVisibleRow;
-
-	/** Total number of items currently in the adapter. */
-	private int totalLoadedRows;
-
 	/** Saved value of totalLoadedRows; used to determine when adapter array has been refreshed. */
 	private int totalLoadedRowsPrevious = 0;
 
@@ -74,7 +62,9 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		super.onScrolled(recyclerView, dx, dy);
 
 		LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
-		totalLoadedRows = llm.getItemCount(); // number of rows in the adapter
+
+		// Total number of items currently in the adapter.
+		int totalLoadedRows = llm.getItemCount();
 		if (totalLoadedRows == GetProducts.instance.getMaxProducts()) {
 			return;
 		}
@@ -91,9 +81,14 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 			loading = true;
 		}
 
-		firstVisibleRow = llm.findFirstVisibleItemPosition(); // first row actively displayed
-		totalVisibleRows = recyclerView.getChildCount();      // number of rows actively displayed
-		lastVisibleRow = firstVisibleRow + totalVisibleRows;  // last row actively displayed
+		// The adapter position of the first row fully displayed by RecyclerView.
+		int firstVisibleRow = llm.findFirstVisibleItemPosition();
+
+		// The total number of items being actively displayed by RecyclerView.
+		int totalVisibleRows = recyclerView.getChildCount();
+		
+		// The adapter position of the last row fully displayed by RecyclerView.
+		int lastVisibleRow = firstVisibleRow + totalVisibleRows;
 
 		/**
 		 * If a load is underway, check to see if it has completed and update the loading

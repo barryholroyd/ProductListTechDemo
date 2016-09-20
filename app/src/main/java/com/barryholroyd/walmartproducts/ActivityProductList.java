@@ -7,15 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-/*
- * BUG: Rotating device adds more rows. Instead, should remember where you are. Same for going list->product->list.
- *      Solution: see http://stackoverflow.com/questions/37238293/display-stored-data-after-rotation-in-a-recyclerview.
- *      Make ProductInfo parcelable and recreate the array.
- * BUG: Scrolling down, rotating the device, then scrolling up may require reloading JSON data.
- * BUG: Be sure that the correct image is displayed despite loading from URL set in background thread.
- * BUG: Finish product display page.
- */
-
 /**
  * Demo to list the Walmart products.
  *
