@@ -61,12 +61,9 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	private boolean loading = true;
 
 	/*
-	 * TBD: only load 201 rows.
 	 * TBD: rotating -- loses totalLoadedRowsPrevious
 	 */
 
-	// This happens many times a second during a scroll, so we want to limit the amount
-	// of processing here as much as possible.
 	/**
 	 * Called multiple times when a user is scrolling the RecyclerView. Since this will be
 	 * called many times a second during the scrolling, we want to limit the amount of
@@ -83,7 +80,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
 		totalLoadedRows = llm.getItemCount(); // number of rows in the adapter
 		if (totalLoadedRows == GetProducts.instance.getMaxProducts()) {
-			Support.logd("All data has been loaded already.");
 			return;
 		}
 
@@ -94,7 +90,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 
 		// If the adapter somehow has *fewer* rows than previously, adjust accordingly.
 		if (totalLoadedRows < totalLoadedRowsPrevious) {
-			Support.logd("Adjusting for reduction in the number of rows already loaded...");
 			totalLoadedRowsPrevious = totalLoadedRows;
 			// If it has no rows at all, go ahead and start reloading them.
 			loading = true;
@@ -104,14 +99,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		totalVisibleRows = recyclerView.getChildCount();      // number of rows actively displayed
 		lastVisibleRow = firstVisibleRow + totalVisibleRows;  // last row actively displayed
 
-//		Support.logd(String.format("firstVisibleRow:         %d\n", firstVisibleRow));
-//		Support.logd(String.format("totalVisibleRows:        %d\n", totalVisibleRows));
-//		Support.logd(String.format("lastVisibleRow:          %d\n", lastVisibleRow));
-//		Support.logd(String.format("totalLoadedRows:         %d\n", totalLoadedRows));
-//		Support.logd(String.format("totalLoadedRowsPrevious: %d\n", totalLoadedRowsPrevious));
-//		Support.logd(String.format("loading:                 %b\n", loading));
-//		Support.logd("-------------------------------------\n");
-
 		/**
 		 * If a load is underway, check to see if it has completed and update the loading
 		 * flag appropriately. A load has completed when the adapter has added additional rows
@@ -119,7 +106,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		 * notifyDataSetChanged() has been called.
 		 */
 		if (loading && (totalLoadedRows > totalLoadedRowsPrevious)) {
-			Support.logd("Loading completed.");
 			totalLoadedRowsPrevious = totalLoadedRows;
 			loading = false;
 		}
@@ -129,7 +115,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		 * the next batch of rows.
 		 */
 		if (!loading && (lastVisibleRow + TRIGGER_DISTANCE > totalLoadedRows)) {
-			Support.logd("Loading more data...");
 			loading = true;
 			GetProducts.instance.getNextPage();
 		}

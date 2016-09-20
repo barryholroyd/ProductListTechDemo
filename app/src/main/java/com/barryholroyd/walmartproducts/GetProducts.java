@@ -93,10 +93,6 @@ public class GetProducts
 	public void getNextPage() {
         // If all products have already been downloaded, just return without doing anything.
         if ((maxProducts != 0) && (totalDownloaded == maxProducts)) {
-            String msg = String.format(
-                    "Download requested but all %d products have already been downloaded.\n",
-                    maxProducts);
-            Support.logd(msg);
             return;
         }
 
@@ -109,7 +105,6 @@ public class GetProducts
 		if ((maxProducts != 0) && (pageNumber * PAGE_SIZE > maxProducts)) {
 			pageSize = maxProducts - ((pageNumber-1) * PAGE_SIZE);
 		}
-		Support.logd(String.format("Downloading page %d of size %d\n", pageNumber, pageSize));
 		getProducts(pageNumber++, pageSize);
 	}
 
@@ -190,7 +185,6 @@ public class GetProducts
 				c.setDoInput(true);
 				c.connect();
 				int response = c.getResponseCode();
-				Support.logd(String.format("Http response code: %d.", response));
 				return c.getInputStream();
 			}
 			catch (MalformedURLException e) {
@@ -254,7 +248,6 @@ public class GetProducts
 		{
 			TopObject to = readTopObject(reader);
 			maxProducts = to.totalProducts;
-			Log.d(ActivityProductList.LOGTAG, "Max Products: " + maxProducts); // DEL: when done.
 			return to.pial;
 		}
 
@@ -302,8 +295,6 @@ public class GetProducts
 				pial.add(pi);
 			}
 			reader.endArray();
-
-			Support.logd(String.format("PIAL SIZE: %d\n", pial.size()));
 
 			return pial;
 		}
