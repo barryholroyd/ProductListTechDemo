@@ -26,6 +26,7 @@ public class ActivityProductInfo extends AppCompatActivity
 	 * @param view the button which was pressed to call this callback.
 	 */
 	public void displayProductList(View view) {
-		startActivity(new Intent(this, ActivityProductList.class));
+		finish();
+//		DEL: startActivity(new Intent(this, ActivityProductList.class));
 	}
 }

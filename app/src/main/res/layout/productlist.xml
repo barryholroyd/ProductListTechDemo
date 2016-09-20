@@ -20,7 +20,6 @@
         android:layout_weight="1"
         android:scrollbars="vertical"
         android:id="@+id/list"
-        android:background="@color/red"
         >
     </android.support.v7.widget.RecyclerView>
     <!-- DEL: delete the following button, button_productinfo, when no longer needed. -->
