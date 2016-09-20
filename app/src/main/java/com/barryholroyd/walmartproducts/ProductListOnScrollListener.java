@@ -25,14 +25,14 @@ import android.support.v7.widget.RecyclerView;
  *   <dt>lastVisibleRow
  *   <dd>last visible row (firstVisibleRow + totalVisibleRows)
  *   <dt>TRIGGER_DISTANCE
- *   <dd>look-ahead distance -- triggers preloading from cloud
+ *   <dd>look-ahead distance -- triggers pre-loading from cloud
  *   <dt>totalLoadedRows
  *   <dd>total number of rows currently loaded from the cloud
  *   <dt>batchSize
  *   <dd>batch size to load from the could into the adapter (defined in GetProducts).
  * </dl>
  * <p>
- * Algorithm: When {@code lastVisibleRow+triggerDistance > lastLoadedRow},
+ * Algorithm: When {@code lastVisibleRow + triggerDistance > lastLoadedRow},
  * load batchSize more rows from the cloud into the adapter.
  *
  * @author Barry Holroyd
@@ -59,10 +59,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 
 	/** True when the adapter is loading more data into the backing array from the cloud. */
 	private boolean loading = true;
-
-	/*
-	 * TBD: rotating -- loses totalLoadedRowsPrevious
-	 */
 
 	/**
 	 * Called multiple times when a user is scrolling the RecyclerView. Since this will be

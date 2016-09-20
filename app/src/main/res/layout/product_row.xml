@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+NTH: It would be nice to use WebView to display product names and descriptions, but
+WebView doesn't work well with RecyclerView.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
