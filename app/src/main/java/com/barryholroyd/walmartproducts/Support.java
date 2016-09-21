@@ -71,6 +71,9 @@ public class Support
 	 */
 	@SuppressWarnings("deprecation")
 	public static String htmlToText(String in) {
+        // NTH: remove/translate non-ASCII characters.
+		if (in == null)
+			return "";
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
 			return Html.fromHtml(in).toString();
 		}

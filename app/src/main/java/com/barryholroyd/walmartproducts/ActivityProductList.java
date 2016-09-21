@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /*
- * TODO: Complete product page. Two versions (portrait, landscape)
  * TODO: Display image in listing page.
  * TODO: Size images.
  * TODO: Code unit tests.
