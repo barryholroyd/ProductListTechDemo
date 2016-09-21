@@ -15,7 +15,9 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/blueDeep"
+        >
         <TextView
             style="@style/PiTextView"
             android:text="Price: "
@@ -52,7 +54,9 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/blueDeep"
+        >
         <!-- TBD: delete tmp image source and the drawable itself. -->
         <FrameLayout
             android:layout_width="0dp"
@@ -70,8 +74,9 @@
         </FrameLayout>
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="8"
             android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:layout_margin="1dp"
             android:padding="5dp"
             android:background="@color/blueLight"
             android:id="@+id/product_description"

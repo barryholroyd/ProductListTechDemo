@@ -2,6 +2,7 @@ package com.barryholroyd.walmartproducts;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -174,12 +175,18 @@ public class ProductListRecyclerAdapter
 		 * Binds column names to the header row.
 		 */
 		protected void bindHeader() {
-			name.setText("Name");
-			name.setGravity(Gravity.CENTER_HORIZONTAL);
-			name.setTextSize(20);
-			shortDescription.setGravity(Gravity.CENTER_HORIZONTAL);
-			shortDescription.setText("Description");
-			shortDescription.setTextSize(20);
+			formatHeaderField(name, "Name");
+			formatHeaderField(shortDescription, "Description");
+		}
+
+		/**
+		 * Utility method to format header fields.
+		 */
+		private void formatHeaderField(TextView tv, String label) {
+			tv.setText(label);
+			tv.setGravity(Gravity.CENTER); // TBD: must set layout_gravity.
+			tv.setTextSize(30);
+			tv.setTypeface(Typeface.create((String) null, Typeface.BOLD));
 		}
 
 		/**

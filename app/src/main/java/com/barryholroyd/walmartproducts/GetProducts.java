@@ -164,9 +164,17 @@ public class GetProducts
 			plra.updateData(pial);
             totalDownloaded += pial.size();
 
+			// TBD: I actually hit this -- fix it! I had put it in the background (perhaps
+			// it was still scrolling?); when I tried to bring it to the foreground (I think
+			// that is what I was doing), it crashed here.
+
             // Sanity check. -1 because of the header added locally.
-            if (totalDownloaded != (plra.getItemCount() - 1)) {
-                throw new IllegalStateException("Total downloaded count corrupted.");
+			int itemCount = plra.getItemCount() - 1;
+            if (totalDownloaded != itemCount) {
+				String msg = String.format(
+						"Total downloaded count corrupted (totalDownloaded=%d itemCount=%d",
+						totalDownloaded, itemCount);
+                throw new IllegalStateException(msg);
             }
 		}
 
@@ -185,7 +193,7 @@ public class GetProducts
 				c.setRequestMethod("GET");
 				c.setDoInput(true);
 				c.connect();
-				int response = c.getResponseCode();
+				c.getResponseCode();// NTH: check response code
 				return c.getInputStream();
 			}
 			catch (MalformedURLException e) {
@@ -307,18 +315,19 @@ public class GetProducts
 			while (reader.hasNext()) {
 				String name = reader.nextName();
 				switch (name) {
-					case "productId":	pi.id	= reader.nextString();	break;
-					case "productName":	pi.name	= reader.nextString();	break;
-					case "shortDescription":	pi.shortDescription	=
+					case "productId":		 pi.id	= reader.nextString();					break;
+					case "productName":		 pi.name	=
 												Support.htmlToText(reader.nextString());	break;
-					case "longDescription":	pi.longDescription	=
+					case "shortDescription": pi.shortDescription	=
 												Support.htmlToText(reader.nextString());	break;
-					case "price":	pi.price	= reader.nextString();	break;
-					case "productImage":	pi.imageUrl	= reader.nextString();	break;
-					case "reviewRating":	pi.reviewRating	= reader.nextDouble();	break;
-					case "reviewCount":	pi.reviewCount	= reader.nextInt();	break;
-					case "inStock":	pi.inStock	= reader.nextBoolean();	break;
-					default:	badToken(reader);
+					case "longDescription":	 pi.longDescription	=
+												Support.htmlToText(reader.nextString());	break;
+					case "price":			 pi.price	= reader.nextString();				break;
+					case "productImage":	 pi.imageUrl	= reader.nextString();			break;
+					case "reviewRating":	 pi.reviewRating	= reader.nextDouble();		break;
+					case "reviewCount":		 pi.reviewCount	= reader.nextInt();				break;
+					case "inStock":			 pi.inStock	= reader.nextBoolean();				break;
+					default:				 badToken(reader);
 				}
 			}
 			reader.endObject();

@@ -74,13 +74,26 @@ public class Support
         // NTH: remove/translate non-ASCII characters.
 		if (in == null)
 			return "";
+
+        String s = null;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-			return Html.fromHtml(in).toString();
+			s = Html.fromHtml(in).toString();
 		}
 		else {
-			return Html.fromHtml(in, 0).toString();
+			s = Html.fromHtml(in, 0).toString();
 		}
+        return cleanUp(s);
 	}
 
-
+    /**
+     * The JSON code returned contains non-ASCII characters in the short and long
+     * product descriptions and the API doesn't describe what the encoding is, so
+     * we simply deplete them from the text.
+     *
+     * @param s text which potentially contains non-ASCII characters.
+     * @return  the same text, but with all non-ASCII characters sequences replaced with a space.
+     */
+    private static String cleanUp(String s) {
+        return s.replaceAll("[\\u0080-\\uffff]+", " ");
+    }
 }

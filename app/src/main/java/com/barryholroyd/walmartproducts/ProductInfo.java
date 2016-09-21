@@ -25,8 +25,8 @@ public class ProductInfo implements Parcelable
 	private ProductInfo(Parcel in) {
 		id = in.readString();
 		name = in.readString();
-		shortDescription = Support.htmlToText(in.readString());
-		longDescription = Support.htmlToText(in.readString());
+		shortDescription = in.readString();
+		longDescription = in.readString();
 		price = in.readString();
 		imageUrl = in.readString();
 		reviewRating = in.readDouble();

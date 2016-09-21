@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-NTH: It would be nice to use WebView to display product names and descriptions, but
-WebView doesn't work well with RecyclerView.
+NTH: It would be nice to use WebView to display product names and descriptions.
+The problem is that WebView doesn't play well with RecyclerView.
+NTH: Adjust row sizes dynamically so that image, names and descriptions all fit.
+This is difficult to do in XML, since either the name or the description could force a row
+height increase (and so needs to be wrap_content) but the other must then be match_parent.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
@@ -20,12 +23,14 @@ WebView doesn't work well with RecyclerView.
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minHeight="80dp"
         android:layout_margin="1dp"
         android:background="@color/blueLight"
         >
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
             android:maxHeight="50dp"
             android:maxWidth="50dp"

@@ -6,13 +6,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /*
+ * TODO: ProductInfo page: move the image into the Price row.
+ * TODO: Product Info page: use PiTextStyle for all TextViews.
+ * BUG: Name and Description are not veritcally centered (t
  * TODO: Display image in listing page.
- * TODO: Size images.
  * TODO: Code unit tests.
  * TODO: GUI unit tests.
- *
  * TBD: no image for header
- * TBD: ALL PRODUCTS button color above button is wrong.
+ * TBD: ALL PRODUCTS button doesn't show if there is a long description (product info page, landscape mode).
+ *
+ * "NTH" means "Nice to have"
+ * NTH: Product Info screen's table should have the same border coloring as the Product List screen.
  *
  */
 
