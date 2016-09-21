@@ -147,21 +147,4 @@ public class ActivityProductList extends AppCompatActivity
 			((ProductListRecyclerAdapter) recyclerView.getAdapter()).getProductInfoArrayList();
 		outState.putParcelableArrayList(PIAL, pial);
 	}
-
-	/**
-	 * Temporary callback for button clicks in the Product List.
-	 * TBD: delete when no longer needed.
-	 *
-	 * @param view The button clicked on.
-	 */
-	public void buttonTmp(View view) {
-		switch (view.getId()) {
-			case R.id.button_productinfo:
-				startActivity(new Intent(this, ActivityProductInfo.class));
-				break;
-			case R.id.button_productlist:
-				GetProducts.instance.getNextPage(); // TBD: incorrect call?
-				break;
-		}
-	}
 }

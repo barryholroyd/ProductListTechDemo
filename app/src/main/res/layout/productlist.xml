@@ -22,18 +22,4 @@
         android:id="@+id/list"
         >
     </android.support.v7.widget.RecyclerView>
-    <!-- DEL: delete the following button, button_productinfo, when no longer needed. -->
-    <Button
-        style="@style/Button"
-        android:text="See Product Info (mock)"
-        android:id="@+id/button_productinfo"
-        android:onClick="buttonTmp"
-        />
-    <!-- DEL: delete the following button, button_productlist, when no longer needed. -->
-    <Button
-        style="@style/Button"
-        android:text="Scroll Product List"
-        android:id="@+id/button_productlist"
-        android:onClick="buttonTmp"
-        />
 </LinearLayout>

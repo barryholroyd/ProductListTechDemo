@@ -7,7 +7,7 @@ WebView doesn't work well with RecyclerView.
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/blue_deep"
+    android:background="@color/blueDeep"
     android:id="@+id/row"
     >
     <TextView
@@ -21,7 +21,7 @@ WebView doesn't work well with RecyclerView.
         android:layout_width="0dp"
         android:layout_weight="2"
         android:layout_margin="1dp"
-        android:background="@color/blue_light"
+        android:background="@color/blueLight"
         android:layout_height="match_parent">
         <TextView
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@ WebView doesn't work well with RecyclerView.
         android:layout_width="0dp"
         android:layout_weight="5"
         android:layout_margin="1dp"
-        android:background="@color/blue_light"
+        android:background="@color/blueLight"
         android:layout_height="match_parent">
         <TextView
             android:layout_width="match_parent"
