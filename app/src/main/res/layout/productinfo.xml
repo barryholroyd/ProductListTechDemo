@@ -49,20 +49,20 @@
             android:id="@+id/in_stock"
             />
     </LinearLayout>
-    <!-- TBD: delete tmp image source and the drawable itself. -->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/product_image"
-        android:src="@drawable/image5"
-        >
-    </ImageView>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:background="@color/blueLight"
         android:id="@+id/product_description"
+        />
+    <!-- TBD: delete tmp image source and the drawable itself. -->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/product_image"
+        android:src="@drawable/image5"
         />
     <Button
         style="@style/Button"

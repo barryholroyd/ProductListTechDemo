@@ -39,7 +39,7 @@ public class ActivityProductInfo extends AppCompatActivity
 		tvRating.setText(Double.toString(pi.reviewRating));
 		tvReviewCount.setText(Integer.toString(pi.reviewCount));
 		tvInStock.setText(Boolean.toString(pi.inStock));
-		tvProductImage.setImageURI(Uri.parse(pi.imageUrl));
+//		TBD: tvProductImage.setImageURI(Uri.parse(pi.imageUrl));
 		tvProductDescription.setText(pi.longDescription);
 	}
 
