@@ -1,17 +1,19 @@
 package com.barryholroyd.walmartproducts;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 /*
  * TODO: Display image in listing page.
  * TODO: Size images.
  * TODO: Code unit tests.
  * TODO: GUI unit tests.
+ *
+ * TBD: no image for header
+ * TBD: ALL PRODUCTS button color above button is wrong.
+ *
  */
 
 /**

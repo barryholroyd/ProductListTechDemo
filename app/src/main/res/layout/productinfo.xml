@@ -49,21 +49,34 @@
             android:id="@+id/in_stock"
             />
     </LinearLayout>
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="@color/blueLight"
-        android:id="@+id/product_description"
-        />
-    <!-- TBD: delete tmp image source and the drawable itself. -->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/product_image"
-        android:src="@drawable/image5"
-        />
+        android:layout_height="wrap_content">
+        <!-- TBD: delete tmp image source and the drawable itself. -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@color/blueLight"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:id="@+id/product_image"
+                android:src="@drawable/image5"
+                />
+        </FrameLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="8"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@color/blueLight"
+            android:id="@+id/product_description"
+            />
+    </LinearLayout>
     <Button
         style="@style/Button"
         android:text="All Products"
