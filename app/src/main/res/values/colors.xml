@@ -6,4 +6,5 @@
     <color name="blue">#2196F3</color>		<!-- Material Design -->
     <color name="blue_light">#c5e9ec</color>
     <color name="blue_deep">#FF000066</color>
+    <color name="green_light">#FF8BC34A</color>
 </resources>

@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 /**
  * Recycler adapter to display the list of products.
  *
@@ -34,6 +36,11 @@ public class ProductListRecyclerAdapter
 	 * This is filled in, in batches, from JSON pulled from the cloud.
 	 */
 	private ProductInfoArrayList pial = new ProductInfoArrayList();
+
+	/**
+	 * Mapping table of ProductId to ProductInfo, for quick lookup.
+	 */
+	private HashMap<String,ProductInfo> pihm = new HashMap<>();
 
 	/**
 	 * Getter for the backing array list. Needed for bundling/unbundling across
@@ -112,6 +119,9 @@ public class ProductListRecyclerAdapter
 	 */
 	void updateData(ProductInfoArrayList pialNew) {
 		pial.addAll(pialNew);
+		for (ProductInfo pi : pialNew) {
+			pihm.put(pi.id, pi);
+		}
 		notifyDataSetChanged();
 	}
 
@@ -199,13 +209,16 @@ public class ProductListRecyclerAdapter
 			 */
 			@Override
 			public void onClick(View v) {
+				// Create parcel of the current ProductInfo and pass that to the activity.
 				TextView tvId = (TextView) v.findViewById(R.id.id);
 				String productId = (String) tvId.getText();
+
 				Activity a = Support.getActivity();
 				Intent intent = new Intent(a, ActivityProductInfo.class);
-				intent.putExtra(Support.getKeyProductId(), productId);
+				intent.putExtra(Support.getKeyProductInfo(), pihm.get(productId));
 				a.startActivity(intent);
 			}
+
 		}
 	}
 }

@@ -14,9 +14,9 @@ import android.widget.Toast;
 public class Support
 {
 	/**
-	 * "Intent extra" key: identifies product when starting ActivityProductInfo activity.
+	 * "Intent extra" key: identifies product info data when starting ActivityProductInfo activity.
 	 */
-	static private String KEY_PRODUCTID = null;
+	static private String KEY_PRODUCTINFO = "PRODUCT_INFO";
 
 	/**
 	 * This is a handle to the current activity. It must be set in a constructor
@@ -30,10 +30,10 @@ public class Support
 
 	Support(Activity _a) {
 		a = _a;
-		KEY_PRODUCTID = a.getPackageName() + "KEY_PRODUCTID";
+		KEY_PRODUCTINFO = a.getPackageName() + "KEY_PRODUCTINFO";
 	}
 
-	static public String getKeyProductId() { return KEY_PRODUCTID; }
+	static public String getKeyProductInfo() { return KEY_PRODUCTINFO; }
 	static Activity getActivity() {
 		if (a == null)
 			throw new IllegalStateException("getActivity() called before activity initialized.");
