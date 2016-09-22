@@ -1,5 +1,6 @@
 package com.barryholroyd.walmartproducts;
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -47,6 +48,14 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 
 	/** True when the adapter is loading more data into the backing array from the cloud. */
 	private boolean loading = true;
+
+	/** Context for GetProducts method calls. */
+	Context c;
+
+	ProductListOnScrollListener(Context _c) {
+		super();
+		c = _c;
+	}
 
 	/**
 	 * Called multiple times when a user is scrolling the RecyclerView. Since this will be
@@ -107,7 +116,7 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		 */
 		if (!loading && (lastVisibleRow + TRIGGER_DISTANCE > totalLoadedRows)) {
 			loading = true;
-			GetProducts.instance.getNextPage();
+			GetProducts.instance.getNextPage(c);
 		}
 	}
 }

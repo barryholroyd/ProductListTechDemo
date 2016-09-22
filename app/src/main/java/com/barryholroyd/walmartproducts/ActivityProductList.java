@@ -64,13 +64,10 @@ public class ActivityProductList extends AppCompatActivity
 
 		setContentView(R.layout.productlist);
 
-		Support.instance.init(this);
-		Support.instance.toaster("Firing up app...");
-
 		initRecyclerView();
 		if (savedInstanceState == null) {
 			// Display the product list for the first time.
-			GetProducts.instance.getNextPage();
+			GetProducts.instance.getNextPage(this);
 		}
 		else {
 			// Display the product list on device reconfiguration.
@@ -142,8 +139,8 @@ public class ActivityProductList extends AppCompatActivity
 	private void initRecyclerView() {
 		recyclerView = (RecyclerView) findViewById(R.id.list);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		recyclerView.setAdapter(new ProductListRecyclerAdapter());
-		recyclerView.addOnScrollListener(new ProductListOnScrollListener());
+		recyclerView.setAdapter(new ProductListRecyclerAdapter(this));
+		recyclerView.addOnScrollListener(new ProductListOnScrollListener(this));
 	}
 
 	/**

@@ -19,10 +19,8 @@ public class ActivityProductInfo extends AppCompatActivity
 		// DEL: new Support(this);
 		setContentView(R.layout.productinfo);
 
-		Support.instance.printCounter();
-
 		Intent intent = getIntent();
-		ProductInfo productInfo = intent.getParcelableExtra(Support.instance.getKeyProductInfo());
+		ProductInfo productInfo = intent.getParcelableExtra(Support.getKeyProductInfo(this));
 
 		setFields(productInfo);
 	}

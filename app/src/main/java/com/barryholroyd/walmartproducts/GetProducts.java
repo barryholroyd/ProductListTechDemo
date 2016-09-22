@@ -1,6 +1,5 @@
 package com.barryholroyd.walmartproducts;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -93,7 +92,7 @@ public class GetProducts
      *     NTH: Ideally, we should provide a method for checking to see if the total
      *     number of available products has changed.
 	 */
-	public synchronized void getNextPage() {
+	public synchronized void getNextPage(Context c) {
         // If all products have already been downloaded, just return without doing anything.
         if ((maxProducts != 0) && (totalDownloaded == maxProducts)) {
             return;
@@ -108,7 +107,7 @@ public class GetProducts
 		if ((maxProducts != 0) && (pageNumber * PAGE_SIZE > maxProducts)) {
 			pageSize = maxProducts - ((pageNumber-1) * PAGE_SIZE);
 		}
-		getProducts(pageNumber++, pageSize);
+		getProducts(c, pageNumber++, pageSize);
 	}
 
 	/**
@@ -118,30 +117,36 @@ public class GetProducts
 	 *      (given that the ViewHolder could have an old URL in it? (Probably
 	 *      use the url in the surrounding closure when the runnable is issued (???).
 	 *
-	 * @param batch The batch to be downloaded.
-	 * @param count the number of items in the batch to be downloaded.
-	 */
-	private void getProducts(int batch, int count) {
+     * @param c
+     * @param batch The batch to be downloaded.
+     * @param count the number of items in the batch to be downloaded.
+     */
+	private void getProducts(Context c, int batch, int count) {
 		String urlString = String.format(
 			"%s%s/%d/%d", API_PREFIX, API_KEY, batch, count);
-		if (!checkNetworkConnectivity()) {
-            Support.instance.loge("No network connection.");
+		if (!checkNetworkConnectivity(c)) {
+            Support.loge("No network connection.");
 		}
 		else {
-			new DownloadJsonTask().execute(urlString);
+			new DownloadJsonTask(c).execute(urlString);
 		}
 	}
 
-	private boolean checkNetworkConnectivity() {
-		Activity a = Support.instance.getActivity();
+	private boolean checkNetworkConnectivity(Context c) {
 		ConnectivityManager cm = (ConnectivityManager)
-			a.getSystemService(Context.CONNECTIVITY_SERVICE);
+			c.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 		return networkInfo != null && networkInfo.isConnected();
 	}
 
 	private class DownloadJsonTask extends AsyncTask<String, Void, ProductInfoArrayList>
 	{
+        Context ctx;
+
+        DownloadJsonTask(Context _ctx) {
+            super();
+            ctx = _ctx;
+        }
 		@Override
 		protected ProductInfoArrayList doInBackground(String urls[]) {
 			InputStream is = getInputStream(urls[0]);
@@ -197,16 +202,15 @@ public class GetProducts
 				return c.getInputStream();
 			}
 			catch (MalformedURLException e) {
-                Support.instance.loge(String.format("Malformed url: %s", urlString));
+                Support.loge(String.format("Malformed url: %s", urlString));
 				return null;
 			}
 			catch (IOException e) {
 				Log.e("getListOfProducts", "IO Exception", e);
-                Support.instance.toaster(String.format("IO Exception: %s", e.getMessage()));
+                (new Toaster(ctx)).display(String.format("IO Exception: %s", e.getMessage()));
 				return null;
 			}
 		}
-
 	}
 
 	private class WmpJsonReader
@@ -236,11 +240,11 @@ public class GetProducts
 				return readProductsInfo(jr);
 			}
 			catch (UnsupportedEncodingException e) {
-                Support.instance.loge("Error: problem parsing network data - unsupported coding exception.");
+                Support.loge("Error: problem parsing network data - unsupported coding exception.");
 				return null;
 			}
 			catch (IOException e) {
-                Support.instance.loge("Error: problem parsing network data - io exception.");
+                Support.loge("Error: problem parsing network data - io exception.");
 				return null;
 			}
 		}
@@ -318,11 +322,11 @@ public class GetProducts
 				switch (name) {
 					case "productId":		 pi.id	= reader.nextString();					break;
 					case "productName":		 pi.name	=
-                            Support.instance.htmlToText(reader.nextString());	break;
+                            Support.htmlToText(reader.nextString());	break;
 					case "shortDescription": pi.shortDescription	=
-                            Support.instance.htmlToText(reader.nextString());	break;
+                            Support.htmlToText(reader.nextString());	break;
 					case "longDescription":	 pi.longDescription	=
-                            Support.instance.htmlToText(reader.nextString());	break;
+                            Support.htmlToText(reader.nextString());	break;
 					case "price":			 pi.price	= reader.nextString();				break;
 					case "productImage":	 pi.imageUrl	= reader.nextString();			break;
 					case "reviewRating":	 pi.reviewRating	= reader.nextDouble();		break;
@@ -337,7 +341,7 @@ public class GetProducts
 		}
 
 		private void badToken(JsonReader reader) throws IOException {
-            Support.instance.loge("Error: bad token in JSON stream.");
+            Support.loge("Error: bad token in JSON stream.");
 			reader.skipValue();
 		}
 	}

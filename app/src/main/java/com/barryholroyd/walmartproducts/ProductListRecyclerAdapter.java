@@ -1,6 +1,7 @@
 package com.barryholroyd.walmartproducts;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,11 @@ import java.util.HashMap;
 public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
+	Context ctx;
+
+	ProductListRecyclerAdapter(Context _ctx) {
+		ctx = _ctx;
+	}
 	/**
 	 * Enum to communicate the type of the row that a given ViewHolder is initialized
 	 * for. The View itself is the same for both the header and each item; however,
@@ -225,12 +231,10 @@ public class ProductListRecyclerAdapter
 				TextView tvId = (TextView) v.findViewById(R.id.id);
 				String productId = (String) tvId.getText();
 
-				Activity a = Support.instance.getActivity();
-				Intent intent = new Intent(a, ActivityProductInfo.class);
-				intent.putExtra(Support.instance.getKeyProductInfo(), pihm.get(productId));
-				a.startActivity(intent);
+				Intent intent = new Intent(ctx, ActivityProductInfo.class);
+				intent.putExtra(Support.getKeyProductInfo(ctx), pihm.get(productId));
+				ctx.startActivity(intent);
 			}
-
 		}
 	}
 }
