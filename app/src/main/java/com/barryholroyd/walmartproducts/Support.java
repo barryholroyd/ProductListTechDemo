@@ -25,6 +25,8 @@ public class Support
 	 * <p>
 	 * This would cause a memory leak after each device configuration change,
 	 * except that it is re-initialized by each activity upon start up.
+	 *
+	 * NTH: Change this approach. It apparently breaks Instant Run.
 	 */
 	static private Activity a = null;
 
@@ -33,7 +35,7 @@ public class Support
 		KEY_PRODUCTINFO = a.getPackageName() + "KEY_PRODUCTINFO";
 	}
 
-	static public String getKeyProductInfo() { return KEY_PRODUCTINFO; }
+	static String getKeyProductInfo() { return KEY_PRODUCTINFO; }
 	static Activity getActivity() {
 		if (a == null)
 			throw new IllegalStateException("getActivity() called before activity initialized.");
@@ -45,7 +47,7 @@ public class Support
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static public void loge(String msg) {
+	static void loge(String msg) {
 		Log.e(ActivityProductList.LOGTAG, msg);
 
 		// Main/GUI thread id is 1.
@@ -57,7 +59,7 @@ public class Support
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static public void logd(String msg) {
+	static void logd(String msg) {
 		Log.d(ActivityProductList.LOGTAG, msg);
 	}
 
@@ -70,8 +72,7 @@ public class Support
 	 * @return      output text (without HTML tags).
 	 */
 	@SuppressWarnings("deprecation")
-	public static String htmlToText(String in) {
-        // NTH: remove/translate non-ASCII characters.
+	static String htmlToText(String in) {
 		if (in == null)
 			return "";
 
@@ -93,7 +94,17 @@ public class Support
      * @param s text which potentially contains non-ASCII characters.
      * @return  the same text, but with all non-ASCII characters sequences replaced with a space.
      */
-    private static String cleanUp(String s) {
+    static private String cleanUp(String s) {
         return s.replaceAll("[\\u0080-\\uffff]+", " ");
     }
+
+	/**
+	 * Display a pop-up message to the user.
+	 */
+	static public void toaster(String msg) {
+		Toast toast = new Toast(getActivity());
+		toast.setText(msg);
+		toast.setDuration(Toast.LENGTH_LONG);
+		toast.show();
+	}
 }

@@ -202,6 +202,7 @@ public class GetProducts
 			}
 			catch (IOException e) {
 				Log.e("getListOfProducts", "IO Exception", e);
+				Support.toaster(String.format("IO Exception: %s", e.getMessage()));
 				return null;
 			}
 		}

@@ -8,6 +8,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -184,7 +186,10 @@ public class ProductListRecyclerAdapter
 		 */
 		private void formatHeaderField(TextView tv, String label) {
 			tv.setText(label);
-			tv.setGravity(Gravity.CENTER); // TBD: must set layout_gravity.
+			FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) tv.getLayoutParams();
+			lp.gravity = Gravity.CENTER;
+			tv.setLayoutParams(lp);
+//			DEL: tv.setGravity(Gravity.CENTER); // TBD: must set layout_gravity.
 			tv.setTextSize(30);
 			tv.setTypeface(Typeface.create((String) null, Typeface.BOLD));
 		}
