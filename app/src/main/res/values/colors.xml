@@ -6,5 +6,5 @@
     <color name="blue">#2196F3</color>		<!-- Material Design -->
     <color name="blueLight">#c5e9ec</color>
     <color name="blueDeep">#FF000066</color>
-    <!--DEL: <color name="green_light">#FF8BC34A</color>-->
+    <!-- DEL: <color name="green_light">#FF8BC34A</color> -->
 </resources>

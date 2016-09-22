@@ -43,7 +43,8 @@ height increase (and so needs to be wrap_content) but the other must then be mat
         android:layout_weight="2"
         android:layout_margin="1dp"
         android:background="@color/blueLight"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

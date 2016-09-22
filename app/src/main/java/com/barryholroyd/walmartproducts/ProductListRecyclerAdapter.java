@@ -192,12 +192,17 @@ public class ProductListRecyclerAdapter
 		 */
 		private void formatHeaderField(TextView tv, String label) {
 			tv.setText(label);
+
+            // Center the text view i the frame layout.
 			FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) tv.getLayoutParams();
 			lp.gravity = Gravity.CENTER;
 			tv.setLayoutParams(lp);
-//			DEL: tv.setGravity(Gravity.CENTER); // TBD: must set layout_gravity.
+
+            // Center the text within the text view.
+            tv.setGravity(Gravity.CENTER);
+
 			tv.setTextSize(30);
-			tv.setTypeface(Typeface.create((String) null, Typeface.BOLD));
+			tv.setTypeface(Typeface.create((String) null, Typeface.BOLD_ITALIC));
 		}
 
 		/**
