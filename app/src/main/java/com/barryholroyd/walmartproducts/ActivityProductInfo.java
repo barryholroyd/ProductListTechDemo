@@ -16,11 +16,13 @@ public class ActivityProductInfo extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		new Support(this);
+		// DEL: new Support(this);
 		setContentView(R.layout.productinfo);
 
+		Support.instance.printCounter();
+
 		Intent intent = getIntent();
-		ProductInfo productInfo = intent.getParcelableExtra(Support.getKeyProductInfo());
+		ProductInfo productInfo = intent.getParcelableExtra(Support.instance.getKeyProductInfo());
 
 		setFields(productInfo);
 	}

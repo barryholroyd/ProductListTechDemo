@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.os.Build;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.Toast;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * Common support for both activities.
@@ -13,10 +16,22 @@ import android.widget.Toast;
  */
 public class Support
 {
+    /**
+     * DEL: ?
+     * Singleton.
+     * <p>
+     *     A singleton is implemented so that the current
+     * </p>
+     */
+	static final Support instance = new Support();
 	/**
 	 * "Intent extra" key: identifies product info data when starting ActivityProductInfo activity.
 	 */
 	static private String KEY_PRODUCTINFO = "PRODUCT_INFO";
+
+    static private final int TOASTER_Y_OFFSET_INCR = 50;
+    static private final int TOASTER_Y_OFFSET_MAX  = TOASTER_Y_OFFSET_INCR * 5;
+    private int toasterYoffset = 0;
 
 	/**
 	 * This is a handle to the current activity. It must be set in a constructor
@@ -28,15 +43,28 @@ public class Support
 	 *
 	 * NTH: Change this approach. It apparently breaks Instant Run.
 	 */
-	static private Activity a = null;
+	private Activity a = null;
+    private int counter = 0;
 
-	Support(Activity _a) {
-		a = _a;
+    private Support() {
+        Log.d(ActivityProductList.LOGTAG, "*** Support()");
+        counter++;
+    }
+
+    void printCounter() {
+        Log.d(ActivityProductList.LOGTAG,
+                String.format("*** Support.printCounter(): counter=%d\n", counter));
+    }
+
+    void init(Activity _a) {
+        Log.d(ActivityProductList.LOGTAG,
+                String.format("*** Support.init(): counter=%d\n", counter));
+        a = _a;
 		KEY_PRODUCTINFO = a.getPackageName() + "KEY_PRODUCTINFO";
 	}
 
-	static String getKeyProductInfo() { return KEY_PRODUCTINFO; }
-	static Activity getActivity() {
+	String getKeyProductInfo() { return KEY_PRODUCTINFO; }
+	Activity getActivity() {
 		if (a == null)
 			throw new IllegalStateException("getActivity() called before activity initialized.");
 		return a;
@@ -47,19 +75,19 @@ public class Support
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static void loge(String msg) {
+	void loge(String msg) {
 		Log.e(ActivityProductList.LOGTAG, msg);
 
 		// Main/GUI thread id is 1.
 		if (Thread.currentThread().getId() == 1)
-			Toast.makeText(a, msg, Toast.LENGTH_LONG).show();
+			Toast.makeText(a, msg, LENGTH_LONG).show();
 	}
 	/**
 	 * Logs a debug message.
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static void logd(String msg) {
+	void logd(String msg) {
 		Log.d(ActivityProductList.LOGTAG, msg);
 	}
 
@@ -72,7 +100,7 @@ public class Support
 	 * @return      output text (without HTML tags).
 	 */
 	@SuppressWarnings("deprecation")
-	static String htmlToText(String in) {
+	String htmlToText(String in) {
 		if (in == null)
 			return "";
 
@@ -94,17 +122,18 @@ public class Support
      * @param s text which potentially contains non-ASCII characters.
      * @return  the same text, but with all non-ASCII characters sequences replaced with a space.
      */
-    static private String cleanUp(String s) {
+    private String cleanUp(String s) {
         return s.replaceAll("[\\u0080-\\uffff]+", " ");
     }
 
 	/**
 	 * Display a pop-up message to the user.
 	 */
-	static public void toaster(String msg) {
-		Toast toast = new Toast(getActivity());
-		toast.setText(msg);
-		toast.setDuration(Toast.LENGTH_LONG);
-		toast.show();
+	public void toaster(String msg) {
+        toasterYoffset = (toasterYoffset > TOASTER_Y_OFFSET_MAX)
+                ? 0 : toasterYoffset + TOASTER_Y_OFFSET_INCR;
+        Toast toast = Toast.makeText(getActivity(), msg, LENGTH_LONG);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, toasterYoffset);
+        toast.show();
 	}
 }

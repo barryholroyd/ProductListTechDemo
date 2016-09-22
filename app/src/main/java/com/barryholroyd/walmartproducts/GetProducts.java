@@ -125,7 +125,7 @@ public class GetProducts
 		String urlString = String.format(
 			"%s%s/%d/%d", API_PREFIX, API_KEY, batch, count);
 		if (!checkNetworkConnectivity()) {
-			Support.loge("No network connection.");
+            Support.instance.loge("No network connection.");
 		}
 		else {
 			new DownloadJsonTask().execute(urlString);
@@ -133,7 +133,7 @@ public class GetProducts
 	}
 
 	private boolean checkNetworkConnectivity() {
-		Activity a = Support.getActivity();
+		Activity a = Support.instance.getActivity();
 		ConnectivityManager cm = (ConnectivityManager)
 			a.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -197,12 +197,12 @@ public class GetProducts
 				return c.getInputStream();
 			}
 			catch (MalformedURLException e) {
-				Support.loge(String.format("Malformed url: %s", urlString));
+                Support.instance.loge(String.format("Malformed url: %s", urlString));
 				return null;
 			}
 			catch (IOException e) {
 				Log.e("getListOfProducts", "IO Exception", e);
-				Support.toaster(String.format("IO Exception: %s", e.getMessage()));
+                Support.instance.toaster(String.format("IO Exception: %s", e.getMessage()));
 				return null;
 			}
 		}
@@ -236,11 +236,11 @@ public class GetProducts
 				return readProductsInfo(jr);
 			}
 			catch (UnsupportedEncodingException e) {
-				Support.loge("Error: problem parsing network data - unsupported coding exception.");
+                Support.instance.loge("Error: problem parsing network data - unsupported coding exception.");
 				return null;
 			}
 			catch (IOException e) {
-				Support.loge("Error: problem parsing network data - io exception.");
+                Support.instance.loge("Error: problem parsing network data - io exception.");
 				return null;
 			}
 		}
@@ -318,11 +318,11 @@ public class GetProducts
 				switch (name) {
 					case "productId":		 pi.id	= reader.nextString();					break;
 					case "productName":		 pi.name	=
-												Support.htmlToText(reader.nextString());	break;
+                            Support.instance.htmlToText(reader.nextString());	break;
 					case "shortDescription": pi.shortDescription	=
-												Support.htmlToText(reader.nextString());	break;
+                            Support.instance.htmlToText(reader.nextString());	break;
 					case "longDescription":	 pi.longDescription	=
-												Support.htmlToText(reader.nextString());	break;
+                            Support.instance.htmlToText(reader.nextString());	break;
 					case "price":			 pi.price	= reader.nextString();				break;
 					case "productImage":	 pi.imageUrl	= reader.nextString();			break;
 					case "reviewRating":	 pi.reviewRating	= reader.nextDouble();		break;
@@ -337,7 +337,7 @@ public class GetProducts
 		}
 
 		private void badToken(JsonReader reader) throws IOException {
-			Support.loge("Error: bad token in JSON stream.");
+            Support.instance.loge("Error: bad token in JSON stream.");
 			reader.skipValue();
 		}
 	}

@@ -225,9 +225,9 @@ public class ProductListRecyclerAdapter
 				TextView tvId = (TextView) v.findViewById(R.id.id);
 				String productId = (String) tvId.getText();
 
-				Activity a = Support.getActivity();
+				Activity a = Support.instance.getActivity();
 				Intent intent = new Intent(a, ActivityProductInfo.class);
-				intent.putExtra(Support.getKeyProductInfo(), pihm.get(productId));
+				intent.putExtra(Support.instance.getKeyProductInfo(), pihm.get(productId));
 				a.startActivity(intent);
 			}
 

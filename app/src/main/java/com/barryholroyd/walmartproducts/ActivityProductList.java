@@ -6,14 +6,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /*
+ * TODO: Make Support a singleton?
  * TODO: ProductInfo page: move the image into the Price row.
  * TODO: Product Info page: use PiTextStyle for all TextViews.
- * BUG: Name and Description are not veritcally centered (t
+ * BUG: Name and Description are not vertically centered.
  * TODO: Display image in listing page.
  * TODO: Code unit tests.
  * TODO: GUI unit tests.
  * TBD: no image for header
- * TBD: ALL PRODUCTS button doesn't show if there is a long description (product info page, landscape mode).
+ * BUG: Back button (push into background onto Overview screen), bring foreground: crashes with:
+ * Total downloaded count corrupted (totalDownloaded=75 itemCount=25.
+ * TBD: ALL PRODUCTS button doesn't show if there is a long description
+ * (product info page, landscape mode).
  *
  * "NTH" means "Nice to have"
  * NTH: Product Info screen's table should have the same border coloring as the Product List screen.
@@ -57,8 +61,12 @@ public class ActivityProductList extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		new Support(this);
+
 		setContentView(R.layout.productlist);
+
+		Support.instance.init(this);
+		Support.instance.toaster("Firing up app...");
+
 		initRecyclerView();
 		if (savedInstanceState == null) {
 			// Display the product list for the first time.
