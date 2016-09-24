@@ -149,7 +149,8 @@ public class GetProducts
         }
 		@Override
 		protected ProductInfoArrayList doInBackground(String urls[]) {
-			InputStream is = getInputStream(urls[0]);
+            // Download the JSON string from the network.
+            InputStream is = NetworkSupport.getInputStreamFromUrl(ctx, urls[0]);
 			WmpJsonReader jr = new WmpJsonReader(is);
 			return jr.parse();
 		}
@@ -181,35 +182,6 @@ public class GetProducts
 						totalDownloaded, itemCount);
                 throw new IllegalStateException(msg);
             }
-		}
-
-		/**
-		 * Download the JSON string from the network.
-		 *
-		 * @param urlString the URL (in String form) to get the JSON product info. from.
-		 * @return the input stream created to read data from the specified URL.
-		 */
-		private InputStream getInputStream(String urlString) {
-			try {
-				URL url = new URL(urlString);
-				HttpURLConnection c = (HttpURLConnection) url.openConnection();
-				c.setReadTimeout(10000); // ms
-				c.setConnectTimeout(15000); // ms
-				c.setRequestMethod("GET");
-				c.setDoInput(true);
-				c.connect();
-				c.getResponseCode();// NTH: check response code
-				return c.getInputStream();
-			}
-			catch (MalformedURLException e) {
-                Support.loge(String.format("Malformed url: %s", urlString));
-				return null;
-			}
-			catch (IOException e) {
-				Log.e("getListOfProducts", "IO Exception", e);
-                (new Toaster(ctx)).display(String.format("IO Exception: %s", e.getMessage()));
-				return null;
-			}
 		}
 	}
 

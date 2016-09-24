@@ -35,8 +35,8 @@ height increase (and so needs to be wrap_content) but the other must then be mat
             android:maxHeight="50dp"
             android:maxWidth="50dp"
             android:id="@+id/pd_product_image"
-            android:src="@drawable/image5"
             />
+            <!-- DEL: android:src="@drawable/image5" -->
     </FrameLayout>
     <FrameLayout
         android:layout_width="0dp"

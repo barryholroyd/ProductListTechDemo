@@ -1,6 +1,5 @@
 package com.barryholroyd.walmartproducts;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -10,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -140,16 +139,19 @@ public class ProductListRecyclerAdapter
 	protected class ProductListViewHolder extends RecyclerView.ViewHolder
 	{
 		/**
-		 * The "id" field contains the identifier for the product. It is provided
+		 * The "tvId" field contains the identifier for the product. It is provided
 		 * within the is hidden ("gone") in the text view.
 		 */
-		private final TextView id;
+		private final TextView tvId;
 
-		/** The product name. */
-		private final TextView name;
+		/** The product tvName. */
+		private final TextView tvName;
 
 		/** A short description of the product. */
-		private final TextView  shortDescription;
+		private final TextView tvShortDescription;
+
+        /** Product image view. */
+        private final ImageView ivProductImage;
 
 		/**
 		 * A single instance of OnClickListener that can be used for all rows
@@ -171,9 +173,10 @@ public class ProductListRecyclerAdapter
 		 */
 		ProductListViewHolder(View itemView, ViewType viewType) {
 			super(itemView);
-			id = (TextView) itemView.findViewById(R.id.id);
-			name = (TextView) itemView.findViewById(R.id.name);
-			shortDescription = (TextView) itemView.findViewById(R.id.short_description);
+			tvId = (TextView) itemView.findViewById(R.id.id);
+			tvName = (TextView) itemView.findViewById(R.id.name);
+			tvShortDescription = (TextView) itemView.findViewById(R.id.short_description);
+            ivProductImage = (ImageView) itemView.findViewById(R.id.pd_product_image);
 			if (viewType == ViewType.ITEM) {
 				itemView.setOnClickListener(onClickListenerRow);
 			}
@@ -183,8 +186,8 @@ public class ProductListRecyclerAdapter
 		 * Binds column names to the header row.
 		 */
 		protected void bindHeader() {
-			formatHeaderField(name, "Name");
-			formatHeaderField(shortDescription, "Description");
+			formatHeaderField(tvName, "Name");
+			formatHeaderField(tvShortDescription, "Description");
 		}
 
 		/**
@@ -214,12 +217,13 @@ public class ProductListRecyclerAdapter
 		 *                 read in as JSON from the cloud.
 		 */
 		protected void bindData(ProductInfo pi) {
-			id.setText(pi.id);
-			name.setText(pi.name);
-			shortDescription.setText(pi.shortDescription);
+			tvId.setText(pi.id);
+			tvName.setText(pi.name);
+			tvShortDescription.setText(pi.shortDescription);
+            ImageLoader.load(ctx, ivProductImage, pi.imageUrl);
 		}
 
-		/**
+       	/**
 		 * Handle clicks on rows within the product list.
 		 */
 		private class OnClickListenerRow implements View.OnClickListener
