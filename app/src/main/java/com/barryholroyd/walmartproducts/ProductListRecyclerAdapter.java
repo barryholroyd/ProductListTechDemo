@@ -220,7 +220,7 @@ public class ProductListRecyclerAdapter
 			tvId.setText(pi.id);
 			tvName.setText(pi.name);
 			tvShortDescription.setText(pi.shortDescription);
-            ImageLoader.load(ctx, ivProductImage, pi.imageUrl);
+//          TBD: HERE: ImageLoader.load(ctx, ivProductImage, pi.imageUrl);
 		}
 
        	/**
