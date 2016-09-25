@@ -14,7 +14,7 @@ import java.io.InputStream;
 
 public class ImageLoaderAsyncTask
 {
-    static void load(Context ctx, final ImageView iv, final String imageUrlStr) {
+    void load(Context ctx, final ImageView iv, final String imageUrlStr) {
         AsyncTaskNetworkLoader atnl = new AsyncTaskNetworkLoader(ctx, iv);
         atnl.execute(imageUrlStr);
     }

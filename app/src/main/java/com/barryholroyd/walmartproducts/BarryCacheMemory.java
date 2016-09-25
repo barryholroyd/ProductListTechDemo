@@ -94,6 +94,10 @@ public class BarryCacheMemory<K,V>
             throw new IllegalStateException("BarryCacheMemory: null key.");
         }
 
+        if (maxCacheSize == 0) {
+            throw new IllegalStateException("Cache size not initialized.");
+        }
+
 	    // Don't allow overwriting a key's value.
         if (get(key) != null) {
             System.out.format("Already added this key... returning\n");

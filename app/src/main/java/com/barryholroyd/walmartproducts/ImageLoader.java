@@ -1,11 +1,7 @@
 package com.barryholroyd.walmartproducts;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.widget.ImageView;
-import java.io.InputStream;
 
 /**
  * Load an image into an ImageView.
@@ -29,20 +25,36 @@ import java.io.InputStream;
  * </ul>
  */
 public class ImageLoader {
+    /** Singleton, so that lazy initialization of fields (such as cacheMemory) can occur. */
+    static private ImageLoader imageLoader;
     /**
      * If true, use threads to handled background loading; otherwise, use AsyncTask.
      */
     private static final boolean USE_THREADS = true;
 
-    static void load(Context ctx, final ImageView iv, final String url) {
-        Bitmap bitmap =  ImageCacheMemory.get(iv, url);
+    /** In-memory caching instance. */
+    private ImageCacheMemory cacheMemory;
+
+    private ImageLoader() {}
+
+    synchronized void instance() {
+        if (imageLoader == null) {
+            imageLoader = new ImageLoader();
+            cacheMemory = new ImageCacheMemory();
+            cacheMemory.setCacheSizePercentMaxMemory(10);
+        }
+    }
+
+    void load(final ImageView iv, final String url) {
+        Bitmap bitmap =  cacheMemory.get(url);
         if (bitmap != null) {
             iv.setImageBitmap(bitmap);
         }
-        else {
-            if (USE_THREADS)    ImageLoaderAsyncTask.load(iv, url);
-            else                ImageLoaderThread.load(iv, url);
-        }
+        // TBD: HERE
+//        else {
+//            if (USE_THREADS)    imageLoaderAsyncTask.load(iv, url);
+//            else                ImageLoaderThread.load(iv, url);
+//        }
     }
 
     class ImageCacheMemory extends BarryCacheMemory<String,Bitmap> {

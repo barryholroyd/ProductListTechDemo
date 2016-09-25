@@ -8,6 +8,5 @@ import android.widget.ImageView;
 
 public class ImageLoaderThread {
     void load(ImageView iv, String url) {
-
     }
 }
