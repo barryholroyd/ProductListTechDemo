@@ -9,39 +9,46 @@ import java.io.InputStream;
 
 /**
  * Load an image into an ImageView.
+ * <p>
+ * <ul>
+ *     <li> Attempt to load from memory cache.
+ *     <li> If that fails, load from background.
+ *     <ul>
+ *         <li>Attempt to load from disk cache.
+ *         <li>If that fails, attempt to load from network.
+ *         <li>When network load completes:
+ *         <ul>
+ *             <li>add to memory and disk caches
+ *             <li>check to see if the URL loaded from is the same as the current
+ *                 URL (it may have chanced if the containing ViewHolder got re-allocated).
+ *             <li>If it is the same, then load it into the ImageView (in the main/UI thread).
+ *             <li>If it is different, ignore and do nothing (the new URL will have already
+ *                 been either loaded or queued to be loaded).
+ *         </ul>
+ *     </ul>
+ * </ul>
  */
 public class ImageLoader {
-    static void load(Context ctx, final ImageView iv, final String imageUrlStr) {
-        AsyncTaskNetworkLoader atnl = new AsyncTaskNetworkLoader(ctx, iv);
-        atnl.execute(imageUrlStr);
-    }
-}
+    /**
+     * If true, use threads to handled background loading; otherwise, use AsyncTask.
+     */
+    private static final boolean USE_THREADS = true;
 
-class AsyncTaskNetworkLoader extends AsyncTask<String, Void, Bitmap> {
-    Context ctx;
-    ImageView iv;
-
-    AsyncTaskNetworkLoader(Context _ctx, ImageView _iv) {
-        ctx = _ctx;
-        iv  = _iv;
-    }
-
-    @Override
-    protected Bitmap doInBackground(String ... params) {
-        return getBitmap(ctx, iv, params[0]);
+    static void load(Context ctx, final ImageView iv, final String url) {
+        Bitmap bitmap =  ImageCacheMemory.get(iv, url);
+        if (bitmap != null) {
+            iv.setImageBitmap(bitmap);
+        }
+        else {
+            if (USE_THREADS)    ImageLoaderAsyncTask.load(iv, url);
+            else                ImageLoaderThread.load(iv, url);
+        }
     }
 
-    @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        iv.setImageBitmap(bitmap);
-    }
-
-    static private Bitmap getBitmap(Context ctx, ImageView iv, String urlStr) {
-        return getImageFromNetwork(ctx, urlStr);
-    }
-
-    static private Bitmap getImageFromNetwork(Context ctx, String urlStr) {
-        InputStream is = NetworkSupport.getInputStreamFromUrl(ctx, urlStr);
-        return BitmapFactory.decodeStream(is);
+    class ImageCacheMemory extends BarryCacheMemory<String,Bitmap> {
+        @Override
+        protected int sizeOf(String s, Bitmap bm) {
+            return bm.getByteCount();
+        }
     }
 }
