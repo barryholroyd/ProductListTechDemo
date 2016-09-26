@@ -25,39 +25,44 @@ import android.widget.ImageView;
  * </ul>
  */
 public class ImageLoader {
-    /** Singleton, so that lazy initialization of fields (such as cacheMemory) can occur. */
-    static private ImageLoader imageLoader;
     /**
-     * If true, use threads to handled background loading; otherwise, use AsyncTask.
+     * Singleton.
+     * <p>
+     * There are many ways of implementing singletons. This one is very simple and effective.
+     * It initializes the singleton when the class is loaded. It avoids the double-checked
+     * locking issue.
+     *
+     * @see <a href="http://www.javamex.com/tutorials/double_checked_locking.shtml">
+     *      Double Checked Locking</a>
      */
-    private static final boolean USE_THREADS = true;
+    static final public ImageLoader instance = new ImageLoader();
+
+    /**
+     * If true, use threads to handle background loading; otherwise, use AsyncTask.
+     * I've implemented both approaches for practice.
+     */
+    static private final boolean USE_THREADS = true;
 
     /** In-memory caching instance. */
-    private ImageCacheMemory cacheMemory;
+    static private ImageCacheMemory cacheMemory;
 
-    private ImageLoader() {}
-
-    synchronized void instance() {
-        if (imageLoader == null) {
-            imageLoader = new ImageLoader();
-            cacheMemory = new ImageCacheMemory();
-            cacheMemory.setCacheSizePercentMaxMemory(10);
-        }
-    }
+    private ImageLoader() {
+        cacheMemory = new ImageCacheMemory();
+        cacheMemory.setCacheSizePercentMaxMemory(10);
+    };
 
     void load(final ImageView iv, final String url) {
         Bitmap bitmap =  cacheMemory.get(url);
         if (bitmap != null) {
             iv.setImageBitmap(bitmap);
         }
-        // TBD: HERE
-//        else {
-//            if (USE_THREADS)    imageLoaderAsyncTask.load(iv, url);
-//            else                ImageLoaderThread.load(iv, url);
-//        }
+        else {
+            if (USE_THREADS) ImageLoaderThreads.load(iv, url, cacheMemory);
+            // TBD: else imageLoaderAsyncTask.load(iv, url);
+        }
     }
 
-    class ImageCacheMemory extends BarryCacheMemory<String,Bitmap> {
+    static class ImageCacheMemory extends BarryCacheMemory<String,Bitmap> {
         @Override
         protected int sizeOf(String s, Bitmap bm) {
             return bm.getByteCount();
