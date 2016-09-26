@@ -1,5 +1,6 @@
 package com.barryholroyd.walmartproducts;
 
+import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
@@ -9,6 +10,6 @@ import android.widget.ImageView;
 
 public class ImageLoaderThreads {
     static void load(ImageView iv, String url, ImageCacheMemory cacheMemory) {
-
+        Bitmap bitmap = (Bitmap) BarryCacheDisk.get(url);
     }
 }
