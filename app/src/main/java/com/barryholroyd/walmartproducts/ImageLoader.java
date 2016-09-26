@@ -35,7 +35,7 @@ public class ImageLoader {
      * @see <a href="http://www.javamex.com/tutorials/double_checked_locking.shtml">
      *      Double Checked Locking</a>
      */
-    static final public ImageLoader instance = new ImageLoader();
+//    static final public ImageLoader instance = new ImageLoader();
 
     /**
      * If true, use threads to handle background loading; otherwise, use AsyncTask.
@@ -46,12 +46,13 @@ public class ImageLoader {
     /** In-memory caching instance. */
     static private ImageCacheMemory cacheMemory;
 
-    private ImageLoader() {
+//    private ImageLoader() {
+    static {
         cacheMemory = new ImageCacheMemory();
         cacheMemory.setCacheSizePercentMaxMemory(10);
-    };
+    } // DEL: ;
 
-    void load(final ImageView iv, final String url) {
+    static void load(final ImageView iv, final String url) {
         Bitmap bitmap =  cacheMemory.get(url);
         if (bitmap != null) {
             iv.setImageBitmap(bitmap);
@@ -62,10 +63,4 @@ public class ImageLoader {
         }
     }
 
-    static class ImageCacheMemory extends BarryCacheMemory<String,Bitmap> {
-        @Override
-        protected int sizeOf(String s, Bitmap bm) {
-            return bm.getByteCount();
-        }
-    }
 }

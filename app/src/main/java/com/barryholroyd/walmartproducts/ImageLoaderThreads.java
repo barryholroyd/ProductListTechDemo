@@ -8,6 +8,7 @@ import android.widget.ImageView;
  */
 
 public class ImageLoaderThreads {
-    void load(ImageView iv, String url) {
+    static void load(ImageView iv, String url, ImageCacheMemory cacheMemory) {
+
     }
 }
