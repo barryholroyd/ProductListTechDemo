@@ -1,5 +1,6 @@
 package com.barryholroyd.walmartproducts;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,37 +15,30 @@ import java.io.InputStream;
 
 public class ImageLoaderAsyncTask
 {
-    void load(Context ctx, final ImageView iv, final String imageUrlStr) {
-        AsyncTaskNetworkLoader atnl = new AsyncTaskNetworkLoader(ctx, iv);
+    void load(Activity a, final ImageView iv, final String imageUrlStr) {
+        AsyncTaskNetworkLoader atnl = new AsyncTaskNetworkLoader(a, iv);
         atnl.execute(imageUrlStr);
     }
 }
 
 class AsyncTaskNetworkLoader extends AsyncTask<String, Void, Bitmap> {
-    Context ctx;
+    Activity a;
     ImageView iv;
 
-    AsyncTaskNetworkLoader(Context _ctx, ImageView _iv) {
-        ctx = _ctx;
+    AsyncTaskNetworkLoader(Activity _a, ImageView _iv) {
+        a = _a;
         iv  = _iv;
     }
 
     @Override
     protected Bitmap doInBackground(String ... params) {
-        return getBitmap(ctx, iv, params[0]);
+        return NetworkSupport.getImageFromNetwork(a, params[0]);
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        iv.setImageBitmap(bitmap);
-    }
-
-    static private Bitmap getBitmap(Context ctx, ImageView iv, String urlStr) {
-        return getImageFromNetwork(ctx, urlStr);
-    }
-
-    static private Bitmap getImageFromNetwork(Context ctx, String urlStr) {
-        InputStream is = NetworkSupport.getInputStreamFromUrl(ctx, urlStr);
-        return BitmapFactory.decodeStream(is);
+        if (bitmap != null) {
+            iv.setImageBitmap(bitmap);
+        }
     }
 }

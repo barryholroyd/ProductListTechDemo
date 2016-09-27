@@ -1,21 +1,17 @@
 package com.barryholroyd.walmartproducts;
 
-import android.content.Context;
+import android.app.Activity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.JsonReader;
 import android.util.JsonToken;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Get a list of Walmart products.
@@ -92,7 +88,7 @@ public class GetProducts
      *     NTH: Ideally, we should provide a method for checking to see if the total
      *     number of available products has changed.
 	 */
-	public synchronized void getNextPage(Context c) {
+	public synchronized void getNextPage(Activity a) {
         // If all products have already been downloaded, just return without doing anything.
         if ((maxProducts != 0) && (totalDownloaded == maxProducts)) {
             return;
@@ -107,7 +103,7 @@ public class GetProducts
 		if ((maxProducts != 0) && (pageNumber * PAGE_SIZE > maxProducts)) {
 			pageSize = maxProducts - ((pageNumber-1) * PAGE_SIZE);
 		}
-		getProducts(c, pageNumber++, pageSize);
+		getProducts(a, pageNumber++, pageSize);
 	}
 
 	/**
@@ -117,40 +113,40 @@ public class GetProducts
 	 *      (given that the ViewHolder could have an old URL in it? (Probably
 	 *      use the url in the surrounding closure when the runnable is issued (???).
 	 *
-     * @param c
+     * @param a
      * @param batch The batch to be downloaded.
      * @param count the number of items in the batch to be downloaded.
      */
-	private void getProducts(Context c, int batch, int count) {
+	private void getProducts(Activity a, int batch, int count) {
 		String urlString = String.format(
 			"%s%s/%d/%d", API_PREFIX, API_KEY, batch, count);
-		if (!checkNetworkConnectivity(c)) {
+		if (!checkNetworkConnectivity(a)) {
             Support.loge("No network connection.");
 		}
 		else {
-			new DownloadJsonTask(c).execute(urlString);
+			new DownloadJsonTask(a).execute(urlString);
 		}
 	}
 
-	private boolean checkNetworkConnectivity(Context c) {
+	private boolean checkNetworkConnectivity(Activity a) {
 		ConnectivityManager cm = (ConnectivityManager)
-			c.getSystemService(Context.CONNECTIVITY_SERVICE);
+			a.getSystemService(a.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 		return networkInfo != null && networkInfo.isConnected();
 	}
 
 	private class DownloadJsonTask extends AsyncTask<String, Void, ProductInfoArrayList>
 	{
-        Context ctx;
+        Activity a;
 
-        DownloadJsonTask(Context _ctx) {
+        DownloadJsonTask(Activity _a) {
             super();
-            ctx = _ctx;
+			a = _a;
         }
 		@Override
 		protected ProductInfoArrayList doInBackground(String urls[]) {
             // Download the JSON string from the network.
-            InputStream is = NetworkSupport.getInputStreamFromUrl(ctx, urls[0]);
+            InputStream is = NetworkSupport.getInputStreamFromUrl(a, urls[0]);
 			WmpJsonReader jr = new WmpJsonReader(is);
 			return jr.parse();
 		}

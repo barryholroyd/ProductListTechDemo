@@ -1,9 +1,12 @@
 package com.barryholroyd.walmartproducts;
 
-import android.content.Context;
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 
 import java.io.File;
+import java.util.HashMap;
 
 /**
  * Disk cache implementation.
@@ -30,23 +33,73 @@ class ImageCacheDisk
      */
     static volatile private ImageCacheDisk instance;
 
-    static final File cacheDir;
+    /** Full file name for the cache subdirectory. */
+    final String cacheDirName;
 
-    private Context ctx;
+    /** File handle for the disk cache subdirectory. */
+    final File cacheDir;
 
-    private ImageCacheDisk(Context _ctx) {
-        ctx = _ctx;
+    /**
+     * Constructor.
+     * <p>
+     * We pass in the subdirectory name so that different apps can provide different
+     * cache subdirectories.
+     *
+     * @param a   standard Activity instance.
+     * @param cacheSubdirName  subdirectory name for the cache -- unique to this app/usage.
+     */
+    private ImageCacheDisk(Activity a, String cacheSubdirName) {
+        cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
+        cacheDir = new File(cacheDirName);
+        if (!cacheDir.mkdirs()) {
+            throw new RuntimeException("Could not create disk cache directory.");
+        }
     }
 
-    ImageCacheDisk getInstance(Context ctx) {
+    /**
+     * Standard singleton getInstance() method.
+     * <p>
+     * We avoid the double check lock issue by making the "instance" field "volatile".
+     * @param a   standard Activity instance.
+     * @param cacheDirName  subdirectory name for the cache -- unique to this app/usage.
+     * @return  singleton instance.
+     */
+    static ImageCacheDisk getInstance(Activity a, String cacheDirName) {
         if (instance != null)
             return instance;
 
         synchronized(ImageCacheDisk.class) {
             if (instance != null)
-                instance = new ImageCacheDisk(ctx);
+                instance = new ImageCacheDisk(a, cacheDirName);
         }
         return instance;
+    }
+
+    /**
+     * Get the image from the disk, if it is present on disk.
+     * If not, get it from the network and cache it.
+     *
+     * @param a standard Activity instance.
+     * @param url url for the bitmap.
+     * @return bitmap obtained from the URL.
+     */
+    Bitmap getImage(Activity a, String url) {
+        Entry entry = getEntry(url);
+        String filename = entry.getImageFilenameLong();
+        File f = new File(filename);
+        if (f.exists()) {
+            if (f.isFile()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(filename);
+                if (bitmap == null) {
+                    throw new RuntimeException("Could not obtain bitmap from factory.");
+                }
+                return bitmap;
+            }
+            else {
+                throw new RuntimeException("Bad file: " + f.getName());
+            }
+        }
+        return null;
     }
 
     /**
@@ -54,16 +107,16 @@ class ImageCacheDisk
      * This uses external storage if there is any mounted; otherwise, it uses
      * internal storage.
      *
-     * @param ctx   standard Context instance
-     * @param dirName   name of cache subdirectory
+     * @param a   standard Context instance.
+     * @param cacheSubdirName  subdirectory name for the cache -- unique to this app/usage.
      * @return  File handle for the cache subdirectory
      */
-    static private File getDiskCacheDir(Context ctx, String dirName) {
+    private String getDiskCacheDirName(Activity a, String cacheSubdirName) {
         String cachePath = externalStorageAvailable()
-                ? ctx.getExternalCacheDir().getPath()
-                : ctx.getCacheDir().getPath();
-        Support.logd("Cache Directory: " + cachePath + File.separator + dirName);
-        return new File(cachePath + File.separator + dirName);
+                ? a.getExternalCacheDir().getPath()
+                : a.getCacheDir().getPath();
+        Support.logd("Cache Directory: " + cachePath + File.separator + cacheSubdirName);
+        return cachePath + File.separator + cacheSubdirName;
     }
 
     /**
@@ -74,8 +127,57 @@ class ImageCacheDisk
      *
      * @return true iff external storage is present.
      */
-    static private boolean externalStorageAvailable() {
+    private boolean externalStorageAvailable() {
         return !Environment.isExternalStorageRemovable() ||
                 Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+    }
+
+    /** Happing of URLs to Entrys.
+     */
+    static private HashMap<String,Entry> entryHm = new HashMap<>();
+
+    /**
+     * Get the Entry for the specified URL.
+     * Creat the Entry, if necessasry.
+     *
+     * @param url   url of the image to be loaded.
+     * @return  Entry representing the image to be loaded.
+     */
+    private Entry getEntry(String url) {
+        Entry entry = entryHm.get(url);
+        if (entry != null)
+            return entry;
+
+        entry = new Entry(url);
+        entryHm.put(url, entry);
+        return entry;
+    }
+
+    /**
+     * Counter value provides last part of filename.
+     * Can create a few billion unique filenames.
+     * Must be outside of the Entry definition, since it is static and Entry isn't.
+     */
+    static private int entryCounter = 0;
+    private class Entry
+    {
+        private String url;
+        static final private String FILENAME_BASE = "image";
+        private long id;
+        private String fname;
+
+        Entry(String _url) {
+            url = _url;
+            id  = entryCounter++;
+            fname = String.format("%s-%d", FILENAME_BASE, id);
+        }
+
+        String getImageFilenameShort() {
+            return fname;
+        }
+
+        String getImageFilenameLong() {
+            return cacheDirName + File.separator + fname;
+        }
     }
 }

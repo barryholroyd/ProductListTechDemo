@@ -1,5 +1,6 @@
 package com.barryholroyd.walmartproducts;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -14,15 +15,15 @@ class Toaster {
     static private final int YINC = 50;
     static private final int YMAX  = YINC * 5;
     private int offset = 0;
-    private Context c = null;
+    private Activity a = null;
 
-    Toaster(Context _c) { c = _c; }
+    Toaster(Activity _a) { a = _a; }
 
     private Context getContext() {
-        if (c == null) {
+        if (a == null) {
             throw new IllegalStateException("Toaster not initialized yet.");
         }
-        return c;
+        return a;
     }
 
     /**
@@ -30,8 +31,13 @@ class Toaster {
      */
     void display(String msg) {
         offset = (offset > YMAX) ? 0 : offset + YINC;
-        Toast toast = Toast.makeText(getContext(), msg, LENGTH_LONG);
+        final Toast toast = Toast.makeText(getContext(), msg, LENGTH_LONG);
         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, offset);
-        toast.show();
+
+        a.runOnUiThread(new Runnable() {
+            public void run() {
+                toast.show();
+            }
+        });
     }
 }

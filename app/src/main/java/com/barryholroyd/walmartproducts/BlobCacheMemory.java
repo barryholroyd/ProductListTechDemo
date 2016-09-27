@@ -21,7 +21,7 @@ import java.util.LinkedList;
  * By default, size is specified as the number of entries. However, if sizeOf()
  * is overridden it can be specified as the maxmimum number of bytes.
  */
-public class BarryCacheMemory<K,V>
+public class BlobCacheMemory<K,V>
 {
     /** Internal key/value mapping for cache storage. */
     final HashMap<K,V> bcmHm  = new HashMap<>();
@@ -51,7 +51,7 @@ public class BarryCacheMemory<K,V>
      *
      * @param percentage
      */
-    public void setCacheSizePercentMaxMemory(int percentage) {
+    void setCacheSizePercentMaxMemory(int percentage) {
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         maxCacheSize = (percentage / 100) * maxMemory;
         // DEL: delete when done.
@@ -91,7 +91,7 @@ public class BarryCacheMemory<K,V>
 
         // Disallow null keys.
         if (key == null) {
-            throw new IllegalStateException("BarryCacheMemory: null key.");
+            throw new IllegalStateException("BlobCacheMemory: null key.");
         }
 
         if (maxCacheSize == 0) {
@@ -112,7 +112,7 @@ public class BarryCacheMemory<K,V>
           K lastKey = bcmLl.removeLast();
           if (lastKey == null) {
               throw new IllegalStateException(
-                  "BarryCacheMemory: null key when removing entries.");
+                  "BlobCacheMemory: null key when removing entries.");
           }
           V lastVal = bcmHm.remove(lastKey);
           int lastValSize = sizeOf(lastKey, lastVal);

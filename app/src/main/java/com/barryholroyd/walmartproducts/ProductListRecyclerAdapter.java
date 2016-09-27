@@ -1,5 +1,6 @@
 package com.barryholroyd.walmartproducts;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -22,10 +23,10 @@ import java.util.HashMap;
 public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
-	Context ctx;
+	Activity a;
 
-	ProductListRecyclerAdapter(Context _ctx) {
-		ctx = _ctx;
+	ProductListRecyclerAdapter(Activity _a) {
+		a = _a;
 	}
 	/**
 	 * Enum to communicate the type of the row that a given ViewHolder is initialized
@@ -220,9 +221,13 @@ public class ProductListRecyclerAdapter
 			tvId.setText(pi.id);
 			tvName.setText(pi.name);
 			tvShortDescription.setText(pi.shortDescription);
-//		DEL:	ImageLoader.instance.load(ivProductImage, pi.imageUrl);
-				ImageLoader.load(ivProductImage, pi.imageUrl);
+			ImageLoader.load(a, ivProductImage, pi.imageUrl);
 		}
+
+		// DEL: ?
+//		private void loadImage(Activity a, ImageView iv, String url) {
+//
+//		}
 
        	/**
 		 * Handle clicks on rows within the product list.
@@ -241,9 +246,9 @@ public class ProductListRecyclerAdapter
 				TextView tvId = (TextView) v.findViewById(R.id.id);
 				String productId = (String) tvId.getText();
 
-				Intent intent = new Intent(ctx, ActivityProductInfo.class);
-				intent.putExtra(Support.getKeyProductInfo(ctx), pihm.get(productId));
-				ctx.startActivity(intent);
+				Intent intent = new Intent(a, ActivityProductInfo.class);
+				intent.putExtra(Support.getKeyProductInfo(a), pihm.get(productId));
+				a.startActivity(intent);
 			}
 		}
 	}

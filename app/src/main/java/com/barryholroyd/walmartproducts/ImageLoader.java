@@ -1,5 +1,6 @@
 package com.barryholroyd.walmartproducts;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
@@ -26,18 +27,6 @@ import android.widget.ImageView;
  */
 public class ImageLoader {
     /**
-     * Singleton.
-     * <p>
-     * There are many ways of implementing singletons. This one is very simple and effective.
-     * It initializes the singleton when the class is loaded. It avoids the double-checked
-     * locking issue.
-     *
-     * @see <a href="http://www.javamex.com/tutorials/double_checked_locking.shtml">
-     *      Double Checked Locking</a>
-     */
-//    static final public ImageLoader instance = new ImageLoader();
-
-    /**
      * If true, use threads to handle background loading; otherwise, use AsyncTask.
      * I've implemented both approaches for practice.
      */
@@ -46,21 +35,28 @@ public class ImageLoader {
     /** In-memory caching instance. */
     static private ImageCacheMemory cacheMemory;
 
-//    private ImageLoader() {
     static {
         cacheMemory = new ImageCacheMemory();
         cacheMemory.setCacheSizePercentMaxMemory(10);
-    } // DEL: ;
-
-    static void load(final ImageView iv, final String url) {
-        Bitmap bitmap =  cacheMemory.get(url);
-        if (bitmap != null) {
-            iv.setImageBitmap(bitmap);
-        }
-        else {
-            if (USE_THREADS) ImageLoaderThreads.load(iv, url, cacheMemory);
-            // TBD: else imageLoaderAsyncTask.load(iv, url);
-        }
     }
+
+    static void load(final Activity a, final ImageView iv, final String url) {
+        /*
+         * Foreground: load from memory cache, if present.
+         */
+        Bitmap bitmap = cacheMemory.get(url);
+        if (bitmap != null) {
+            iv.setImageBitmap(bitmap);'
+            return;
+        }
+
+        /*
+         * Background: load from disk or network.
+         */
+        if (USE_THREADS) ImageLoaderThreads.load(a, iv, url, cacheMemory);
+        // TBD: else imageLoaderAsyncTask.load(iv, url);
+    }
+
+    static private boolean loadFromMemoryCache()
 
 }

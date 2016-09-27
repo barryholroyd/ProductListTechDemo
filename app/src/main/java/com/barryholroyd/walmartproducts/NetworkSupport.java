@@ -1,6 +1,10 @@
 package com.barryholroyd.walmartproducts;
 
-import android.content.Context;
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.widget.ImageView;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -18,7 +22,7 @@ public class NetworkSupport {
      * @param urlStr the URL (in String form) to get the JSON product info. from.
      * @return the input stream created to read data from the specified URL.
      */
-    static InputStream getInputStreamFromUrl(Context ctx, String urlStr) {
+    static InputStream getInputStreamFromUrl(Activity a, String urlStr) {
         try {
             URL url = new URL(urlStr);
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
@@ -36,8 +40,20 @@ public class NetworkSupport {
         }
         catch (IOException e) {
             Support.loge(String.format("getInputStreamFromUrl() - IO Exception: %s", urlStr));
-            (new Toaster(ctx)).display(String.format("IO Exception: %s", e.getMessage()));
+            (new Toaster(a)).display(String.format("IO Exception: %s", e.getMessage()));
             return null;
         }
+    }
+
+    /**
+     * Get a bitmap from the network.
+     *
+     * @param a standard Activity instance.
+     * @param urlStr    url to use to get the bitmap from the network.
+     * @return  the bitmap obtained from the network.
+     */
+    static Bitmap getImageFromNetwork(Activity a, String urlStr) {
+        InputStream is = NetworkSupport.getInputStreamFromUrl(a, urlStr);
+        return BitmapFactory.decodeStream(is);
     }
 }
