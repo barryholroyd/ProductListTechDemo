@@ -1,7 +1,9 @@
 package com.barryholroyd.walmartproducts;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
 /**
@@ -27,34 +29,35 @@ import android.widget.ImageView;
  */
 // TBD: Delete all of this?
 public class ImageLoader {
-    /**
-     * If true, use threads to handle background loading; otherwise, use AsyncTask.
-     * I've implemented both approaches for practice.
-     */
-    static private final boolean USE_THREADS = true;
-
-    /** In-memory caching instance. */
-    static private ImageCacheMemory cacheMemory;
-
-    static {
-        cacheMemory = new ImageCacheMemory();
-        cacheMemory.setCacheSizePercentMaxMemory(10);
-    }
-
-    static void load(final Activity a, final ImageView iv, final String url) {
-        /*
-         * Foreground: load from memory cache, if present.
-         */
-        Bitmap bitmap = cacheMemory.get(url);
-        if (bitmap != null) {
-            iv.setImageBitmap(bitmap);
-            return;
-        }
-
-        /*
-         * Background: load from disk or network.
-         */
-        if (USE_THREADS) ImageLoaderThreads.load(a, iv, url, cacheMemory);
-        // TBD: else imageLoaderAsyncTask.load(iv, url);
-    }
+//    /**
+//     * If true, use threads to handle background loading; otherwise, use AsyncTask.
+//     * I've implemented both approaches for practice.
+//     */
+//    static private final boolean USE_THREADS = true;
+//
+//    /** In-memory caching instance. */
+//    static private ImageCacheMemory cacheMemory;
+//
+//    static {
+//        cacheMemory = new ImageCacheMemory();
+//        cacheMemory.setCacheSizePercentMaxMemory(10);
+//
+//    }
+//
+//    static void load(final Activity a, final ImageView iv, final String url) {
+//        /*
+//         * Foreground: load from memory cache, if present.
+//         */
+//        Bitmap bitmap = cacheMemory.get(url);
+//        if (bitmap != null) {
+//            iv.setImageBitmap(bitmap);
+//            return;
+//        }
+//
+//        /*
+//         * Background: load from disk or network.
+//         */
+//        if (USE_THREADS) ImageLoaderThreads.load(a, iv, url, cacheMemory);
+//        // TBD: else imageLoaderAsyncTask.load(iv, url);
+//    }
 }

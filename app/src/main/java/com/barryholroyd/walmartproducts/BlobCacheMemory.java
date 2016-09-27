@@ -35,16 +35,16 @@ public class BlobCacheMemory<K,V>
     /** First in / first out tracking for deleting cache entries. */
     final LinkedList<K> bcmLl = new LinkedList<>();
 
-    /** Maximum size of the cache. */
-    int maxCacheSize = 0;
+    /** Maximum size of the cache in bytes. */
+    long maxCacheSize = 0;
 
-    /** Current cache size. */
-    int currentCacheSize;
+    /** Current cache size in bytes. */
+    long currentCacheSize;
 
     /**
-     * Set the maximum cache size.
+     * Set the maximum cache size in bytes.
      *
-     * @param _maxCacheSize
+     * @param _maxCacheSize maximum cache size in bytes
      */
     void setCacheSize(int _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
@@ -55,14 +55,14 @@ public class BlobCacheMemory<K,V>
      * <p>
      * If you do this, you'll need to override sizeOf() also.
      *
-     * @param percentage
+     * @param percentage percentage of the available memory to use for the memory cache.
      */
     void setCacheSizePercentMaxMemory(int percentage) {
-        int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        maxCacheSize = (percentage / 100) * maxMemory;
+        long maxMemory = Runtime.getRuntime().maxMemory();
+        maxCacheSize = (long) (((float) percentage / 100) * maxMemory);
         // DEL: delete when done.
         Support.logd(String.format("Memory Cache Size: %d%% of %d = %d",
-                percentage, maxMemory = maxCacheSize));
+                percentage, maxMemory, maxCacheSize));
     }
 
     /**
@@ -92,8 +92,7 @@ public class BlobCacheMemory<K,V>
      */
     // TBD: ensure everything get synchroninzed correctly!
     public void add(K key, V val) {
-        System.out.format("Adding key: %s (cur=%d, max=%d)\n",
-                key, currentCacheSize, maxCacheSize);
+        Support.logd(String.format("Adding to memory cache: %s: %s", key));
 
         // Disallow null keys.
         if (key == null) {
@@ -106,31 +105,36 @@ public class BlobCacheMemory<K,V>
 
 	    // Don't allow overwriting a key's value.
         if (get(key) != null) {
-            System.out.format("Already added this key... returning\n");
+            Support.logd(String.format("Already added this key... returning\n"));
             return;
 	    }
 
         int valSize = sizeOf(key, val);
-        System.out.format("Key value's size: %d (cur=%d,max=%d)\n",
-            valSize, currentCacheSize, maxCacheSize);
+        Support.logd(String.format("  Sizes: val=%d, cur=%d, max=%d\n",
+                valSize, currentCacheSize, maxCacheSize));
 
         while ((currentCacheSize + valSize) > maxCacheSize) {
-          K lastKey = bcmLl.removeLast();
-          if (lastKey == null) {
+            if (bcmLl.isEmpty()) {
+                // This should only happen if the first object is larger than the entire cache.
+                throw new IllegalStateException("Cache is empty.");
+            }
+            K lastKey = bcmLl.removeLast();
+            if (lastKey == null) {
               throw new IllegalStateException(
                   "BlobCacheMemory: null key when removing entries.");
-          }
-          V lastVal = bcmHm.remove(lastKey);
-          int lastValSize = sizeOf(lastKey, lastVal);
-          currentCacheSize -= lastValSize;
-          System.out.format("Removing key (%s: %d). New cur=%d.",
-                  lastKey, lastValSize, currentCacheSize);
+            }
+            V lastVal = bcmHm.remove(lastKey);
+            int lastValSize = sizeOf(lastKey, lastVal);
+            currentCacheSize -= lastValSize;
+            Support.logd(String.format("Removing key (%s: %d). New cur=%d.",
+                  lastKey, lastValSize, currentCacheSize));
         }
         currentCacheSize += valSize;
 
         bcmHm.put(key, val);
+        bcmLl.add(key); // TBD: check this
 
-        System.out.format("Key added: %s (cur=%d, max=%d)\n",
-          key, currentCacheSize, maxCacheSize);
-        }
+        Support.logd(String.format("Key added: %s (cur=%d, max=%d)\n",
+          key, currentCacheSize, maxCacheSize));
+    }
 }

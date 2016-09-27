@@ -18,6 +18,9 @@ import android.support.v7.widget.RecyclerView;
  * Total downloaded count corrupted (totalDownloaded=75 itemCount=25.
  * TBD: ALL PRODUCTS button doesn't show if there is a long description
  * (product info page, landscape mode).
+ * TBD: Add blank icon to header row.
+ * TBD: Display correct image on individual product page.
+ * TBD: check images for correctness in list page.
  *
  * "NTH" means "Nice to have"
  * NTH: Product Info screen's table should have the same border coloring as the Product List screen.

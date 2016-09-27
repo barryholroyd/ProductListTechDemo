@@ -74,7 +74,7 @@ final class ImageCacheDisk
             return instance;
 
         synchronized(ImageCacheDisk.class) {
-            if (instance != null)
+            if (instance == null)
                 instance = new ImageCacheDisk(a, cacheDirName);
         }
         return instance;
@@ -84,7 +84,6 @@ final class ImageCacheDisk
      * Get the image from the disk, if it is present on disk.
      * If not, get it from the network and cache it.
      *
-     * @param a standard Activity instance.
      * @param url url for the bitmap.
      * @return bitmap obtained from the URL.
      */
@@ -110,6 +109,8 @@ final class ImageCacheDisk
     void add(Activity a, String url, Bitmap bitmap) {
         Entry entry = getEntry(url);
         String filename = entry.getImageFilenameLong();
+
+        Support.logd(String.format("Adding to disk cache: %s: %s", filename, url));
 
         // TBD: check the overall space used so far.
 

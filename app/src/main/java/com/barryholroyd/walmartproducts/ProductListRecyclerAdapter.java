@@ -1,9 +1,9 @@
 package com.barryholroyd.walmartproducts;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
@@ -28,25 +28,30 @@ import java.util.HashMap;
 public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
-	/** In-memory caching instance. */
-	static private ImageCacheMemory cacheMemory;
-	static {
-		cacheMemory = new ImageCacheMemory();
-		cacheMemory.setCacheSizePercentMaxMemory(10);
-	}
-
 	/** If true, use Thread for image loading, otherwise use AsyncTask. */
 	static final boolean USE_THREADS = true;
 
 	/** Names for the cache directories. */
 	static final String CACHEDIR = "wmp_images_cache";
 
+    /** "No image" string constant for memory cache. */
+    static private final String NO_IMAGE = "NO IMAGE";
+
 	/** Standard Activity instance. */
 	Activity a;
 
-	ProductListRecyclerAdapter(Activity _a) {
-		a = _a;
-	}
+    /** In-memory caching instance. */
+    private ImageCacheMemory cacheMemory;
+
+    ProductListRecyclerAdapter(Activity _a) {
+        a = _a;
+        cacheMemory = new ImageCacheMemory();
+        cacheMemory.setCacheSizePercentMaxMemory(10);
+
+        // Load in the default "no image" image.
+        Bitmap bitmap = BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
+        cacheMemory.add(NO_IMAGE, bitmap);
+    }
 
 	/**
 	 * Enum to communicate the type of the row that a given ViewHolder is initialized
@@ -254,7 +259,8 @@ public class ProductListRecyclerAdapter
 			 */
 			Bitmap bitmap = cacheMemory.get(url);
 			if (bitmap != null) {
-				iv.setImageBitmap(bitmap);
+                Support.logd(String.format("Loading from memory cache: %s", url));
+                iv.setImageBitmap(bitmap);
 				return;
 			}
 
@@ -284,31 +290,69 @@ public class ProductListRecyclerAdapter
 
 			@Override
 			public void run() {
-				if (!url.equals(currentUrl)) {
-					Support.logd(String.format("Outdated url: old=%s, new=%s", url, currentUrl));
-					url = currentUrl;
-				}
+                if (url == null) {
+                    Support.logd(String.format("No image provided -- loading default image."));
+                    setImageView(iv, cacheMemory.get(NO_IMAGE));
+                    return;
+                }
 
-				// Try the disk cache.
+
+                // Try the disk cache.
+                if (!isSameUrlString("Pre-disk cache", url, currentUrl))
+                    url = currentUrl;
 				bitmap = imageCacheDisk.get(url);
 				if (bitmap != null) {
+                    Support.logd(String.format("Loading from disk cache: %s", url));
 					cacheMemory.add(url, bitmap);
 					setImageView(iv, bitmap);
 					return;
 				}
 
-				// Try the network.
-				bitmap = NetworkSupport.getImageFromNetwork(a, url);
-
+                if (!isSameUrlString("Pre-network", url, currentUrl))
+                    url = currentUrl;
+                bitmap = NetworkSupport.getImageFromNetwork(a, url);
 				prBitmapInfo(bitmap);
-				if (bitmap != null) {
-					cacheMemory.add(url, bitmap);
+                if (!isSameUrlString("Post-network", url, currentUrl)) {
+                    // The image request changed at the last instant. Give up and let the
+                    // later thread handling the newer image request get it loaded.
+                    Support.logd(String.format("Image request has changed -- loading default image."));
+                    setImageView(iv, cacheMemory.get(NO_IMAGE));
+                    return;
+                }
+                if (bitmap != null) {
+                    Support.logd(String.format("Loading from network: %s", url));
+                    cacheMemory.add(url, bitmap);
 					imageCacheDisk.add(a, url, bitmap);
 					setImageView(iv, bitmap);
 					return;
 				}
 				Support.loge(String.format("ImageLoaderThreads() - Could not load image from %s\n", url));
 			}
+
+            /** Check to see if the url has changed.
+             * <p>
+             * Even though "url" will have just been set to currentUrl before starting the
+             * thread which calls this method, time may have passed and the value of
+             * currentUrl may have changed. This can happen, for example, when the ViewHolder
+             * gets recycled. All of its other fields will have been updated to reflect the
+             * new row it is responsible for, but the image field may not have been updated
+             * in time. When this occurs, we simply log the event and then try to load the
+             * image from the new url instead. (That is a small optimization since that url
+             * would also get loaded subsequently by a newer Thread.)
+             * <p>
+             * Since "url" is passed in to the constructor and stored locally, it retains
+             * the original value. Since "currentUrl" is a field of ProductListViewHolder,
+             * its current value is accessible to the caller of this method (LiThread's run()).
+             */
+            private boolean isSameUrlString(String label, String url, String currentUrl) {
+                if (!url.equals(currentUrl)) {
+                    Support.logd(String.format("Outdated url (%s): old=%s, new=%s",
+                            label, url, currentUrl));
+                    return false;
+                }
+                else
+                    return true;
+            }
 
 			/** Set the ImageView on the main thread. */
 			private void setImageView(final ImageView iv, final Bitmap bitmap) {
