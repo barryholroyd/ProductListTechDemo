@@ -5,7 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -16,14 +20,15 @@ import java.util.HashMap;
  * @see <a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java">
  *      DiskLruCache Implementation</a>
  */
-class ImageCacheDisk
+final class ImageCacheDisk
 {
     /**
      * Singleton.
      * <p>
-     * A singleton is needed (as opposed to a set of static methods) because a Context instance
+     * A singleton is used (as opposed to a set of static methods) because an Activity instance
      * is needed to obtain the cache directory and that isn't available at static initialization
-     * time (and we shouldn't store a Context instance on a static hook).
+     * time (and we shouldn't store an Activity instance on a static hook). Beyond that, we don't
+     * need separate instances.
      * <p>
      * There are several approaches for implementing singletons. This one is used because
      * it can be lazily initialized (i.e., doesn't have to be initialized during static
@@ -56,6 +61,16 @@ class ImageCacheDisk
         }
     }
 
+    static void createInstance(Activity a, String cacheDirName) {
+        if (instance != null)
+            return instance;
+
+        synchronized(ImageCacheDisk.class) {
+            if (instance != null)
+                instance = new ImageCacheDisk(a, cacheDirName);
+        }
+    }
+
     /**
      * Standard singleton getInstance() method.
      * <p>
@@ -83,7 +98,7 @@ class ImageCacheDisk
      * @param url url for the bitmap.
      * @return bitmap obtained from the URL.
      */
-    Bitmap getImage(Activity a, String url) {
+    Bitmap get(Activity a, String url) {
         Entry entry = getEntry(url);
         String filename = entry.getImageFilenameLong();
         File f = new File(filename);
@@ -100,6 +115,30 @@ class ImageCacheDisk
             }
         }
         return null;
+    }
+
+    void add(Activity a, String url, Bitmap bitmap) {
+        Entry entry = getEntry(url);
+        String filename = entry.getImageFilenameLong();
+
+        // TBD: check the overall space used so far.
+
+        try (FileOutputStream fos = new FileOutputStream(filename)) {
+            // PNG is the preferred format; that will also cause the second parameter, quality,
+            // to be ignored.
+            if (!bitmap.compress(Bitmap.CompressFormat.PNG, 0, fos)) {
+                String msg = String.format(
+                        "ImageCacheDisk - file could not be written out: %s",
+                        filename);
+                (new Toaster(a)).display(msg);
+                Support.loge(msg);
+            }
+        }
+        catch (IOException ioe) {
+            String msg = String.format("ImageCacheDisk - IO Exception: %s", filename);
+            (new Toaster(a)).display(msg);
+            Support.loge(msg);
+        }
     }
 
     /**
@@ -138,7 +177,7 @@ class ImageCacheDisk
 
     /**
      * Get the Entry for the specified URL.
-     * Creat the Entry, if necessasry.
+     * Creat the Entry, if necessary.
      *
      * @param url   url of the image to be loaded.
      * @return  Entry representing the image to be loaded.

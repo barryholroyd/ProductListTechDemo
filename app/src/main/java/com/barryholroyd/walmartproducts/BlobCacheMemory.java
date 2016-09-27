@@ -20,6 +20,12 @@ import java.util.LinkedList;
  * <p>
  * By default, size is specified as the number of entries. However, if sizeOf()
  * is overridden it can be specified as the maxmimum number of bytes.
+ * <p>
+ * The class is instantiable so that:
+ * <ol>
+ *     <li>it can be extended and sizeOf() overridden.
+ *     <li>multiple caches can be used in the same app.
+ * </ol>
  */
 public class BlobCacheMemory<K,V>
 {

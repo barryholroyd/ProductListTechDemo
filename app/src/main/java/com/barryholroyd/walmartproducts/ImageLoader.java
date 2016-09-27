@@ -7,23 +7,23 @@ import android.widget.ImageView;
 /**
  * Load an image into an ImageView.
  * <p>
- * <ul>
+ * <ol>
  *     <li> Attempt to load from memory cache.
  *     <li> If that fails, load from background.
- *     <ul>
+ *     <ol>
  *         <li>Attempt to load from disk cache.
  *         <li>If that fails, attempt to load from network.
  *         <li>When network load completes:
- *         <ul>
+ *         <ol>
  *             <li>add to memory and disk caches
  *             <li>check to see if the URL loaded from is the same as the current
  *                 URL (it may have chanced if the containing ViewHolder got re-allocated).
  *             <li>If it is the same, then load it into the ImageView (in the main/UI thread).
  *             <li>If it is different, ignore and do nothing (the new URL will have already
  *                 been either loaded or queued to be loaded).
- *         </ul>
- *     </ul>
- * </ul>
+ *         </ol>
+ *     </ol>
+ * </ol>
  */
 public class ImageLoader {
     /**
@@ -46,7 +46,7 @@ public class ImageLoader {
          */
         Bitmap bitmap = cacheMemory.get(url);
         if (bitmap != null) {
-            iv.setImageBitmap(bitmap);'
+            iv.setImageBitmap(bitmap);
             return;
         }
 
@@ -56,7 +56,4 @@ public class ImageLoader {
         if (USE_THREADS) ImageLoaderThreads.load(a, iv, url, cacheMemory);
         // TBD: else imageLoaderAsyncTask.load(iv, url);
     }
-
-    static private boolean loadFromMemoryCache()
-
 }
