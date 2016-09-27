@@ -18,10 +18,10 @@ import java.util.LinkedList;
  * be inserted in the list is larger than the item to be removed from the
  * list and the list is currently at its absolute maximum, in terms of bytes.
  * <p>
- * By default, size is specified as the number of entries. However, if sizeOf()
- * is overridden it can be specified as the maxmimum number of bytes.
+ * By default, size is specified as the number of maximum number of bytes.
  * <p>
- * The class is instantiable so that:
+ * The class is instantiable (as opposed to being a singleton or having only
+ * static methods) so that:
  * <ol>
  *     <li>it can be extended and sizeOf() overridden.
  *     <li>multiple caches can be used in the same app.

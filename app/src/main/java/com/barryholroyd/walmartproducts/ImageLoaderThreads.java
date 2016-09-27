@@ -17,8 +17,10 @@ public class ImageLoaderThreads {
 
         // TBD: put this in the background
 
+        ImageCacheDisk imageCacheDisk = ImageCacheDisk.getInstance(a, CACHE_DIRNAME_THREADS);
+
         // Try the disk cache.
-        bitmap = ImageCacheDisk.getInstance(a, CACHE_DIRNAME_THREADS).get(a, url);
+        bitmap = imageCacheDisk.get(url);
         if (bitmap != null) {
             cacheMemory.add(url, bitmap);
             iv.setImageBitmap(bitmap);
@@ -31,7 +33,7 @@ public class ImageLoaderThreads {
         prBitmapInfo(bitmap);
         if (bitmap != null) {
             cacheMemory.add(url, bitmap);
-            ImageCacheDisk.add(a, url, bitmap);
+            imageCacheDisk.add(a, url, bitmap);
             iv.setImageBitmap(bitmap);
             return;
         }

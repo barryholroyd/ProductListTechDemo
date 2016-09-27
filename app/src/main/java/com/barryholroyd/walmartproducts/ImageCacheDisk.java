@@ -61,16 +61,6 @@ final class ImageCacheDisk
         }
     }
 
-    static void createInstance(Activity a, String cacheDirName) {
-        if (instance != null)
-            return instance;
-
-        synchronized(ImageCacheDisk.class) {
-            if (instance != null)
-                instance = new ImageCacheDisk(a, cacheDirName);
-        }
-    }
-
     /**
      * Standard singleton getInstance() method.
      * <p>
@@ -98,7 +88,7 @@ final class ImageCacheDisk
      * @param url url for the bitmap.
      * @return bitmap obtained from the URL.
      */
-    Bitmap get(Activity a, String url) {
+    Bitmap get(String url) {
         Entry entry = getEntry(url);
         String filename = entry.getImageFilenameLong();
         File f = new File(filename);
