@@ -25,6 +25,7 @@ import android.widget.ImageView;
  *     </ol>
  * </ol>
  */
+// TBD: Delete all of this?
 public class ImageLoader {
     /**
      * If true, use threads to handle background loading; otherwise, use AsyncTask.

@@ -3,7 +3,9 @@ package com.barryholroyd.walmartproducts;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,17 +19,35 @@ import java.util.HashMap;
 
 /**
  * Recycler adapter to display the list of products.
+ * <p>
+ * For demonstration purposes I've implemented both Threads-based and an AsyncTask-based
+ * approaches for loading images.
  *
  * @author Barry Holroyd
  */
 public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
+	/** In-memory caching instance. */
+	static private ImageCacheMemory cacheMemory;
+	static {
+		cacheMemory = new ImageCacheMemory();
+		cacheMemory.setCacheSizePercentMaxMemory(10);
+	}
+
+	/** If true, use Thread for image loading, otherwise use AsyncTask. */
+	static final boolean USE_THREADS = true;
+
+	/** Names for the cache directories. */
+	static final String CACHEDIR = "wmp_images_cache";
+
+	/** Standard Activity instance. */
 	Activity a;
 
 	ProductListRecyclerAdapter(Activity _a) {
 		a = _a;
 	}
+
 	/**
 	 * Enum to communicate the type of the row that a given ViewHolder is initialized
 	 * for. The View itself is the same for both the header and each item; however,
@@ -151,8 +171,12 @@ public class ProductListRecyclerAdapter
 		/** A short description of the product. */
 		private final TextView tvShortDescription;
 
-        /** Product image view. */
-        private final ImageView ivProductImage;
+		/** Product image view. */
+		private final ImageView ivProductImage;
+
+		/** Url String for the currently requested image. */
+		// TBD: explain this somewhere
+		private String currentUrl;
 
 		/**
 		 * A single instance of OnClickListener that can be used for all rows
@@ -221,15 +245,99 @@ public class ProductListRecyclerAdapter
 			tvId.setText(pi.id);
 			tvName.setText(pi.name);
 			tvShortDescription.setText(pi.shortDescription);
-			ImageLoader.load(a, ivProductImage, pi.imageUrl);
+			loadImage(a, ivProductImage, pi.imageUrl);
 		}
 
-		// DEL: ?
-//		private void loadImage(Activity a, ImageView iv, String url) {
-//
-//		}
+		private void loadImage(Activity a, ImageView iv, String url) {
+			/*
+			 * Foreground: load from memory cache, if present.
+			 */
+			Bitmap bitmap = cacheMemory.get(url);
+			if (bitmap != null) {
+				iv.setImageBitmap(bitmap);
+				return;
+			}
 
-       	/**
+			currentUrl = url;
+
+			/*
+			 * Background: load from disk or network.
+			 */
+			if (USE_THREADS) (new LiThread(a, iv, url)).start();
+			else new LiAsyncTask(url).execute();
+		}
+
+		private class LiThread extends Thread
+		{
+			private Activity a;
+			private ImageView iv;
+			private String url;
+			private Bitmap bitmap;
+			private ImageCacheDisk imageCacheDisk;
+
+			LiThread(Activity _a, ImageView _iv, String _url) {
+				a = _a;
+				iv= _iv;
+				url = _url;
+				imageCacheDisk = ImageCacheDisk.getInstance(a, CACHEDIR);
+			}
+
+			@Override
+			public void run() {
+				if (!url.equals(currentUrl)) {
+					Support.logd(String.format("Outdated url: old=%s, new=%s", url, currentUrl));
+					url = currentUrl;
+				}
+
+				// Try the disk cache.
+				bitmap = imageCacheDisk.get(url);
+				if (bitmap != null) {
+					cacheMemory.add(url, bitmap);
+					setImageView(iv, bitmap);
+					return;
+				}
+
+				// Try the network.
+				bitmap = NetworkSupport.getImageFromNetwork(a, url);
+
+				prBitmapInfo(bitmap);
+				if (bitmap != null) {
+					cacheMemory.add(url, bitmap);
+					imageCacheDisk.add(a, url, bitmap);
+					setImageView(iv, bitmap);
+					return;
+				}
+				Support.loge(String.format("ImageLoaderThreads() - Could not load image from %s\n", url));
+			}
+
+			/** Set the ImageView on the main thread. */
+			private void setImageView(final ImageView iv, final Bitmap bitmap) {
+				a.runOnUiThread(new Runnable() {
+					public void run() { iv.setImageBitmap(bitmap); }
+				});
+			}
+			private void prBitmapInfo(Bitmap bitmap) {
+				// DEL: when no longer needed
+				Support.logd(String.format("Bitmap Config: %s", bitmap.getConfig()));
+			}
+		}
+
+		private class LiAsyncTask extends AsyncTask<String, Void, Bitmap>
+		{
+			String url;
+
+			LiAsyncTask(String _url) { url = _url; }
+
+			protected Bitmap doInBackground(String... args) {
+				return null; // TBD: placeholder
+			}
+			void postExecute(Bitmap bitmap) {
+				// TBD: check currentUrl.
+				// TBD: iv = ...;
+			}
+		}
+
+		/**
 		 * Handle clicks on rows within the product list.
 		 */
 		private class OnClickListenerRow implements View.OnClickListener
@@ -253,6 +361,3 @@ public class ProductListRecyclerAdapter
 		}
 	}
 }
-
-
-

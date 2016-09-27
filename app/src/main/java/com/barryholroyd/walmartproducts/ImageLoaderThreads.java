@@ -9,6 +9,7 @@ import android.widget.ImageView;
  * doesn't work, then pull the image from the network.
  */
 
+// DEL: delete this file?
 public class ImageLoaderThreads {
     static final String CACHE_DIRNAME_THREADS = "imageloader_cache_threads";
 
