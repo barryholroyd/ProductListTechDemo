@@ -253,6 +253,26 @@ public class ProductListRecyclerAdapter
 			loadImage(a, ivProductImage, pi.imageUrl);
 		}
 
+		/**
+		 * Load an image into an ImageView.
+		 * <p>
+		 * Two different approaches are implemented: one threads-based and one AsyncTask-based.
+		 * <ol>
+		 *     <li> Attempt to load from memory cache.
+		 *     <li> If that fails, load from background. At each step, check to see if the
+		 *          URL loaded from is the same as the current URL (it may have changed if
+		 *          the containing ViewHolder got re-allocated). If it is the same, then load
+		 *          it into the ImageView (in the main/UI thread). If it is different, ignore
+		 *          and do nothing (the new URL will have already been either loaded or queued
+		 *          to be loaded).
+		 *     <ol>
+		 *         <li>Attempt to load from disk cache. If successful, add to memory cache.
+		 *         <li>Otherwise, attempt to load from network. If successful, add to memory
+		 *             cache and disk cache.
+		 *         <li>Otherwise, load a default place-holder image.
+		 *     </ol>
+		 * </ol>
+		 */
 		private void loadImage(Activity a, ImageView iv, String url) {
 			/*
 			 * Foreground: load from memory cache, if present.
@@ -264,10 +284,12 @@ public class ProductListRecyclerAdapter
 				return;
 			}
 
-			currentUrl = url;
+			currentUrl = url; // "currentUrl" is directly accessible by background threads
 
 			/*
 			 * Background: load from disk or network.
+			 * Both LiThread and LiAsyncTask have to be defined as nested classes so that
+			 * they can have access to "currentUrl".
 			 */
 			if (USE_THREADS) (new LiThread(a, iv, url)).start();
 			else new LiAsyncTask(url).execute();
@@ -295,7 +317,6 @@ public class ProductListRecyclerAdapter
                     setImageView(iv, cacheMemory.get(NO_IMAGE));
                     return;
                 }
-
 
                 // Try the disk cache.
                 if (!isSameUrlString("Pre-disk cache", url, currentUrl))
@@ -338,7 +359,8 @@ public class ProductListRecyclerAdapter
              * new row it is responsible for, but the image field may not have been updated
              * in time. When this occurs, we simply log the event and then try to load the
              * image from the new url instead. (That is a small optimization since that url
-             * would also get loaded subsequently by a newer Thread.)
+             * would also get loaded subsequently by a newer Thread.) Nost importantly, we
+			 * do *not* load the "old" image.
              * <p>
              * Since "url" is passed in to the constructor and stored locally, it retains
              * the original value. Since "currentUrl" is a field of ProductListViewHolder,
