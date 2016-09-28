@@ -46,6 +46,8 @@ public class ProductListRecyclerAdapter
     ProductListRecyclerAdapter(Activity _a) {
         a = _a;
         cacheMemory = new ImageCacheMemory();
+
+//        cacheMemory.setCacheSize(100000);
         cacheMemory.setCacheSizePercentMaxMemory(10);
 
         // Load in the default "no image" image.

@@ -10,7 +10,7 @@ import static android.widget.Toast.LENGTH_LONG;
 /**
  * Helper class to display toasts.
  */
-
+//TBD: Test toaster.
 class Toaster {
     static private final int YINC = 50;
     static private final int YMAX  = YINC * 5;

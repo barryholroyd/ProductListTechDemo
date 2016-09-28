@@ -29,6 +29,9 @@ import java.util.LinkedList;
  */
 public class BlobCacheMemory<K,V>
 {
+    /** Debugging flag. */
+    static boolean blobCacheMemoryTrace = false;
+
     /** Internal key/value mapping for cache storage. */
     final HashMap<K,V> bcmHm  = new HashMap<>();
 
@@ -46,8 +49,9 @@ public class BlobCacheMemory<K,V>
      *
      * @param _maxCacheSize maximum cache size in bytes
      */
-    void setCacheSize(int _maxCacheSize) {
+    void setCacheSize(long _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
+        trace(String.format("Maximum Cache Size: %d", maxCacheSize));
     }
 
     /**
@@ -55,14 +59,14 @@ public class BlobCacheMemory<K,V>
      * <p>
      * If you do this, you'll need to override sizeOf() also.
      *
-     * @param percentage percentage of the available memory to use for the memory cache.
+     * @param percentage percentage of the available memory to use for
+     *                   the memory cache.
      */
     void setCacheSizePercentMaxMemory(int percentage) {
         long maxMemory = Runtime.getRuntime().maxMemory();
         maxCacheSize = (long) (((float) percentage / 100) * maxMemory);
-        // DEL: delete when done.
-        Support.logd(String.format("Memory Cache Size: %d%% of %d = %d",
-                percentage, maxMemory, maxCacheSize));
+        trace(String.format("Maximum Cache Size: %d (%d%% of %d)",
+                maxCacheSize, percentage, maxMemory));
     }
 
     /**
@@ -92,15 +96,15 @@ public class BlobCacheMemory<K,V>
      */
     // TBD: ensure everything get synchroninzed correctly!
     public void add(K key, V val) {
-        Support.logd(String.format("Adding to memory cache: %s: %s", key));
+        trace(String.format("Adding: %s", key));
 
         // Disallow null keys.
         if (key == null) {
-            throw new IllegalStateException("BlobCacheMemory: null key.");
+            throw new BlobCacheMemoryException("null key.");
         }
 
         if (maxCacheSize == 0) {
-            throw new IllegalStateException("Cache size not initialized.");
+            throw new BlobCacheMemoryException("cache size not initialized.");
         }
 
 	    // Don't allow overwriting a key's value.
@@ -110,31 +114,43 @@ public class BlobCacheMemory<K,V>
 	    }
 
         int valSize = sizeOf(key, val);
-        Support.logd(String.format("  Sizes: val=%d, cur=%d, max=%d\n",
+	// DEL: when done
+        Support.logd(String.format("  Sizes before: val=%d, cur=%d, max=%d\n",
                 valSize, currentCacheSize, maxCacheSize));
 
+	// Clear cache entries, if necessary.
         while ((currentCacheSize + valSize) > maxCacheSize) {
             if (bcmLl.isEmpty()) {
-                // This should only happen if the first object is larger than the entire cache.
-                throw new IllegalStateException("Cache is empty.");
+                /*
+		 * This should only happen if the first object is larger
+		 * than the entire cache.
+		 */
+                throw new BlobCacheMemoryException("cache is empty.");
             }
+
             K lastKey = bcmLl.removeLast();
             if (lastKey == null) {
-              throw new IllegalStateException(
-                  "BlobCacheMemory: null key when removing entries.");
+              throw new BlobCacheMemoryException("null key when removing entries.");
             }
             V lastVal = bcmHm.remove(lastKey);
             int lastValSize = sizeOf(lastKey, lastVal);
+            trace(String.format("Removing: %s (cachsize: %d - %d = %d).",
+                    lastKey, currentCacheSize, lastValSize,
+                    currentCacheSize - lastValSize));
             currentCacheSize -= lastValSize;
-            Support.logd(String.format("Removing key (%s: %d). New cur=%d.",
-                  lastKey, lastValSize, currentCacheSize));
         }
         currentCacheSize += valSize;
 
+	// Add to the cache.
         bcmHm.put(key, val);
-        bcmLl.add(key); // TBD: check this
+        bcmLl.add(key);
 
-        Support.logd(String.format("Key added: %s (cur=%d, max=%d)\n",
-          key, currentCacheSize, maxCacheSize));
+	// DEL: when done
+        Support.logd(String.format("  Sizes after: val=%d, cur=%d, max=%d\n",
+                valSize, currentCacheSize, maxCacheSize));
+    }
+
+    private void trace(String msg) {
+        Support.trace(blobCacheMemoryTrace, "Cache Memory", msg);
     }
 }

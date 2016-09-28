@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -37,6 +35,9 @@ final class ImageCacheDisk
      * before becoming visible to any other threads.
      */
     static volatile private ImageCacheDisk instance;
+
+    /** Debugging flag. */
+    static boolean imageCacheDiskTrace = false;
 
     /** Full file name for the cache subdirectory. */
     final String cacheDirName;
@@ -162,7 +163,7 @@ final class ImageCacheDisk
                 Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
-    /** Happing of URLs to Entrys.
+    /** Mapping of URLs to Entrys.
      */
     static private HashMap<String,Entry> entryHm = new HashMap<>();
 

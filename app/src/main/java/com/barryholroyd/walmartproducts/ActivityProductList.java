@@ -65,6 +65,9 @@ public class ActivityProductList extends AppCompatActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		BlobCacheMemory.blobCacheMemoryTrace = true;
+		ImageCacheDisk.imageCacheDiskTrace = true;
+
 		setContentView(R.layout.productlist);
 
 		initRecyclerView();

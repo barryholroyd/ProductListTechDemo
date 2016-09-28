@@ -1,48 +1,48 @@
-package com.barryholroyd.walmartproducts;
-
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.widget.ImageView;
-
-/**
- * Threads-based approach to loading images. Check the disk cache first; if that
- * doesn't work, then pull the image from the network.
- */
-
-// DEL: delete this file?
-public class ImageLoaderThreads {
-    static final String CACHE_DIRNAME_THREADS = "imageloader_cache_threads";
-
-    static void load(Activity a, ImageView iv, String url, ImageCacheMemory cacheMemory) {
-        Bitmap bitmap;
-
-        // TBD: put this in the background
-
-        ImageCacheDisk imageCacheDisk = ImageCacheDisk.getInstance(a, CACHE_DIRNAME_THREADS);
-
-        // Try the disk cache.
-        bitmap = imageCacheDisk.get(url);
-        if (bitmap != null) {
-            cacheMemory.add(url, bitmap);
-            iv.setImageBitmap(bitmap);
-            return;
-        }
-
-        // Try the network.
-        bitmap = NetworkSupport.getImageFromNetwork(a, url);
-
-        prBitmapInfo(bitmap);
-        if (bitmap != null) {
-            cacheMemory.add(url, bitmap);
-            imageCacheDisk.add(a, url, bitmap);
-            iv.setImageBitmap(bitmap);
-            return;
-        }
-
-        Support.loge(String.format("ImageLoaderThreads() - Could not load image from %s\n", url));
-    }
-    static private void prBitmapInfo(Bitmap bitmap) {
-        // DEL: when no longer needed
-        Support.logd(String.format("Bitmap Config: %s", bitmap.getConfig()));
-    }
-}
+//package com.barryholroyd.walmartproducts;
+//
+//import android.app.Activity;
+//import android.graphics.Bitmap;
+//import android.widget.ImageView;
+//
+///**
+// * Threads-based approach to loading images. Check the disk cache first; if that
+// * doesn't work, then pull the image from the network.
+// */
+//
+//// DEL: delete this file?
+//public class ImageLoaderThreads {
+//    static final String CACHE_DIRNAME_THREADS = "imageloader_cache_threads";
+//
+//    static void load(Activity a, ImageView iv, String url, ImageCacheMemory cacheMemory) {
+//        Bitmap bitmap;
+//
+//        // TBD: put this in the background
+//
+//        ImageCacheDisk imageCacheDisk = ImageCacheDisk.getInstance(a, CACHE_DIRNAME_THREADS);
+//
+//        // Try the disk cache.
+//        bitmap = imageCacheDisk.get(url);
+//        if (bitmap != null) {
+//            cacheMemory.add(url, bitmap);
+//            iv.setImageBitmap(bitmap);
+//            return;
+//        }
+//
+//        // Try the network.
+//        bitmap = NetworkSupport.getImageFromNetwork(a, url);
+//
+//        prBitmapInfo(bitmap);
+//        if (bitmap != null) {
+//            cacheMemory.add(url, bitmap);
+//            imageCacheDisk.add(a, url, bitmap);
+//            iv.setImageBitmap(bitmap);
+//            return;
+//        }
+//
+//        Support.loge(String.format("ImageLoaderThreads() - Could not load image from %s\n", url));
+//    }
+//    static private void prBitmapInfo(Bitmap bitmap) {
+//        // DEL: when no longer needed
+//        Support.logd(String.format("Bitmap Config: %s", bitmap.getConfig()));
+//    }
+//}

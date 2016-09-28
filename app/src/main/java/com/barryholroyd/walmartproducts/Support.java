@@ -29,6 +29,19 @@ public class Support
 	}
 
 	/**
+	 * Trace method -- toggle-control logging.
+	 *
+	 * @param flag print the message iff flag is "true".
+	 * @param component the component being traced.
+	 * @param msg the message to be logged.
+	 */
+	static void trace(boolean flag, String component, String msg) {
+		if (flag)
+			Log.v(ActivityProductList.LOGTAG,
+			      component + ": " + msg);
+	}
+
+	/**
 	 * Translate HTML tags (embedded in text) to simple text.
 	 *
 	 * Poor man's version -- mostly, just removes tags.
