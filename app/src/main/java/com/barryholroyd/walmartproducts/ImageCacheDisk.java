@@ -158,7 +158,6 @@ final class ImageCacheDisk
         String cachePath = externalStorageAvailable()
                 ? a.getExternalCacheDir().getPath()
                 : a.getCacheDir().getPath();
-        Support.logd("Cache Directory: " + cachePath + File.separator + cacheSubdirName);
         return cachePath + File.separator + cacheSubdirName;
     }
 

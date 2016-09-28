@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
+import static com.barryholroyd.walmartproducts.Configure.*;
+
 /**
  * Recycler adapter to display the list of products.
  * <p>
@@ -28,9 +30,6 @@ import java.util.HashMap;
 public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
-	/** If true, use Thread for image loading, otherwise use AsyncTask. */
-	static final boolean USE_THREADS = true;
-
 	/** Names for the cache directories. */
 	static final String CACHEDIR = "wmp_images_cache";
 
@@ -45,10 +44,9 @@ public class ProductListRecyclerAdapter
 
     ProductListRecyclerAdapter(Activity _a) {
         a = _a;
-        cacheMemory = new ImageCacheMemory();
-
-//        cacheMemory.setCacheSize(100000);
-        cacheMemory.setCacheSizePercentMaxMemory(10);
+        cacheMemory = MC_PERCENT
+				? ImageCacheMemory.createWithPercent(MC_CACHESIZE_PERCENT)
+				: ImageCacheMemory.createWithBytes(MC_CACHESIZE_BYTES);
 
         // Load in the default "no image" image.
         Bitmap bitmap = BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);

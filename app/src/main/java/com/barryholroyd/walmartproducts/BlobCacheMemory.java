@@ -29,9 +29,6 @@ import java.util.LinkedList;
  */
 public class BlobCacheMemory<K,V>
 {
-    /** Debugging flag. */
-    static boolean blobCacheMemoryTrace = false;
-
     /** Internal key/value mapping for cache storage. */
     final HashMap<K,V> bcmHm  = new HashMap<>();
 
@@ -39,34 +36,15 @@ public class BlobCacheMemory<K,V>
     final LinkedList<K> bcmLl = new LinkedList<>();
 
     /** Maximum size of the cache in bytes. */
-    long maxCacheSize = 0;
+    protected long maxCacheSize = 0;
 
     /** Current cache size in bytes. */
-    long currentCacheSize;
+    protected long currentCacheSize;
 
-    /**
-     * Set the maximum cache size in bytes.
-     *
-     * @param _maxCacheSize maximum cache size in bytes
-     */
-    void setCacheSize(long _maxCacheSize) {
+    /** Create new instances using factory methods. */
+    BlobCacheMemory(long _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
         trace(String.format("Maximum Cache Size: %d", maxCacheSize));
-    }
-
-    /**
-     * Set the cache size as a percentage of overall maximum memory.
-     * <p>
-     * If you do this, you'll need to override sizeOf() also.
-     *
-     * @param percentage percentage of the available memory to use for
-     *                   the memory cache.
-     */
-    void setCacheSizePercentMaxMemory(int percentage) {
-        long maxMemory = Runtime.getRuntime().maxMemory();
-        maxCacheSize = (long) (((float) percentage / 100) * maxMemory);
-        trace(String.format("Maximum Cache Size: %d (%d%% of %d)",
-                maxCacheSize, percentage, maxMemory));
     }
 
     /**
@@ -125,9 +103,9 @@ public class BlobCacheMemory<K,V>
         while ((currentCacheSize + valSize) > maxCacheSize) {
             if (bcmLl.isEmpty()) {
                 /*
-		 * This should only happen if the first object is larger
-		 * than the entire cache.
-		 */
+                 * This should only happen if the first object is larger
+                 * than the entire cache.
+                 */
                 throw new BlobCacheMemoryException("cache is empty.");
             }
 
@@ -153,7 +131,7 @@ public class BlobCacheMemory<K,V>
                 valSize, currentCacheSize, maxCacheSize));
     }
 
-    private void trace(String msg) {
-        Support.trace(blobCacheMemoryTrace, "Cache Memory", msg);
+    static protected void trace(String msg) {
+        Support.trace(Configure.blobCacheMemoryTrace, "Cache Memory", msg);
     }
 }
