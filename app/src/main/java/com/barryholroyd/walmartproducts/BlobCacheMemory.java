@@ -86,6 +86,9 @@ public class BlobCacheMemory<K,V>
      * Get the item, if it exists.
      */
     public V get(K key) {
+        trace(String.format("Getting [%s]: %s",
+                bcmHm.containsKey(key) ? "found" : "not found",
+                key));
         return bcmHm.get(key);
     }
 

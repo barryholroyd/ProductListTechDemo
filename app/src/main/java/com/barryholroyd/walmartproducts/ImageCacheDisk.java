@@ -57,6 +57,16 @@ final class ImageCacheDisk
     private ImageCacheDisk(Activity a, String cacheSubdirName) {
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);
+        if (cacheDir.exists()) {
+            trace(String.format("cache directory already exists: %s", cacheDirName));
+            if (!cacheDir.isDirectory()) {
+                throw new ImageDiskCacheException(
+                        String.format("Disk cache exists but is not a directory: %s",
+                                cacheDirName));
+            }
+            return;
+        }
+        trace(String.format("cache directory being created: %s", cacheDirName));
         if (!cacheDir.mkdirs()) {
             throw new RuntimeException("Could not create disk cache directory.");
         }
@@ -93,6 +103,7 @@ final class ImageCacheDisk
         String filename = entry.getImageFilenameLong();
         File f = new File(filename);
         if (f.exists()) {
+            trace(String.format("Getting [found]: %s", url));
             if (f.isFile()) {
                 Bitmap bitmap = BitmapFactory.decodeFile(filename);
                 if (bitmap == null) {
@@ -104,6 +115,7 @@ final class ImageCacheDisk
                 throw new RuntimeException("Bad file: " + f.getName());
             }
         }
+        trace(String.format("Getting [not found]: %s", url));
         return null;
     }
 
@@ -111,7 +123,7 @@ final class ImageCacheDisk
         Entry entry = getEntry(url);
         String filename = entry.getImageFilenameLong();
 
-        Support.logd(String.format("Adding to disk cache: %s: %s", filename, url));
+        Support.logd(String.format("Adding [file=%s]: %s", filename, url));
 
         // TBD: check the overall space used so far.
 
@@ -182,6 +194,10 @@ final class ImageCacheDisk
         entry = new Entry(url);
         entryHm.put(url, entry);
         return entry;
+    }
+
+    private void trace(String msg) {
+        Support.trace(imageCacheDiskTrace, "Cache Disk", msg);
     }
 
     /**
