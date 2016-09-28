@@ -307,7 +307,7 @@ public class ProductListRecyclerAdapter
 				a = _a;
 				iv= _iv;
 				url = _url;
-				imageCacheDisk = ImageCacheDisk.getInstance(a, CACHEDIR);
+				imageCacheDisk = ImageCacheDisk.getInstance(a, CACHEDIR, DISK_CACHESIZE_BYTES);
 			}
 
 			@Override

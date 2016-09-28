@@ -3,12 +3,14 @@ package com.barryholroyd.walmartproducts;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Path;
 import android.os.Environment;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Disk cache implementation.
@@ -36,14 +38,26 @@ final class ImageCacheDisk
      */
     static volatile private ImageCacheDisk instance;
 
-    /** Debugging flag. */
-    static boolean imageCacheDiskTrace = false;
+    /** Base name for image files. */
+    static final private String FILENAME_BASE = "image";
+
+    /** Internal key/value mapping for cache storage. */
+    final HashMap<String,Entry> icdHm  = new HashMap<>();
+
+    /** First in / first out tracking for deleting cache entries. */
+    final LinkedList<String> icdLl = new LinkedList<>();
 
     /** Full file name for the cache subdirectory. */
-    final String cacheDirName;
+    private final String cacheDirName;
 
     /** File handle for the disk cache subdirectory. */
-    final File cacheDir;
+    private final File cacheDir;
+
+    /** Maximum size of the cache in bytes. */
+    private long maxCacheSize = 0;
+
+    /** Current size (bytes used) of the disk cache. */
+    private long currentCacheSize = 0;
 
     /**
      * Constructor.
@@ -54,7 +68,8 @@ final class ImageCacheDisk
      * @param a   standard Activity instance.
      * @param cacheSubdirName  subdirectory name for the cache -- unique to this app/usage.
      */
-    private ImageCacheDisk(Activity a, String cacheSubdirName) {
+    private ImageCacheDisk(Activity a, String cacheSubdirName, long _maxCacheSize) {
+        maxCacheSize = _maxCacheSize;
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
@@ -68,7 +83,7 @@ final class ImageCacheDisk
         }
         trace(String.format("cache directory being created: %s", cacheDirName));
         if (!cacheDir.mkdirs()) {
-            throw new RuntimeException("Could not create disk cache directory.");
+            throw new ImageDiskCacheException("Could not create disk cache directory.");
         }
     }
 
@@ -80,13 +95,16 @@ final class ImageCacheDisk
      * @param cacheDirName  subdirectory name for the cache -- unique to this app/usage.
      * @return  singleton instance.
      */
-    static ImageCacheDisk getInstance(Activity a, String cacheDirName) {
+    static ImageCacheDisk getInstance(Activity a, String cacheDirName, long maxCacheSize) {
         if (instance != null)
             return instance;
 
+        String msg = "Creating ImageCacheDisk instance (testing Toaster)."; // DEL:
+        (new Toaster(a)).display(msg);
+
         synchronized(ImageCacheDisk.class) {
             if (instance == null)
-                instance = new ImageCacheDisk(a, cacheDirName);
+                instance = new ImageCacheDisk(a, cacheDirName, maxCacheSize);
         }
         return instance;
     }
@@ -99,33 +117,88 @@ final class ImageCacheDisk
      * @return bitmap obtained from the URL.
      */
     Bitmap get(String url) {
-        Entry entry = getEntry(url);
-        String filename = entry.getImageFilenameLong();
+        Entry entry = getEntry(url);   // this always returns a valid entry.
+        boolean stored = entry.isStored();
+
+        trace(String.format("Getting [%s]: %s", stored ? "found" : "not found", url));
+
+        if (!stored)
+            return null;
+
+        String filename = entry.longName;
         File f = new File(filename);
-        if (f.exists()) {
-            trace(String.format("Getting [found]: %s", url));
-            if (f.isFile()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(filename);
-                if (bitmap == null) {
-                    throw new RuntimeException("Could not obtain bitmap from factory.");
-                }
-                return bitmap;
-            }
-            else {
-                throw new RuntimeException("Bad file: " + f.getName());
-            }
+        fileCheck(f, url);
+        Bitmap bitmap = BitmapFactory.decodeFile(filename);
+        if (bitmap == null) {
+            throw new ImageDiskCacheException("Could not obtain bitmap from factory.");
         }
-        trace(String.format("Getting [not found]: %s", url));
-        return null;
+        return bitmap;
     }
 
     void add(Activity a, String url, Bitmap bitmap) {
+        if (url == null) {
+            trace(String.format("Adding: %s", url));
+            throw new ImageDiskCacheException("null url");
+        }
+
         Entry entry = getEntry(url);
-        String filename = entry.getImageFilenameLong();
+        String filename = entry.longName;
+        trace(String.format("Adding [file=%s]: %s", filename, url));
 
-        Support.logd(String.format("Adding [file=%s]: %s", filename, url));
+        if (maxCacheSize == 0) {
+            throw new ImageDiskCacheException("cache size not initialized.");
+        }
 
-        // TBD: check the overall space used so far.
+        if (entry.isStored()) {
+            Support.logd(String.format("Already added this image... returning\n"));
+            return;
+        }
+
+        long valSize = bitmap.getByteCount();
+        entry.setSize(valSize);
+
+        // DEL: when done
+        Support.logd(String.format("  Sizes before: val=%d, cur=%d, max=%d\n",
+                valSize, currentCacheSize, maxCacheSize));
+
+        // Clear cache entries, if necessary.
+        while ((currentCacheSize + valSize) > maxCacheSize) {
+            if (icdLl.isEmpty()) {
+                /*
+                 * This should only happen if the first object is larger
+                 * than the entire cache.
+                 */
+                throw new ImageDiskCacheException("cache is empty.");
+            }
+
+            // Remove entry from internal data structures.
+            String lastImage = icdLl.removeLast();
+            if (lastImage == null) {
+                throw new ImageDiskCacheException("null key when removing entries.");
+            }
+            Entry lastEntry = icdHm.get(lastImage);
+            lastEntry.setStored(false);
+
+            // Delete the bitmap file.
+            String lastLongname = lastEntry.longName;
+            String lastUrl = lastEntry.url;
+            long lastValSize = lastEntry.getSize();
+            trace(String.format("Removing [file=%s]: %s (cache size: %d - %d = %d).",
+                    lastLongname, lastUrl,
+                    currentCacheSize, lastValSize,
+                    currentCacheSize - lastValSize));
+
+            File f = new File(lastLongname);
+            fileCheck(f, lastUrl);
+            if (!f.delete()) {
+                throw new ImageDiskCacheException(
+                        String.format("Failed to delete file [file=%s]: %s.",
+                                lastLongname, lastUrl));
+            }
+            currentCacheSize -= lastValSize;
+        }
+
+        currentCacheSize += valSize;
 
         try (FileOutputStream fos = new FileOutputStream(filename)) {
             // PNG is the preferred format; that will also cause the second parameter, quality,
@@ -161,6 +234,17 @@ final class ImageCacheDisk
         return cachePath + File.separator + cacheSubdirName;
     }
 
+    void fileCheck(File f, String url) {
+        if (!f.exists()) {
+            throw new ImageDiskCacheException(
+                    String.format("Missing [file=%s]: %s", f.getName(), url));
+        }
+        if (!f.isFile()) {
+            throw new ImageDiskCacheException(
+                    String.format("File is not a normal file [file=%s]: %s", f.getName(), url));
+        }
+    }
+
     /**
      * Test for the presence of external storage.
      * <p>
@@ -174,56 +258,69 @@ final class ImageCacheDisk
                 Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
-    /** Mapping of URLs to Entrys.
-     */
-    static private HashMap<String,Entry> entryHm = new HashMap<>();
-
     /**
      * Get the Entry for the specified URL.
-     * Creat the Entry, if necessary.
+     * Create the Entry, if necessary. All entries are stored in icdHm.
+     * However, entries are only stored in icdLl when their image is
+     * stored in the file system.
      *
      * @param url   url of the image to be loaded.
      * @return  Entry representing the image to be loaded.
      */
+    // TBD: double check issue (synchronizing)???
     private Entry getEntry(String url) {
-        Entry entry = entryHm.get(url);
-        if (entry != null)
-            return entry;
-
-        entry = new Entry(url);
-        entryHm.put(url, entry);
+        Entry entry = icdHm.get(url);
+        if (entry == null) {
+            entry = new Entry(url);
+            icdHm.put(url, entry);
+        }
         return entry;
     }
 
     private void trace(String msg) {
-        Support.trace(imageCacheDiskTrace, "Cache Disk", msg);
+        Support.trace(Configure.imageCacheDiskTrace, "Cache Disk", msg);
     }
 
     /**
      * Counter value provides last part of filename.
      * Can create a few billion unique filenames.
-     * Must be outside of the Entry definition, since it is static and Entry isn't.
+     * Must be outside of the Entry definition, since it is static and, as an inner
+     * class, Entry can't be.
      */
-    static private int entryCounter = 0;
+    private int entryCounter = 0;
+
+    /**
+     * The Entry class provides a wrapper containing metadata for each image that might
+     * be stored in the disk cache. Once an entry is created for a given image (as identified
+     * by the image's url), it exists indefinitely.
+     * <p>
+     * Each image is uniquely identified by its url. In addition, a unique long "id"
+     * is generated for each image (there is a 1:1 mapping between urls and ids) and
+     * used to create the cache filename.
+     * <p>
+     * The url and id are stored in the Entry as identifiers. The short and long names
+     * are stored for performance reasons, as
+     */
     private class Entry
     {
-        private String url;
-        static final private String FILENAME_BASE = "image";
-        private long id;
-        private String fname;
+        final private String url;         // unique identifier for the image.
+        final private long id;            // unique id for the image (usable in its filename).
+        final private String shortName;   // base name for the image file (including its id).
+        final private String longName;    // full name for the image file.
+        private long size;          // size of the image file in bytes.
+        private boolean stored;     // true iff the image has been stored in the file system.
 
-        Entry(String _url) {
-            url = _url;
-            id  = entryCounter++;
-            fname = String.format("%s-%d", FILENAME_BASE, id);
+        private Entry(String _url) {
+            url   = _url;
+            id    = entryCounter++;
+            shortName = String.format("%s-%d", FILENAME_BASE, id);
+            longName = cacheDirName + File.separator + shortName;
         }
 
-        String getImageFilenameShort() {
-            return fname;
-        }
+        private long getSize() { return size; }
+        private void setSize(long _size) { size = _size; }
 
-        String getImageFilenameLong() {
-            return cacheDirName + File.separator + fname;
-        }
+        private boolean isStored() { return stored; }
+        private void setStored(boolean _stored) { stored = _stored; }
     }
 }

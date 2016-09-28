@@ -66,7 +66,7 @@ class ImageCacheMemory extends BlobCacheMemory<String, Bitmap> {
      * @return    the size of the bitmap being stored.
      */
     @Override
-    protected int sizeOf(String key, Bitmap bm) {
+    protected long sizeOf(String key, Bitmap bm) {
         return bm.getByteCount();
     }
 }

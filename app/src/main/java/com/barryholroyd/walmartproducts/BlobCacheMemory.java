@@ -51,12 +51,12 @@ public class BlobCacheMemory<K,V>
      * Size of each entry.
      * <p>
      * Defaults to 1, so that the cache size is specified as the
-     * number of entries. However, overriding this allows  you to
+     * number of entries. However, overriding this allows you to
      * specify the maximum amount of memory to be used in, in bytes,
      * if you override this method to return the size of each entry,
      * using the key and/or value provided here.
      */
-    protected int sizeOf(K key, V val) {
+    protected long sizeOf(K key, V val) {
         return 1;
     }
 
@@ -75,7 +75,7 @@ public class BlobCacheMemory<K,V>
      * <p>
      * Ignore the request if the key is already present.
      */
-    // TBD: ensure everything get synchroninzed correctly!
+    // TBD: ensure everything get synchronized correctly!
     public void add(K key, V val) {
         trace(String.format("Adding: %s", key));
 
@@ -94,12 +94,12 @@ public class BlobCacheMemory<K,V>
             return;
 	    }
 
-        int valSize = sizeOf(key, val);
-	// DEL: when done
+        long valSize = sizeOf(key, val);
+        // DEL: when done
         Support.logd(String.format("  Sizes before: val=%d, cur=%d, max=%d\n",
                 valSize, currentCacheSize, maxCacheSize));
 
-	// Clear cache entries, if necessary.
+        // Clear cache entries, if necessary.
         while ((currentCacheSize + valSize) > maxCacheSize) {
             if (bcmLl.isEmpty()) {
                 /*
@@ -114,8 +114,8 @@ public class BlobCacheMemory<K,V>
               throw new BlobCacheMemoryException("null key when removing entries.");
             }
             V lastVal = bcmHm.remove(lastKey);
-            int lastValSize = sizeOf(lastKey, lastVal);
-            trace(String.format("Removing: %s (cachsize: %d - %d = %d).",
+            long lastValSize = sizeOf(lastKey, lastVal);
+            trace(String.format("Removing: %s (cache size: %d - %d = %d).",
                     lastKey, currentCacheSize, lastValSize,
                     currentCacheSize - lastValSize));
             currentCacheSize -= lastValSize;
