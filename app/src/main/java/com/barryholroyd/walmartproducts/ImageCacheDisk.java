@@ -117,6 +117,9 @@ final class ImageCacheDisk
      * @return bitmap obtained from the URL.
      */
     Bitmap get(String url) {
+        if (!Configure.DC_ON)
+            return null;
+
         Entry entry = getEntry(url);   // this always returns a valid entry.
         boolean stored = entry.isStored();
 
@@ -136,6 +139,9 @@ final class ImageCacheDisk
     }
 
     void add(Activity a, String url, Bitmap bitmap) {
+        if (!Configure.DC_ON)
+            return;
+
         if (url == null) {
             trace(String.format("Adding: %s", url));
             throw new ImageDiskCacheException("null url");
@@ -158,7 +164,7 @@ final class ImageCacheDisk
         entry.setSize(valSize);
 
         // DEL: when done
-        Support.logd(String.format("  Sizes before: val=%d, cur=%d, max=%d\n",
+        Support.logd(String.format("  DC: Sizes before: val=%d, cur=%d, max=%d\n",
                 valSize, currentCacheSize, maxCacheSize));
 
         // Clear cache entries, if necessary.

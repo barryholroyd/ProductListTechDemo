@@ -5,9 +5,21 @@ package com.barryholroyd.walmartproducts;
  */
 
 final class Configure {
+    /*
+     * Main Flags
+     */
     /** If true, use Thread for image loading, otherwise use AsyncTask. */
     static final boolean USE_THREADS = true;
 
+    /** Memory cache toggle */
+    static final boolean MC_ON = true;
+
+    /** Disk cache toggle. */
+    static final boolean DC_ON = false;
+
+    /*
+     * Memory Cache.
+     */
     /** Specify memory cache in percent of total memory or in bytes. */
     static final boolean MC_PERCENT = true;
 
@@ -17,13 +29,21 @@ final class Configure {
     /** Memory (in bytes) to allocate for the memory cache. Relevant iff MC_PERCENT == false. */
     static final long MC_CACHESIZE_BYTES   = 10000;
 
-    /** Tracing flag for the image memory cache. */
-    static final boolean blobCacheMemoryTrace = false;
-
-    /** Tracing flag for the image disk cache. */
-    static final boolean imageCacheDiskTrace = false;
-
+    /*
+     * Disk Cache.
+     */
     /** Disk space (in bytes) to allocate for the disk cache. */
     static final long DISK_CACHESIZE_BYTES = 1000000;
     // static final long DISK_CACHESIZE_BYTES = 10000; // DEL:
+
+    /*
+     * Tracing.
+     */
+
+    /** Tracing flag for the image memory cache. */
+    static final boolean blobCacheMemoryTrace = true;
+
+    /** Tracing flag for the image disk cache. */
+    static final boolean imageCacheDiskTrace = true;
+
 }

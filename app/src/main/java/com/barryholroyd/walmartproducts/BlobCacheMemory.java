@@ -64,6 +64,9 @@ public class BlobCacheMemory<K,V>
      * Get the item, if it exists.
      */
     public V get(K key) {
+        if (!Configure.MC_ON)
+            return null;
+
         trace(String.format("Getting [%s]: %s",
                 bcmHm.containsKey(key) ? "found" : "not found",
                 key));
@@ -77,6 +80,9 @@ public class BlobCacheMemory<K,V>
      */
     // TBD: ensure everything get synchronized correctly!
     public void add(K key, V val) {
+        if (!Configure.MC_ON)
+            return;
+
         trace(String.format("Adding: %s", key));
 
         // Disallow null keys.
@@ -96,7 +102,7 @@ public class BlobCacheMemory<K,V>
 
         long valSize = sizeOf(key, val);
         // DEL: when done
-        Support.logd(String.format("  Sizes before: val=%d, cur=%d, max=%d\n",
+        Support.logd(String.format("  MC: Sizes before: val=%d, cur=%d, max=%d\n",
                 valSize, currentCacheSize, maxCacheSize));
 
         // Clear cache entries, if necessary.
