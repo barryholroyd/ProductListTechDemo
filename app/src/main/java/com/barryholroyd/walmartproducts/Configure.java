@@ -9,7 +9,7 @@ final class Configure {
     static class MemoryCache
     {
         /** Memory cache toggle */
-        static final boolean MC_ON = true;
+        static final boolean MC_ON = false;
 
         /** Tracing flag for the image memory cache. */
         static final boolean MC_TRACE = true;

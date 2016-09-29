@@ -172,6 +172,9 @@ public class ProductListRecyclerAdapter
 		 */
 		private final TextView tvId;
 
+		// DEL:
+		private final TextView tvImageName;
+
 		/** The product tvName. */
 		private final TextView tvName;
 
@@ -206,6 +209,7 @@ public class ProductListRecyclerAdapter
 		ProductListViewHolder(View itemView, ViewType viewType) {
 			super(itemView);
 			tvId = (TextView) itemView.findViewById(R.id.id);
+			tvImageName = (TextView) itemView.findViewById(R.id.image_name);
 			tvName = (TextView) itemView.findViewById(R.id.name);
 			tvShortDescription = (TextView) itemView.findViewById(R.id.short_description);
             ivProductImage = (ImageView) itemView.findViewById(R.id.pd_product_image);
@@ -250,9 +254,14 @@ public class ProductListRecyclerAdapter
 		 */
 		protected void bindData(ProductInfo pi) {
 			tvId.setText(pi.id);
+			tvImageName.setText(truncUrl(pi.imageUrl));
 			tvName.setText(pi.name);
 			tvShortDescription.setText(pi.shortDescription);
 			loadImage(a, ivProductImage, pi.imageUrl);
+		}
+
+		private String truncUrl(String url) { // DEL:
+			return url.replaceFirst(".*images/", ".../");
 		}
 
 		/**

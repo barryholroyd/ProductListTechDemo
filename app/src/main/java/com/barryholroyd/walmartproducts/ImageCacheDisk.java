@@ -120,9 +120,6 @@ final class ImageCacheDisk
         if (instance != null)
             return instance;
 
-        String msg = "Creating ImageCacheDisk instance (testing Toaster)."; // DEL:
-        (new Toaster(a)).display(msg);
-
         synchronized(ImageCacheDisk.class) {
             if (instance == null)
                 instance = new ImageCacheDisk(a, cacheDirName, maxCacheSize);
@@ -162,6 +159,10 @@ final class ImageCacheDisk
     void add(Activity a, String url, Bitmap bitmap) {
         if (!Configure.DiskCache.DC_ON)
             return;
+
+        String msg2 = "TEST: Creating ImageCacheDisk instance (testing Toaster)."; // DEL:
+        trace(msg2);
+        (new Toaster(a)).display(msg2);
 
         if (url == null) {
             trace(String.format("Adding: %s", url));

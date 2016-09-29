@@ -36,7 +36,21 @@ height increase (and so needs to be wrap_content) but the other must then be mat
             android:maxWidth="50dp"
             android:id="@+id/pd_product_image"
             />
-            <!-- DEL: android:src="@drawable/image5" -->
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_margin="1dp"
+        android:background="@color/blueLight"
+        android:layout_height="match_parent"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:id="@+id/image_name"
+            />
     </FrameLayout>
     <FrameLayout
         android:layout_width="0dp"
