@@ -18,6 +18,11 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 import static com.barryholroyd.walmartproducts.Configure.*;
+import static com.barryholroyd.walmartproducts.Configure.DiskCache.DC_CACHE_DIR;
+import static com.barryholroyd.walmartproducts.Configure.DiskCache.DC_SIZE_BYTES;
+import static com.barryholroyd.walmartproducts.Configure.MemoryCache.MC_PERCENT;
+import static com.barryholroyd.walmartproducts.Configure.MemoryCache.MC_SIZE_BYTES;
+import static com.barryholroyd.walmartproducts.Configure.MemoryCache.MC_SIZE_PERCENT;
 
 /**
  * Recycler adapter to display the list of products.
@@ -30,9 +35,6 @@ import static com.barryholroyd.walmartproducts.Configure.*;
 public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
-	/** Names for the cache directories. */
-	static final String CACHEDIR = "wmp_images_cache";
-
     /** "No image" string constant for memory cache. */
     static private final String NO_IMAGE = "NO IMAGE";
 
@@ -45,8 +47,8 @@ public class ProductListRecyclerAdapter
     ProductListRecyclerAdapter(Activity _a) {
         a = _a;
         cacheMemory = MC_PERCENT
-				? ImageCacheMemory.createWithPercent(MC_CACHESIZE_PERCENT)
-				: ImageCacheMemory.createWithBytes(MC_CACHESIZE_BYTES);
+				? ImageCacheMemory.createWithPercent(MC_SIZE_PERCENT)
+				: ImageCacheMemory.createWithBytes(MC_SIZE_BYTES);
 
         // Load in the default "no image" image.
         Bitmap bitmap = BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
@@ -307,7 +309,7 @@ public class ProductListRecyclerAdapter
 				a = _a;
 				iv= _iv;
 				url = _url;
-				imageCacheDisk = ImageCacheDisk.getInstance(a, CACHEDIR, DISK_CACHESIZE_BYTES);
+				imageCacheDisk = ImageCacheDisk.getInstance(a, DC_CACHE_DIR, DC_SIZE_BYTES);
 			}
 
 			@Override
@@ -347,7 +349,9 @@ public class ProductListRecyclerAdapter
 					setImageView(iv, bitmap);
 					return;
 				}
-				Support.loge(String.format("ImageLoaderThreads() - Could not load image from %s\n", url));
+				Support.loge(String.format(
+						"ImageLoaderThreads() - Could not load image from %s\n",
+						url));
 			}
 
             /** Check to see if the url has changed.
@@ -383,7 +387,6 @@ public class ProductListRecyclerAdapter
 				});
 			}
 			private void prBitmapInfo(Bitmap bitmap) {
-				// DEL: when no longer needed
 				Support.logd(String.format("Bitmap Config: %s", bitmap.getConfig()));
 			}
 		}

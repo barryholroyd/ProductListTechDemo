@@ -54,10 +54,8 @@ public class NetworkSupport {
      */
     static Bitmap getImageFromNetwork(Activity a, String urlStr) {
         InputStream is = NetworkSupport.getInputStreamFromUrl(a, urlStr);
-
         BitmapFactory.Options opt = new BitmapFactory.Options();
         Bitmap bitmap = BitmapFactory.decodeStream(is, null, opt);
-        // DEL:
         Support.logd(String.format("BITMAP FORMAT: %s", opt.outMimeType));
         return bitmap;
     }

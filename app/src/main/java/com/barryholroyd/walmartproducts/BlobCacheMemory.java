@@ -64,7 +64,7 @@ public class BlobCacheMemory<K,V>
      * Get the item, if it exists.
      */
     public V get(K key) {
-        if (!Configure.MC_ON)
+        if (!Configure.MemoryCache.MC_ON)
             return null;
 
         trace(String.format("Getting [%s]: %s",
@@ -80,7 +80,7 @@ public class BlobCacheMemory<K,V>
      */
     // TBD: ensure everything get synchronized correctly!
     public void add(K key, V val) {
-        if (!Configure.MC_ON)
+        if (!Configure.MemoryCache.MC_ON)
             return;
 
         trace(String.format("Adding: %s", key));
@@ -138,6 +138,6 @@ public class BlobCacheMemory<K,V>
     }
 
     static protected void trace(String msg) {
-        Support.trace(Configure.blobCacheMemoryTrace, "Cache Memory", msg);
+        Support.trace(Configure.MemoryCache.MC_TRACE, "Cache Memory", msg);
     }
 }

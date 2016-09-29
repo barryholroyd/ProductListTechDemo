@@ -3,7 +3,6 @@ package com.barryholroyd.walmartproducts;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
 import android.os.Environment;
 
 import java.io.File;
@@ -73,17 +72,39 @@ final class ImageCacheDisk
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
-            trace(String.format("cache directory already exists: %s", cacheDirName));
-            if (!cacheDir.isDirectory()) {
-                throw new ImageDiskCacheException(
-                        String.format("Disk cache exists but is not a directory: %s",
-                                cacheDirName));
+            if (Configure.DiskCache.DC_CLEAR) {
+                trace(String.format("deleting existing cache directory: %s", cacheDirName));
+                for (File f : cacheDir.listFiles()) {
+                    Support.logd(String.format("  Deleting: %s", f.getName()));
+                    deleteFile(f);
+                }
+                deleteFile(cacheDir);
             }
-            return;
+            else {
+                trace(String.format("retaining existing cache directory: %s", cacheDirName));
+                if (!cacheDir.isDirectory()) {
+                    throw new ImageDiskCacheException(
+                            String.format("Disk cache exists but is not a directory: %s",
+                                    cacheDirName));
+                }
+                return;
+            }
         }
         trace(String.format("cache directory being created: %s", cacheDirName));
         if (!cacheDir.mkdirs()) {
             throw new ImageDiskCacheException("Could not create disk cache directory.");
+        }
+    }
+
+    /**
+     * Delete a file and throw an exception if the deletion fails.
+     *
+     * @param f the File instance for the file to be deleted.
+     */
+    static private void deleteFile(File f) {
+        if (!f.delete()) {
+            throw new ImageDiskCacheException(
+                    String.format("Could not delete file: %s", f.getName()));
         }
     }
 
@@ -117,7 +138,7 @@ final class ImageCacheDisk
      * @return bitmap obtained from the URL.
      */
     Bitmap get(String url) {
-        if (!Configure.DC_ON)
+        if (!Configure.DiskCache.DC_ON)
             return null;
 
         Entry entry = getEntry(url);   // this always returns a valid entry.
@@ -139,7 +160,7 @@ final class ImageCacheDisk
     }
 
     void add(Activity a, String url, Bitmap bitmap) {
-        if (!Configure.DC_ON)
+        if (!Configure.DiskCache.DC_ON)
             return;
 
         if (url == null) {
@@ -196,11 +217,7 @@ final class ImageCacheDisk
 
             File f = new File(lastLongname);
             fileCheck(f, lastUrl);
-            if (!f.delete()) {
-                throw new ImageDiskCacheException(
-                        String.format("Failed to delete file [file=%s]: %s.",
-                                lastLongname, lastUrl));
-            }
+            deleteFile(f);
             currentCacheSize -= lastValSize;
         }
 
@@ -284,7 +301,7 @@ final class ImageCacheDisk
     }
 
     private void trace(String msg) {
-        Support.trace(Configure.imageCacheDiskTrace, "Cache Disk", msg);
+        Support.trace(Configure.DiskCache.DC_TRACE, "Cache Disk", msg);
     }
 
     /**
