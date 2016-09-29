@@ -137,6 +137,12 @@ public class BlobCacheMemory<K,V>
                 valSize, currentCacheSize, maxCacheSize));
     }
 
+    /**
+     * Tracing method specific to the memory cache.
+     * Overall Log level must be "info" or higher.
+     *
+     * @param msg message to be logged.
+     */
     static protected void trace(String msg) {
         Support.trace(Configure.MemoryCache.MC_TRACE, "Cache Memory", msg);
     }

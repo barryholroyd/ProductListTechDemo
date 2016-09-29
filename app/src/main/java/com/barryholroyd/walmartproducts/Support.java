@@ -37,7 +37,7 @@ public class Support
 	 */
 	static void trace(boolean flag, String component, String msg) {
 		if (flag)
-			Log.v(ActivityProductList.LOGTAG,
+			Log.i(ActivityProductList.LOGTAG,
 			      component + ": " + msg);
 	}
 

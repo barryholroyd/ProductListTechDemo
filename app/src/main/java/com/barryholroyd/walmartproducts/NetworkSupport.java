@@ -3,7 +3,6 @@ package com.barryholroyd.walmartproducts;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,10 +52,20 @@ public class NetworkSupport {
      * @return  the bitmap obtained from the network.
      */
     static Bitmap getImageFromNetwork(Activity a, String urlStr) {
+        trace(String.format("Loading from network: %s", urlStr));
         InputStream is = NetworkSupport.getInputStreamFromUrl(a, urlStr);
         BitmapFactory.Options opt = new BitmapFactory.Options();
         Bitmap bitmap = BitmapFactory.decodeStream(is, null, opt);
         Support.logd(String.format("BITMAP FORMAT: %s", opt.outMimeType));
         return bitmap;
     }
-}
+
+    /**
+     * Tracing method specific to the networking module.
+     * Overall Log level must be "info" or higher.
+     *
+     * @param msg message to be logged.
+     */
+    static protected void trace(String msg) {
+        Support.trace(Configure.Network.NM_TRACE, "Network Module", msg);
+    }}

@@ -301,6 +301,12 @@ final class ImageCacheDisk
         return entry;
     }
 
+    /**
+     * Tracing method specific to the disk cache.
+     * Overall Log level must be "info" or higher.
+     *
+     * @param msg message to be logged.
+     */
     private void trace(String msg) {
         Support.trace(Configure.DiskCache.DC_TRACE, "Cache Disk", msg);
     }

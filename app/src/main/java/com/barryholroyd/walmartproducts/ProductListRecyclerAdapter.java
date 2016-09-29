@@ -340,8 +340,9 @@ public class ProductListRecyclerAdapter
 					return;
 				}
 
-                if (!isSameUrlString("Pre-network", url, currentUrl))
+                if (!isSameUrlString("Pre-network", url, currentUrl)) {
                     url = currentUrl;
+				}
                 bitmap = NetworkSupport.getImageFromNetwork(a, url);
 				prBitmapInfo(bitmap);
                 if (!isSameUrlString("Post-network", url, currentUrl)) {
@@ -352,7 +353,6 @@ public class ProductListRecyclerAdapter
                     return;
                 }
                 if (bitmap != null) {
-                    Support.logd(String.format("Loading from network: %s", url));
                     cacheMemory.add(url, bitmap);
 					imageCacheDisk.add(a, url, bitmap);
 					setImageView(iv, bitmap);
