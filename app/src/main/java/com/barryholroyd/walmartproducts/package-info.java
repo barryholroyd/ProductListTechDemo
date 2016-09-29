@@ -25,6 +25,9 @@
  * implementation, the RecyclerView ViewHolder may have been recycled by
  * the time the image arrives. This implementation recognizes and deals
  * with that situation in both the Threads and AsyncTask approaches.
+ * <p>
+ * See {@link com.barryholroyd.walmartproducts.Configure} for memory cache
+ * and disk cache configuration parameters.
  *
  * @author Barry Holroyd
  */

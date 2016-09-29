@@ -1,9 +1,10 @@
 package com.barryholroyd.walmartproducts;
 
 /**
- * Class with static constants to configure the app. These are mostly used for
+ * Class with static constants to configure the app.
+ * <p>
+ * These are mostly used for configuring the caches.
  */
-
 final class Configure {
     /*
      * Main Flags
