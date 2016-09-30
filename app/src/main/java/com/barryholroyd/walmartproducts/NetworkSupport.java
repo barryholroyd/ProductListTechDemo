@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -72,24 +73,34 @@ public class NetworkSupport {
     static Bitmap getImageFromNetwork(Activity a, String urlStr, int hmax, int wmax) {
 
         trace(String.format("Loading from network: %s", urlStr));
-        InputStream is = NetworkSupport.getInputStreamFromUrl(a, urlStr);
+        InputStream istmp = NetworkSupport.getInputStreamFromUrl(a, urlStr);
+        BufferedInputStream is = new BufferedInputStream(istmp);
+        is.mark(10000000);
         BitmapFactory.Options opts = setBmfOptions(a, is, hmax, wmax);
 
-        InputStream is2 = NetworkSupport.getInputStreamFromUrl(a, urlStr);
+        try {is.reset();} catch (IOException e) {
+            String msg = String.format("*** IO Exception: %s", e.getMessage());
+            throw new NetworkSupportException(msg);
+        }
 
-        int av1 = getAvailable(is2);
-        Bitmap bitmap = BitmapFactory.decodeStream(is2, null, opts);
-        int av2 = getAvailable(is2);
-        int av3 = getAvailable(is);
-        Bitmap bitmaptmp = BitmapFactory.decodeStream(is, null, opts);
-        int av4 = getAvailable(is);
+//        Bitmap bitmap = BitmapFactory.decodeStream(is, null, opts);
+        Bitmap bitmap = BitmapFactory.decodeStream(is);
 
-        printAvailable("IS=is2 Pre-decode", av1);
-        printAvailable("IS=is2 Post-decode", av2);
-        printAvailable("IS=is  Pre-decode", av3);
-        printAvailable("IS=is  Post-decode", av4);
-        Support.logd(String.format("bitmap: %s", bitmap == null ? "null" : "not null"));
-        Support.logd(String.format("bitmaptmp: %s", bitmaptmp == null ? "null" : "not null"));
+//        InputStream is2 = NetworkSupport.getInputStreamFromUrl(a, urlStr);
+//
+//        int av1 = getAvailable(is2);
+//        Bitmap bitmap = BitmapFactory.decodeStream(is2, null, opts);
+//        int av2 = getAvailable(is2);
+//        int av3 = getAvailable(is);
+//        Bitmap bitmaptmp = BitmapFactory.decodeStream(is, null, opts);
+//        int av4 = getAvailable(is);
+//
+//        printAvailable("IS=is2 Pre-decode", av1);
+//        printAvailable("IS=is2 Post-decode", av2);
+//        printAvailable("IS=is  Pre-decode", av3);
+//        printAvailable("IS=is  Post-decode", av4);
+//        Support.logd(String.format("bitmap: %s", bitmap == null ? "null" : "not null"));
+//        Support.logd(String.format("bitmaptmp: %s", bitmaptmp == null ? "null" : "not null"));
 
         // TBD: May have to reset the input stream -- bitmap is null.
         // TBD: can mark it and reset it?
