@@ -23,6 +23,7 @@ public class NetworkSupport {
      */
     static InputStream getInputStreamFromUrl(Activity a, String urlStr) {
         try {
+            int response;
             URL url = new URL(urlStr);
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
             c.setReadTimeout(10000); // ms
@@ -30,7 +31,11 @@ public class NetworkSupport {
             c.setRequestMethod("GET");
             c.setDoInput(true);
             c.connect();
-            c.getResponseCode();// NTH: check response code
+            response = c.getResponseCode();
+            if (response != 200) {
+                throw new NetworkSupportException(
+                    String.format("Bad response code: %d", response));
+            }
             return c.getInputStream();
         }
         catch (MalformedURLException e) {
@@ -65,13 +70,26 @@ public class NetworkSupport {
      * @return  the bitmap obtained from the network.
      */
     static Bitmap getImageFromNetwork(Activity a, String urlStr, int hmax, int wmax) {
+
         trace(String.format("Loading from network: %s", urlStr));
         InputStream is = NetworkSupport.getInputStreamFromUrl(a, urlStr);
         BitmapFactory.Options opts = setBmfOptions(a, is, hmax, wmax);
 
         InputStream is2 = NetworkSupport.getInputStreamFromUrl(a, urlStr);
 
+        int av1 = getAvailable(is2);
         Bitmap bitmap = BitmapFactory.decodeStream(is2, null, opts);
+        int av2 = getAvailable(is2);
+        int av3 = getAvailable(is);
+        Bitmap bitmaptmp = BitmapFactory.decodeStream(is, null, opts);
+        int av4 = getAvailable(is);
+
+        printAvailable("IS=is2 Pre-decode", av1);
+        printAvailable("IS=is2 Post-decode", av2);
+        printAvailable("IS=is  Pre-decode", av3);
+        printAvailable("IS=is  Post-decode", av4);
+        Support.logd(String.format("bitmap: %s", bitmap == null ? "null" : "not null"));
+        Support.logd(String.format("bitmaptmp: %s", bitmaptmp == null ? "null" : "not null"));
 
         // TBD: May have to reset the input stream -- bitmap is null.
         // TBD: can mark it and reset it?
@@ -99,7 +117,11 @@ public class NetworkSupport {
 
         // Get information but don't read any data yet.
         opts.inJustDecodeBounds = true;
+        int av1 = getAvailable(is);
         BitmapFactory.decodeStream(is, null, opts);
+        int av2 = getAvailable(is);
+        printAvailable("Before setBmfOptions decode", av1);
+        printAvailable("After  setBmfOptions decode", av2);
 
         // Calculate the sample size.
         opts.inSampleSize = calculateInSampleSize(opts, hmax, wmax);
@@ -108,6 +130,17 @@ public class NetworkSupport {
         opts.inJustDecodeBounds = false;
 
         return opts;
+    }
+
+    static public void printAvailable(String tag, int available) { // DEL:
+        String msg = String.format("IS Bytes Available (%s): %d", tag, available);
+        Support.logd(msg);
+    }
+
+    static public int getAvailable(InputStream is) { // DEL:
+        int available = -1;
+        try { available = is.available(); } catch (Exception e) {}
+        return available;
     }
 
     /**
