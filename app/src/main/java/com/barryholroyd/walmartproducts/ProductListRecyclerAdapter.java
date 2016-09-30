@@ -172,10 +172,10 @@ public class ProductListRecyclerAdapter
 		 */
 
 		/** Max. number of height pixels in product image. */
-		final int IMAGE_HMAX = 100;
+		final int IMAGE_HSIZE = 100;
 
 		/** Max. number of width pixels in product image. */
-		final int IMAGE_WMAX = 100;
+		final int IMAGE_WSIZE = 100;
 
 		/**
 		 * The "tvId" field contains the identifier for the product. It is provided
@@ -195,8 +195,11 @@ public class ProductListRecyclerAdapter
 		/** Product image view. */
 		private final ImageView ivProductImage;
 
-		/** Url String for the currently requested image. */
-		// TBD: explain this somewhere
+		/**
+         * This stores the most current requested url for the ViewHolder instance.
+         *
+         * @see #isSameUrlString(String, String, String)
+         */
 		private String currentUrl;
 
 		/**
@@ -307,7 +310,8 @@ public class ProductListRecyclerAdapter
 				return;
 			}
 
-			currentUrl = url; // "currentUrl" is directly accessible by background threads
+            // "currentUrl" is directly accessible by background threads
+			currentUrl = url;
 
 			/*
 			 * Background: load from disk or network.
@@ -357,13 +361,13 @@ public class ProductListRecyclerAdapter
 				}
 
 				try {
-                	bitmap = NetworkSupport.getImageFromNetwork(a, url, IMAGE_HMAX, IMAGE_WMAX);
+                	bitmap = NetworkSupport.getImageFromNetwork(url, IMAGE_HSIZE, IMAGE_WSIZE);
 				}
 				catch (NetworkSupportException nse) {
 					String msg = String.format(String.format(
 							"NetworkSupportException: %s", nse.getMessage()));
 					Support.loge(msg);
-					(new Toaster(a)).display(msg);
+                    Toaster.display(a, msg);
 					return;
 				}
 
@@ -385,38 +389,6 @@ public class ProductListRecyclerAdapter
 						url));
 			}
 
-            /** Check to see if the url has changed.
-             * <p>
-             * Even though "url" will have just been set to currentUrl before starting the
-             * thread which calls this method, time may have passed and the value of
-             * currentUrl may have changed. This can happen, for example, when the ViewHolder
-             * gets recycled. All of its other fields will have been updated to reflect the
-             * new row it is responsible for, but the image field may not have been updated
-             * in time. When this occurs, we simply log the event and then try to load the
-             * image from the new url instead. (That is a small optimization since that url
-             * would also get loaded subsequently by a newer Thread.) Nost importantly, we
-			 * do *not* load the "old" image.
-             * <p>
-             * Since "url" is passed in to the constructor and stored locally, it retains
-             * the original value. Since "currentUrl" is a field of ProductListViewHolder,
-             * its current value is accessible to the caller of this method (LiThread's run()).
-             */
-            private boolean isSameUrlString(String label, String url, String currentUrl) {
-                if (!url.equals(currentUrl)) {
-                    Support.logd(String.format("Outdated url (%s): old=%s, new=%s",
-                            label, url, currentUrl));
-                    return false;
-                }
-                else
-                    return true;
-            }
-
-			/** Set the ImageView on the main thread. */
-			private void setImageView(final ImageView iv, final Bitmap bitmap) {
-				a.runOnUiThread(new Runnable() {
-					public void run() { iv.setImageBitmap(bitmap); }
-				});
-			}
 		}
 
 		private class LiAsyncTask extends AsyncTask<String, Void, Bitmap>
@@ -433,6 +405,63 @@ public class ProductListRecyclerAdapter
 				// TBD: iv = ...;
 			}
 		}
+        // DEL:
+//class AsyncTaskNetworkLoader extends AsyncTask<String, Void, Bitmap> {
+//    Activity a;
+//    ImageView iv;
+//
+//    AsyncTaskNetworkLoader(Activity _a, ImageView _iv) {
+//        a = _a;
+//        iv  = _iv;
+//    }
+//
+//    @Override
+//    protected Bitmap doInBackground(String ... params) {
+//        return NetworkSupport.getImageFromNetwork(a, params[0], 100, 100);
+//    }
+//
+//    @Override
+//    protected void onPostExecute(Bitmap bitmap) {
+//        if (bitmap != null) {
+//            iv.setImageBitmap(bitmap);
+//        }
+//    }
+//}
+
+
+
+        /** Check to see if the url has changed.
+         * <p>
+         * Even though "url" will have just been set to currentUrl before starting the
+         * thread which calls this method, time may have passed and the value of
+         * currentUrl may have changed. This can happen, for example, when the ViewHolder
+         * gets recycled. All of its other fields will have been updated to reflect the
+         * new row it is responsible for, but the image field may not have been updated
+         * in time. When this occurs, we simply log the event and then try to load the
+         * image from the new url instead. (That is a small optimization since that url
+         * would also get loaded subsequently by a newer Thread.) Nost importantly, we
+         * do *not* load the "old" image.
+         * <p>
+         * Since "url" is passed in to the constructor and stored locally, it retains
+         * the original value. Since "currentUrl" is a field of ProductListViewHolder,
+         * its current value is accessible to the caller of this method (LiThread's run()).
+         */
+        private boolean isSameUrlString(String label, String url, String currentUrl) {
+            if (!url.equals(currentUrl)) {
+                Support.logd(String.format("Outdated url (%s): old=%s, new=%s",
+                        label, url, currentUrl));
+                return false;
+            }
+            else
+                return true;
+        }
+
+        /** Set the ImageView on the main thread. */
+        private void setImageView(final ImageView iv, final Bitmap bitmap) {
+            a.runOnUiThread(new Runnable() {
+                public void run() { iv.setImageBitmap(bitmap); }
+            });
+        }
 
 		/**
 		 * Handle clicks on rows within the product list.

@@ -69,7 +69,6 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerInside"
                 android:id="@+id/product_image"
-                android:src="@drawable/image5"
                 />
         </FrameLayout>
         <TextView

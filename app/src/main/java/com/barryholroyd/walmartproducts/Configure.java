@@ -74,6 +74,6 @@ final class Configure {
         /**
          * Tracing flag for the networking module.
          */
-        static final boolean NM_TRACE = true;
+        static final boolean NM_TRACE = false;
     }
 }

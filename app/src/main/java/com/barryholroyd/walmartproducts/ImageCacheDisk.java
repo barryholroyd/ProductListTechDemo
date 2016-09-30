@@ -160,11 +160,6 @@ final class ImageCacheDisk
         if (!Configure.DiskCache.DC_ON)
             return;
 
-        String msg2 = "TEST: Creating ImageCacheDisk instance (testing Toaster)."; // DEL:
-        trace(msg2);
-        (new Toaster(a)).display(msg2);
-        Toaster.display(a, "TEST2-" + msg2); // TBD: convert other messages
-
         if (url == null) {
             trace(String.format("Adding: %s", url));
             throw new ImageDiskCacheException("null url");
@@ -197,7 +192,7 @@ final class ImageCacheDisk
                  * This should only happen if the first object is larger
                  * than the entire cache.
                  */
-                throw new ImageDiskCacheException("cache is empty.");
+                throw new ImageDiskCacheException("cache is empty."); // TBD: hitting this on scrolling
             }
 
             // Remove entry from internal data structures.
@@ -232,13 +227,13 @@ final class ImageCacheDisk
                 String msg = String.format(
                         "ImageCacheDisk - file could not be written out: %s",
                         filename);
-                (new Toaster(a)).display(msg);
+                Toaster.display(a, msg);
                 Support.loge(msg);
             }
         }
         catch (IOException ioe) {
             String msg = String.format("ImageCacheDisk - IO Exception: %s", filename);
-            (new Toaster(a)).display(msg);
+            Toaster.display(a, msg);
             Support.loge(msg);
         }
     }
