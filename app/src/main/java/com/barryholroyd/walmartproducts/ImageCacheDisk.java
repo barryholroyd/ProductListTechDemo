@@ -73,7 +73,7 @@ final class ImageCacheDisk
         cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
             if (Configure.DiskCache.DC_CLEAR) {
-                trace(String.format("deleting existing cache directory: %s", cacheDirName));
+                trace(String.format("deleting cache directory: %s", cacheDirName));
                 for (File f : cacheDir.listFiles()) {
                     Support.logd(String.format("  Deleting: %s", f.getName()));
                     deleteFile(f);
@@ -81,7 +81,7 @@ final class ImageCacheDisk
                 deleteFile(cacheDir);
             }
             else {
-                trace(String.format("retaining existing cache directory: %s", cacheDirName));
+                trace(String.format("retaining cache directory: %s", cacheDirName));
                 if (!cacheDir.isDirectory()) {
                     throw new ImageDiskCacheException(
                             String.format("Disk cache exists but is not a directory: %s",
@@ -90,7 +90,7 @@ final class ImageCacheDisk
                 return;
             }
         }
-        trace(String.format("cache directory being created: %s", cacheDirName));
+        trace(String.format("creating cache directory: %s", cacheDirName));
         if (!cacheDir.mkdirs()) {
             throw new ImageDiskCacheException("Could not create disk cache directory.");
         }
@@ -167,7 +167,7 @@ final class ImageCacheDisk
 
         Entry entry = getEntry(url);
         String filename = entry.longName;
-        trace(String.format("Adding [file=%s]: %s", filename, url));
+        trace(String.format("Adding [file=%s]: %s", entry.shortName, url));
 
         if (maxCacheSize == 0) {
             throw new ImageDiskCacheException("cache size not initialized.");
@@ -201,20 +201,18 @@ final class ImageCacheDisk
                 throw new ImageDiskCacheException("null key when removing entries.");
             }
             Entry lastEntry = icdHm.get(lastImage);
-            lastEntry.setStored(false);
 
             // Delete the bitmap file.
-            String lastLongname = lastEntry.longName;
-            String lastUrl = lastEntry.url;
             long lastValSize = lastEntry.getSize();
             trace(String.format("Removing [file=%s]: %s (cache size: %d - %d = %d).",
-                    lastLongname, lastUrl,
+                    lastEntry.shortName, lastEntry.url,
                     currentCacheSize, lastValSize,
                     currentCacheSize - lastValSize));
 
-            File f = new File(lastLongname);
-            fileCheck(f, lastUrl);
+            File f = new File(lastEntry.longName);
+            fileCheck(f, lastEntry.url);
             deleteFile(f);
+            lastEntry.setStored(false);
             currentCacheSize -= lastValSize;
         }
 
@@ -229,6 +227,9 @@ final class ImageCacheDisk
                         filename);
                 Toaster.display(a, msg);
                 Support.loge(msg);
+            }
+            else {
+                entry.setStored(true);
             }
         }
         catch (IOException ioe) {

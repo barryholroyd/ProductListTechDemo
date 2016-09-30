@@ -69,7 +69,7 @@ public class NetworkSupport {
      */
     static Bitmap getImageFromNetwork(String urlStr, int requestedHeight, int requestedWidth)
         throws NetworkSupportException {
-        trace(String.format("Loading from network: %s", urlStr));
+        trace(String.format("Getting: %s", urlStr));
 
         BitmapFactory.Options opts = setBmfOptions(urlStr, requestedHeight, requestedWidth);
 
@@ -86,6 +86,7 @@ public class NetworkSupport {
         if (bitmap == null)
             throw new NetworkSupportException("null bitmap");
 
+        trace(String.format("Found: %s", urlStr));
         logBitmapInfo(urlStr, bitmap, opts);
         return bitmap;
     }

@@ -305,7 +305,6 @@ public class ProductListRecyclerAdapter
 			 */
 			Bitmap bitmap = cacheMemory.get(url);
 			if (bitmap != null) {
-                Support.logd(String.format("Loading from memory cache: %s", url));
                 iv.setImageBitmap(bitmap);
 				return;
 			}
@@ -350,7 +349,6 @@ public class ProductListRecyclerAdapter
                     url = currentUrl;
 				bitmap = imageCacheDisk.get(url);
 				if (bitmap != null) {
-                    Support.logd(String.format("Loading from disk cache: %s", url));
 					cacheMemory.add(url, bitmap);
 					setImageView(iv, bitmap);
 					return;

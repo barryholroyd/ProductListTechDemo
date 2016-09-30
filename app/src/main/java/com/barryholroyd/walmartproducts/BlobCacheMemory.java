@@ -70,6 +70,7 @@ public class BlobCacheMemory<K,V>
         trace(String.format("Getting [%s]: %s",
                 bcmHm.containsKey(key) ? "found" : "not found",
                 key));
+
         return bcmHm.get(key);
     }
 
@@ -95,7 +96,7 @@ public class BlobCacheMemory<K,V>
         }
 
 	    // Don't allow overwriting a key's value.
-        if (get(key) != null) {
+        if (bcmHm.containsKey(key)) {
             trace(String.format("[Already added this key (returning): %s]", key));
             return;
 	    }
