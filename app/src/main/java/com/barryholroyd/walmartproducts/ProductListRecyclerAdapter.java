@@ -166,6 +166,17 @@ public class ProductListRecyclerAdapter
 	 */
 	protected class ProductListViewHolder extends RecyclerView.ViewHolder
 	{
+		/*
+		 * Assuming the the BitmapFactory default image format of ARGB_8888 (4 bytes):
+		 * Image (bitmap) size: 100 * 100 * 4 = 40,000 bytes.
+		 */
+
+		/** Max. number of height pixels in product image. */
+		final int IMAGE_HMAX = 100;
+
+		/** Max. number of width pixels in product image. */
+		final int IMAGE_WMAX = 100;
+
 		/**
 		 * The "tvId" field contains the identifier for the product. It is provided
 		 * within the is hidden ("gone") in the text view.
@@ -260,6 +271,7 @@ public class ProductListRecyclerAdapter
 			loadImage(a, ivProductImage, pi.imageUrl);
 		}
 
+		// DEL:
 		private String truncUrl(String url) { // DEL:
 			return url.replaceFirst(".*images/", ".../");
 		}
@@ -343,8 +355,19 @@ public class ProductListRecyclerAdapter
                 if (!isSameUrlString("Pre-network", url, currentUrl)) {
                     url = currentUrl;
 				}
-                bitmap = NetworkSupport.getImageFromNetwork(a, url, 100, 100);
-                if (!isSameUrlString("Post-network", url, currentUrl)) {
+
+				try {
+                	bitmap = NetworkSupport.getImageFromNetwork(a, url, IMAGE_HMAX, IMAGE_WMAX);
+				}
+				catch (NetworkSupportException nse) {
+					String msg = String.format(String.format(
+							"NetworkSupportException: %s", nse.getMessage()));
+					Support.loge(msg);
+					(new Toaster(a)).display(msg);
+					return;
+				}
+
+				if (!isSameUrlString("Post-network", url, currentUrl)) {
                     // The image request changed at the last instant. Give up and let the
                     // later thread handling the newer image request get it loaded.
                     Support.logd(String.format("Image request has changed -- loading default image."));

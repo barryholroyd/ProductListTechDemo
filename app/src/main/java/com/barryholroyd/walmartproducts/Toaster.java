@@ -17,6 +17,8 @@ class Toaster {
     private int offset = 0;
     private Activity a = null;
 
+    static private int offset2 = 0;
+
     Toaster(Activity _a) { a = _a; }
 
     private Context getContext() {
@@ -26,16 +28,29 @@ class Toaster {
         return a;
     }
 
+    /** DEL: ?
+     * Display a pop-up message to the user.
+     */
+    void display(final String msg) {
+        offset = (offset > YMAX) ? 0 : offset + YINC;
+        a.runOnUiThread(new Runnable() {
+            public void run() {
+                final Toast toast = Toast.makeText(a, msg, LENGTH_LONG);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, offset);
+                toast.show();
+            }
+        });
+    }
+
     /**
      * Display a pop-up message to the user.
      */
-    void display(String msg) {
-        offset = (offset > YMAX) ? 0 : offset + YINC;
-        final Toast toast = Toast.makeText(getContext(), msg, LENGTH_LONG);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, offset);
-
+    static void display(final Activity a, final String msg) {
+        offset2 = (offset2 > YMAX) ? 0 : offset2 + YINC;
         a.runOnUiThread(new Runnable() {
             public void run() {
+                final Toast toast = Toast.makeText(a, msg, LENGTH_LONG);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, offset2);
                 toast.show();
             }
         });

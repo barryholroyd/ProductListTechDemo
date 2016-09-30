@@ -44,7 +44,7 @@ final class Configure {
         /**
          * Disk cache toggle.
          */
-        static final boolean DC_ON = false;
+        static final boolean DC_ON = true;
 
         /**
          * Tracing flag for the image memory cache.

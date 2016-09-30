@@ -3,8 +3,6 @@ package com.barryholroyd.walmartproducts;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -14,7 +12,6 @@ import java.net.URL;
 /**
  * General network support.
  */
-
 public class NetworkSupport {
     /**
      * Get an input stream for the specified URL.
@@ -22,7 +19,8 @@ public class NetworkSupport {
      * @param urlStr the URL (in String form) to get the JSON product info. from.
      * @return the input stream created to read data from the specified URL.
      */
-    static InputStream getInputStreamFromUrl(Activity a, String urlStr) {
+    static InputStream getInputStreamFromUrl(Activity a, String urlStr)
+        throws NetworkSupportException {
         try {
             int response;
             URL url = new URL(urlStr);
@@ -35,18 +33,17 @@ public class NetworkSupport {
             response = c.getResponseCode();
             if (response != 200) {
                 throw new NetworkSupportException(
-                    String.format("Bad response code: %d", response));
+                    String.format("getInputStreamFromUrl() - bad response code: %d", response));
             }
             return c.getInputStream();
         }
         catch (MalformedURLException e) {
-            Support.loge(String.format("getInputStreamFromUrl() - malformed url: %s", urlStr));
-            return null;
+            throw new NetworkSupportException(
+                    String.format("getInputStreamFromUrl() - malformed url: %s", urlStr));
         }
         catch (IOException e) {
-            Support.loge(String.format("getInputStreamFromUrl() - IO Exception: %s", urlStr));
-            (new Toaster(a)).display(String.format("IO Exception: %s", e.getMessage()));
-            return null;
+            throw new NetworkSupportException(
+                    String.format("getInputStreamFromUrl() - IO Exception: %s", urlStr));
         }
     }
 
@@ -64,75 +61,63 @@ public class NetworkSupport {
      * to be slightly larger than the anticipated size of the images on the product info page.
      * </p>
      *
+     * TBD: must use input stream twice -- performance impact.
+     *
      * @param a standard Activity instance.
      * @param urlStr    url to use to get the bitmap from the network.
      * @param hmax  maximum height of the image (in pixels)
      * @param wmax  maximum width of the image (in pixels)
      * @return  the bitmap obtained from the network.
      */
-    static Bitmap getImageFromNetwork(Activity a, String urlStr, int hmax, int wmax) {
-
+    static Bitmap getImageFromNetwork(Activity a, String urlStr, int hmax, int wmax)
+        throws NetworkSupportException {
         trace(String.format("Loading from network: %s", urlStr));
-        InputStream istmp = NetworkSupport.getInputStreamFromUrl(a, urlStr);
-        BufferedInputStream is = new BufferedInputStream(istmp);
-        is.mark(10000000);
-        BitmapFactory.Options opts = setBmfOptions(a, is, hmax, wmax);
 
-        try {is.reset();} catch (IOException e) {
-            String msg = String.format("*** IO Exception: %s", e.getMessage());
+        BitmapFactory.Options opts = setBmfOptions(a, urlStr, hmax, wmax);
+
+        Bitmap bitmap;
+        try (InputStream is = NetworkSupport.getInputStreamFromUrl(a, urlStr)) {
+            bitmap = BitmapFactory.decodeStream(is, null, opts);
+        }
+        catch (IOException ioe) {
+            String msg = String.format(String.format(
+                    "IOException: %s", ioe.getMessage()));
             throw new NetworkSupportException(msg);
         }
 
-//        Bitmap bitmap = BitmapFactory.decodeStream(is, null, opts);
-        Bitmap bitmap = BitmapFactory.decodeStream(is);
-
-//        InputStream is2 = NetworkSupport.getInputStreamFromUrl(a, urlStr);
-//
-//        int av1 = getAvailable(is2);
-//        Bitmap bitmap = BitmapFactory.decodeStream(is2, null, opts);
-//        int av2 = getAvailable(is2);
-//        int av3 = getAvailable(is);
-//        Bitmap bitmaptmp = BitmapFactory.decodeStream(is, null, opts);
-//        int av4 = getAvailable(is);
-//
-//        printAvailable("IS=is2 Pre-decode", av1);
-//        printAvailable("IS=is2 Post-decode", av2);
-//        printAvailable("IS=is  Pre-decode", av3);
-//        printAvailable("IS=is  Post-decode", av4);
-//        Support.logd(String.format("bitmap: %s", bitmap == null ? "null" : "not null"));
-//        Support.logd(String.format("bitmaptmp: %s", bitmaptmp == null ? "null" : "not null"));
-
-        // TBD: May have to reset the input stream -- bitmap is null.
-        // TBD: can mark it and reset it?
         if (bitmap == null)
-            throw new RuntimeException("BITMAP IS NULL");
+            throw new NetworkSupportException("null bitmap");
 
         // TBD: should close network stream?
 
-        printBitmapInfo(urlStr, bitmap, opts);
+        logBitmapInfo(urlStr, bitmap, opts);
         return bitmap;
     }
 
     /**
-     * TBD: Document this.
+     * TBD: Document this. Create opts.
+     * Get information but don't read any data yet.
      *
      * @param a
-     * @param is
+     * @param urlStr
      * @param hmax
      * @param wmax
      * @return
      */
     static private BitmapFactory.Options setBmfOptions(
-            Activity a, InputStream is, int hmax, int wmax) {
+            Activity a, String urlStr, int hmax, int wmax)
+        throws NetworkSupportException  {
         BitmapFactory.Options opts = new BitmapFactory.Options();
 
-        // Get information but don't read any data yet.
-        opts.inJustDecodeBounds = true;
-        int av1 = getAvailable(is);
-        BitmapFactory.decodeStream(is, null, opts);
-        int av2 = getAvailable(is);
-        printAvailable("Before setBmfOptions decode", av1);
-        printAvailable("After  setBmfOptions decode", av2);
+        try (InputStream is = NetworkSupport.getInputStreamFromUrl(a, urlStr)) {
+            opts.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(is, null, opts);
+        }
+        catch (IOException ioe) {
+            String msg = String.format(String.format(
+                    "IOException: %s", ioe.getMessage()));
+            throw new NetworkSupportException(msg);
+        }
 
         // Calculate the sample size.
         opts.inSampleSize = calculateInSampleSize(opts, hmax, wmax);
@@ -141,17 +126,6 @@ public class NetworkSupport {
         opts.inJustDecodeBounds = false;
 
         return opts;
-    }
-
-    static public void printAvailable(String tag, int available) { // DEL:
-        String msg = String.format("IS Bytes Available (%s): %d", tag, available);
-        Support.logd(msg);
-    }
-
-    static public int getAvailable(InputStream is) { // DEL:
-        int available = -1;
-        try { available = is.available(); } catch (Exception e) {}
-        return available;
     }
 
     /**
@@ -182,7 +156,8 @@ public class NetworkSupport {
         return inSampleSize;
     }
 
-    static private void printBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
+    /** Log basic information about a bitmap. */
+    static private void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
         Support.logd(String.format("Image File Name:      %s", url));
         Support.logd(String.format("Image File Mime Type: %s", opts.outMimeType));
         Support.logd(String.format("Bitmap Format:        %s", bitmap.getConfig()));
@@ -195,6 +170,6 @@ public class NetworkSupport {
      *
      * @param msg message to be logged.
      */
-    static protected void trace(String msg) {
+    static private void trace(String msg) {
         Support.trace(Configure.Network.NM_TRACE, "Network Module", msg);
     }}

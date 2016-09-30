@@ -146,9 +146,16 @@ public class GetProducts
 		@Override
 		protected ProductInfoArrayList doInBackground(String urls[]) {
             // Download the JSON string from the network.
-            InputStream is = NetworkSupport.getInputStreamFromUrl(a, urls[0]);
-			WmpJsonReader jr = new WmpJsonReader(is);
-			return jr.parse();
+			try (InputStream is = NetworkSupport.getInputStreamFromUrl(a, urls[0])) {
+				WmpJsonReader jr = new WmpJsonReader(is);
+				return jr.parse();
+			}
+			catch (NetworkSupportException | IOException e) {
+				String msg = String.format(String.format("GetProducts: %s", e.getMessage()));
+				Support.loge(msg);
+				(new Toaster(a)).display(msg);
+				return null;
+			}
 		}
 
 		/**

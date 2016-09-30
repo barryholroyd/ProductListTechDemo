@@ -163,6 +163,7 @@ final class ImageCacheDisk
         String msg2 = "TEST: Creating ImageCacheDisk instance (testing Toaster)."; // DEL:
         trace(msg2);
         (new Toaster(a)).display(msg2);
+        Toaster.display(a, "TEST2-" + msg2); // TBD: convert other messages
 
         if (url == null) {
             trace(String.format("Adding: %s", url));
