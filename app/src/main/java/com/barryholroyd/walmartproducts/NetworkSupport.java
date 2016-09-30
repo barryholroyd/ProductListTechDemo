@@ -46,18 +46,103 @@ public class NetworkSupport {
 
     /**
      * Get a bitmap from the network.
+     * <p>
+     * When the BitmapFactory reads an image file from the network (e.g., a jpeg file),
+     * it decompresses the image and stores the decompressed image in a bitmap file in
+     * a particular bitmap format (e.g., ARGB_8888). The uncompressed bitmap can be
+     * substantially larger than the original compressed format.
+     * <p>
+     * The downloaded images will be used both on the product list page (where they will
+     * appear as small thumbnails) and also on the product info page (where they will appear
+     * individually, as somewhat larger thumbnails). The hmax and wmax values should be sized
+     * to be slightly larger than the anticipated size of the images on the product info page.
+     * </p>
      *
      * @param a standard Activity instance.
      * @param urlStr    url to use to get the bitmap from the network.
+     * @param hmax  maximum height of the image (in pixels)
+     * @param wmax  maximum width of the image (in pixels)
      * @return  the bitmap obtained from the network.
      */
-    static Bitmap getImageFromNetwork(Activity a, String urlStr) {
+    static Bitmap getImageFromNetwork(Activity a, String urlStr, int hmax, int wmax) {
         trace(String.format("Loading from network: %s", urlStr));
         InputStream is = NetworkSupport.getInputStreamFromUrl(a, urlStr);
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeStream(is, null, opt);
-        Support.logd(String.format("BITMAP FORMAT: %s", opt.outMimeType));
+        BitmapFactory.Options opts = setBmfOptions(a, is, hmax, wmax);
+
+        InputStream is2 = NetworkSupport.getInputStreamFromUrl(a, urlStr);
+
+        Bitmap bitmap = BitmapFactory.decodeStream(is2, null, opts);
+
+        // TBD: May have to reset the input stream -- bitmap is null.
+        // TBD: can mark it and reset it?
+        if (bitmap == null)
+            throw new RuntimeException("BITMAP IS NULL");
+
+        // TBD: should close network stream?
+
+        printBitmapInfo(urlStr, bitmap, opts);
         return bitmap;
+    }
+
+    /**
+     * TBD: Document this.
+     *
+     * @param a
+     * @param is
+     * @param hmax
+     * @param wmax
+     * @return
+     */
+    static private BitmapFactory.Options setBmfOptions(
+            Activity a, InputStream is, int hmax, int wmax) {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+
+        // Get information but don't read any data yet.
+        opts.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(is, null, opts);
+
+        // Calculate the sample size.
+        opts.inSampleSize = calculateInSampleSize(opts, hmax, wmax);
+
+        // Restore opts so that data will be read the next time it is used.
+        opts.inJustDecodeBounds = false;
+
+        return opts;
+    }
+
+    /**
+     * TBD: document this.
+     *
+     * @param opts
+     * @param hmax
+     * @param wmax
+     * @return
+     */
+    static private int calculateInSampleSize(BitmapFactory.Options opts, int hmax, int wmax) {
+        // Raw height and width of the image.
+        final int height = opts.outHeight;
+        final int width  = opts.outWidth;
+        int inSampleSize = 1;
+
+        if (height > hmax || width > wmax) {
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of two and keeps
+            // both height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= hmax && (halfWidth / inSampleSize) >= wmax) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    static private void printBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
+        Support.logd(String.format("Image File Name:      %s", url));
+        Support.logd(String.format("Image File Mime Type: %s", opts.outMimeType));
+        Support.logd(String.format("Bitmap Format:        %s", bitmap.getConfig()));
+        Support.logd(String.format("Bitmap Size:          %d", bitmap.getByteCount()));
     }
 
     /**

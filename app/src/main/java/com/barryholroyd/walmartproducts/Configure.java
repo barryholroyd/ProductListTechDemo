@@ -19,12 +19,12 @@ final class Configure {
         /**
          * Tracing flag for the image memory cache.
          */
-        static final boolean MC_TRACE = true;
+        static final boolean MC_TRACE = false;
 
         /**
          * Specify memory cache in percent of total memory or in bytes.
          */
-        static final boolean MC_PERCENT = true;
+        static final boolean MC_PERCENT = false;
 
         /**
          * Percent of total memory to use for the memory cache. Relevant iff MC_PERCENT == true.
@@ -34,7 +34,7 @@ final class Configure {
         /**
          * Memory (in bytes) to allocate for the memory cache. Relevant iff MC_PERCENT == false.
          */
-        static final long MC_SIZE_BYTES = 10000;
+        static final long MC_SIZE_BYTES = 2*1024*1024;
     }
 
     /**

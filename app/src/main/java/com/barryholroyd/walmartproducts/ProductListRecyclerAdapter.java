@@ -343,8 +343,7 @@ public class ProductListRecyclerAdapter
                 if (!isSameUrlString("Pre-network", url, currentUrl)) {
                     url = currentUrl;
 				}
-                bitmap = NetworkSupport.getImageFromNetwork(a, url);
-				prBitmapInfo(bitmap);
+                bitmap = NetworkSupport.getImageFromNetwork(a, url, 100, 100);
                 if (!isSameUrlString("Post-network", url, currentUrl)) {
                     // The image request changed at the last instant. Give up and let the
                     // later thread handling the newer image request get it loaded.
@@ -394,9 +393,6 @@ public class ProductListRecyclerAdapter
 				a.runOnUiThread(new Runnable() {
 					public void run() { iv.setImageBitmap(bitmap); }
 				});
-			}
-			private void prBitmapInfo(Bitmap bitmap) {
-				Support.logd(String.format("Bitmap Config: %s", bitmap.getConfig()));
 			}
 		}
 

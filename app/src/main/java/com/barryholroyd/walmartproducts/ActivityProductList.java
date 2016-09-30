@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
  * TBD: Add blank icon to header row.
  * TBD: Display correct image on individual product page.
  * TBD: check images for correctness in list page.
+ * TBD: remove image5.jpeg and noimage.png from drawable directory if not needed.
  *
  * "NTH" means "Nice to have"
  * NTH: Product Info screen's table should have the same border coloring as the Product List screen.

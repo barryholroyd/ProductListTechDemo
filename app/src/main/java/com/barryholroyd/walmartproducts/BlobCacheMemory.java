@@ -96,7 +96,7 @@ public class BlobCacheMemory<K,V>
 
 	    // Don't allow overwriting a key's value.
         if (get(key) != null) {
-            Support.logd(String.format("Already added this key... returning\n"));
+            trace(String.format("[Already added this key (returning): %s]", key));
             return;
 	    }
 
@@ -121,20 +121,23 @@ public class BlobCacheMemory<K,V>
             }
             V lastVal = bcmHm.remove(lastKey);
             long lastValSize = sizeOf(lastKey, lastVal);
-            trace(String.format("Removing: %s (cache size: %d - %d = %d).",
-                    lastKey, currentCacheSize, lastValSize,
+            trace(String.format("Removing: %s (oldCacheSize-imageSize=newCacheSize: %d-%d=%d).",
+                    lastKey,
+                    currentCacheSize, lastValSize,
                     currentCacheSize - lastValSize));
             currentCacheSize -= lastValSize;
         }
+
+        trace(String.format("Added: %s (oldCacheSize+imageSize=newCacheSize: %d+%d=%d).",
+                key,
+                currentCacheSize, valSize,
+                currentCacheSize + valSize));
+
         currentCacheSize += valSize;
 
 	// Add to the cache.
         bcmHm.put(key, val);
         bcmLl.add(key);
-
-	// DEL: when done
-        Support.logd(String.format("  Sizes after: val=%d, cur=%d, max=%d\n",
-                valSize, currentCacheSize, maxCacheSize));
     }
 
     /**
