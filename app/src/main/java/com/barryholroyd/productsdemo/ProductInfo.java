@@ -1,4 +1,4 @@
-package com.barryholroyd.walmartproducts;
+package com.barryholroyd.productsdemo;
 
 import android.os.Parcel;
 import android.os.Parcelable;

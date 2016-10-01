@@ -1,4 +1,4 @@
-package com.barryholroyd.walmartproducts;
+package com.barryholroyd.productsdemo;
 
 import java.util.HashMap;
 import java.util.LinkedList;

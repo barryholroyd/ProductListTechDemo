@@ -1,4 +1,4 @@
-package com.barryholroyd.walmartproducts;
+package com.barryholroyd.productsdemo;
 
 /**
  * Runtime exception for the BlobCacheMemory module.

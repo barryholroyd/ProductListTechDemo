@@ -1,4 +1,4 @@
-package com.barryholroyd.walmartproducts;
+package com.barryholroyd.productsdemo;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.barryholroyd.walmartproducts.Support.truncImageString;
+import static com.barryholroyd.productsdemo.Support.truncImageString;
 
 /**
  * General network support.

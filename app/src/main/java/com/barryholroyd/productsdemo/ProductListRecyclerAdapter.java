@@ -1,4 +1,4 @@
-package com.barryholroyd.walmartproducts;
+package com.barryholroyd.productsdemo;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,12 +17,12 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
-import static com.barryholroyd.walmartproducts.Configure.*;
-import static com.barryholroyd.walmartproducts.Configure.DiskCache.DC_CACHE_DIR;
-import static com.barryholroyd.walmartproducts.Configure.DiskCache.DC_SIZE_BYTES;
-import static com.barryholroyd.walmartproducts.Configure.MemoryCache.MC_PERCENT;
-import static com.barryholroyd.walmartproducts.Configure.MemoryCache.MC_SIZE_BYTES;
-import static com.barryholroyd.walmartproducts.Configure.MemoryCache.MC_SIZE_PERCENT;
+import static com.barryholroyd.productsdemo.Configure.*;
+import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_CACHE_DIR;
+import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
+import static com.barryholroyd.productsdemo.Configure.MemoryCache.MC_PERCENT;
+import static com.barryholroyd.productsdemo.Configure.MemoryCache.MC_SIZE_BYTES;
+import static com.barryholroyd.productsdemo.Configure.MemoryCache.MC_SIZE_PERCENT;
 
 /**
  * Recycler adapter to display the list of products.

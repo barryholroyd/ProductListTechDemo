@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "com.barryholroyd.walmartproducts"
+        applicationId "com.barryholroyd.productsdemo"
         minSdkVersion 23
         targetSdkVersion 24
         versionCode 1

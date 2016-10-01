@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:gravity="center"
         android:textSize="30sp"
-        android:text="Walmart Products"
+        android:text="Products"
         />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

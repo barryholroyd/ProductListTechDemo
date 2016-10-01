@@ -1,4 +1,4 @@
-package com.barryholroyd.walmartproducts;
+package com.barryholroyd.productsdemo;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import static com.barryholroyd.walmartproducts.Support.truncImageString;
+import static com.barryholroyd.productsdemo.Support.truncImageString;
 
 /**
  * Disk cache implementation.

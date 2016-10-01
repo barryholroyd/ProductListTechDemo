@@ -1,4 +1,4 @@
-package com.barryholroyd.walmartproducts;
+package com.barryholroyd.productsdemo;
 
 import android.app.Activity;
 import android.net.ConnectivityManager;
@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Get a list of Walmart products.
+ * Get a list of products.
  *
  * @author Barry Holroyd
  * @see    <a href="https://walmartlabs-test.appspot.com">Walmart Products API (mock)</a>
@@ -225,7 +225,7 @@ public class GetProducts
 		}
 
 		/**
-		 * Process the product info returned from Walmart. Specially, break out any generic
+		 * Process the product info returned from the cloud. Specially, break out any generic
 		 * information from the array of products.
 		 *
 		 * @param reader    JSON reader containing the JSON description of the products.
@@ -241,7 +241,7 @@ public class GetProducts
 		}
 
 		/**
-		 * Decode the product info returned from Walmart. It contains some general information
+		 * Decode the product info returned from the cloud. It contains some general information
 		 * as well as the set of products included in the next "batch".
 		 *
 		 * @param reader    JSON reader containing the JSON description of the products.
