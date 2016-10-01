@@ -77,7 +77,7 @@ final class ImageCacheDisk
             if (Configure.DiskCache.DC_CLEAR) {
                 trace(String.format("deleting cache directory: %s", cacheDirName));
                 for (File f : cacheDir.listFiles()) {
-                    Support.logd(String.format("  Deleting: %s", f.getName()));
+                    trace(String.format("  Deleting: %s", f.getName()));
                     deleteFile(f);
                 }
                 deleteFile(cacheDir);
@@ -176,7 +176,7 @@ final class ImageCacheDisk
         }
 
         if (entry.isStored()) {
-            Support.logd(String.format("Already added this image... returning\n"));
+            trace(String.format("Already added this image... returning\n"));
             return;
         }
 
@@ -251,12 +251,14 @@ final class ImageCacheDisk
     }
 
     private void prSizes(String tag, Entry entry) {
-        String msg = String.format(
-                "  DC: %s: Cur:Max=%d:%d [File=%s  Url=%s] [File=%d, Bitmap=%d]",
-                tag, currentCacheSize, maxCacheSize,
-                entry.shortName, truncImageString(entry.url),
-                entry.getSizeFile(), entry.getSizeBitmap());
-        Support.logd(msg);
+        if (Configure.TRACE_DETAILS) {
+            String msg = String.format(
+                    "  DC: %s: Cur:Max=%d:%d [File=%s  Url=%s] [File=%d, Bitmap=%d]",
+                    tag, currentCacheSize, maxCacheSize,
+                    entry.shortName, truncImageString(entry.url),
+                    entry.getSizeFile(), entry.getSizeBitmap());
+            trace(msg);
+        }
     }
 
     /**
@@ -317,12 +319,11 @@ final class ImageCacheDisk
 
     /**
      * Tracing method specific to the disk cache.
-     * Overall Log level must be "info" or higher.
      *
      * @param msg message to be logged.
      */
     private void trace(String msg) {
-        Support.trace(Configure.DiskCache.DC_TRACE, "Cache Disk", msg);
+        Support.trc(Configure.DiskCache.DC_TRACE, "Cache Disk", msg);
     }
 
     /**

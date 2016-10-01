@@ -162,6 +162,15 @@ public class ProductListRecyclerAdapter
 	}
 
 	/**
+	 * Tracing method for app overall.
+	 *
+	 * @param msg message to be logged.
+	 */
+	static private void trace(String msg) {
+		Support.trc(Configure.APP_TRACE, "App", msg);
+	}
+
+	/**
 	 * ViewHolder class specific to ProductListRecyclerAdapter.
 	 */
 	protected class ProductListViewHolder extends RecyclerView.ViewHolder
@@ -334,7 +343,7 @@ public class ProductListRecyclerAdapter
 			@Override
 			public void run() {
                 if (url == null) {
-                    Support.logd(String.format("No image provided -- loading default image."));
+					trace(String.format("No image provided -- loading default image."));
                     setImageView(iv, cacheMemory.get(NO_IMAGE));
                     return;
                 }
@@ -365,9 +374,11 @@ public class ProductListRecyclerAdapter
 				}
 
 				if (!isSameUrlString("Post-network", url, currentUrl)) {
-                    // The image request changed at the last instant. Give up and let the
-                    // later thread handling the newer image request get it loaded.
-                    Support.logd(String.format("Image request has changed -- loading default image."));
+                    /*
+                     * The image request changed at the last instant. Give up and let the
+                     * later thread handling the newer image request get it loaded.
+                     */
+					trace(String.format("Image request has changed -- loading default image."));
                     setImageView(iv, cacheMemory.get(NO_IMAGE));
                     return;
                 }
@@ -441,7 +452,7 @@ public class ProductListRecyclerAdapter
          */
         private boolean isSameUrlString(String label, String url, String currentUrl) {
             if (!url.equals(currentUrl)) {
-                Support.logd(String.format("Outdated url (%s): old=%s, new=%s",
+				trace(String.format("Outdated url (%s): old=%s, new=%s",
                         label, url, currentUrl));
                 return false;
             }

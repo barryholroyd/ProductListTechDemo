@@ -29,16 +29,24 @@ public class Support
 	}
 
 	/**
-	 * Trace method -- toggle-control logging.
+	 * Workhorse trc method -- toggle-controlled logging.
+     * <p>
+     * This is called by module-specific trace() methods. The trace() methods
+     * are intended to be a permanent part of the code (as opposed to calls to
+     * the Support.logd() method, which are intended to be temporary and should
+     * be deleted for production code).
+     * <p>
+     * NTH: add screen to toggle trace method flags during runtime.
 	 *
 	 * @param flag print the message iff flag is "true".
 	 * @param component the component being traced.
 	 * @param msg the message to be logged.
 	 */
-	static void trace(boolean flag, String component, String msg) {
-		if (flag)
-			Log.i(ActivityProductList.LOGTAG,
-			      component + ": " + msg);
+	static void trc(boolean flag, String component, String msg) {
+		if (flag) {
+			Log.v(ActivityProductList.LOGTAG,
+					String.format("TRACE [%-12s]: %s", component, msg));
+		}
 	}
 
 	/**

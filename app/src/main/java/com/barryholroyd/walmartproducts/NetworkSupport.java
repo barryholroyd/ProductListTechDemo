@@ -89,7 +89,7 @@ public class NetworkSupport {
             throw new NetworkSupportException("null bitmap");
 
         trace(String.format("Found: %s", urlStr));
-//        DEL: logBitmapInfo(urlStr, bitmap, opts);
+        logBitmapInfo(urlStr, bitmap, opts);
         return bitmap;
     }
 
@@ -177,18 +177,20 @@ public class NetworkSupport {
      * @param opts      the options used to create the bitmap.
      */
     static private void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
-        Support.logd(String.format(
-                "Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
-                truncImageString(url), opts.outMimeType,
-                bitmap.getConfig(), bitmap.getByteCount()));
+        if (Configure.TRACE_DETAILS) {
+            trace(String.format(
+                    "Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
+                    truncImageString(url), opts.outMimeType,
+                    bitmap.getConfig(), bitmap.getByteCount()));
+        }
     }
 
     /**
      * Tracing method specific to the networking module.
-     * Overall Log level must be "info" or higher.
      *
      * @param msg message to be logged.
      */
     static private void trace(String msg) {
-        Support.trace(Configure.Network.NM_TRACE, "Network Module", msg);
-    }}
+        Support.trc(Configure.Network.NM_TRACE, "Network", msg);
+    }
+}

@@ -102,9 +102,6 @@ public class BlobCacheMemory<K,V>
 	    }
 
         long valSize = sizeOf(key, val);
-        // DEL: when done
-        Support.logd(String.format("  MC: Sizes before: val=%d, cur=%d, max=%d\n",
-                valSize, currentCacheSize, maxCacheSize));
 
         // Clear cache entries, if necessary.
         while ((currentCacheSize + valSize) > maxCacheSize) {
@@ -129,25 +126,19 @@ public class BlobCacheMemory<K,V>
             currentCacheSize -= lastValSize;
         }
 
-        trace(String.format("Added: %s (oldCacheSize+imageSize=newCacheSize: %d+%d=%d).",
-                key,
-                currentCacheSize, valSize,
-                currentCacheSize + valSize));
-
         currentCacheSize += valSize;
 
-	// Add to the cache.
+	    // Add to the cache.
         bcmHm.put(key, val);
         bcmLl.add(key);
     }
 
     /**
      * Tracing method specific to the memory cache.
-     * Overall Log level must be "info" or higher.
      *
      * @param msg message to be logged.
      */
     static protected void trace(String msg) {
-        Support.trace(Configure.MemoryCache.MC_TRACE, "Cache Memory", msg);
+        Support.trc(Configure.MemoryCache.MC_TRACE, "Cache Memory", msg);
     }
 }

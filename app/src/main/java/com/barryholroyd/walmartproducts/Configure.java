@@ -8,6 +8,16 @@ final class Configure {
     static final boolean USE_THREADS = true;
 
     /**
+     * Tracing flag for general logging.
+     */
+    static final boolean APP_TRACE = true;
+
+    /**
+     * Tracing flag for image disk cache details.
+     */
+    static final boolean TRACE_DETAILS = true;
+
+    /**
      * Memory cache configuration.
      */
     static class MemoryCache {
@@ -47,7 +57,7 @@ final class Configure {
         static final boolean DC_ON = true;
 
         /**
-         * Tracing flag for the image memory cache.
+         * Tracing flag for the image disk cache.
          */
         static final boolean DC_TRACE = true;
 
