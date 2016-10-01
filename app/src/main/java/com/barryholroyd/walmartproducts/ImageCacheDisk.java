@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import static com.barryholroyd.walmartproducts.Support.truncImageString;
+
 /**
  * Disk cache implementation.
  * <p>
@@ -52,10 +54,10 @@ final class ImageCacheDisk
     /** File handle for the disk cache subdirectory. */
     private final File cacheDir;
 
-    /** Maximum size of the cache in bytes. */
+    /** Maximum sizeBitmap of the cache in bytes. */
     private long maxCacheSize = 0;
 
-    /** Current size (bytes used) of the disk cache. */
+    /** Current sizeBitmap (bytes used) of the disk cache. */
     private long currentCacheSize = 0;
 
     /**
@@ -170,7 +172,7 @@ final class ImageCacheDisk
         trace(String.format("Adding [file=%s]: %s", entry.shortName, url));
 
         if (maxCacheSize == 0) {
-            throw new ImageDiskCacheException("cache size not initialized.");
+            throw new ImageDiskCacheException("cache sizeBitmap not initialized.");
         }
 
         if (entry.isStored()) {
@@ -178,18 +180,26 @@ final class ImageCacheDisk
             return;
         }
 
-        long valSize = bitmap.getByteCount();
-        entry.setSize(valSize);
+        entry.setSizeBitmap(bitmap.getByteCount());
 
-        // DEL: when done
-        Support.logd(String.format("  DC: Sizes before: val=%d, cur=%d, max=%d\n",
-                valSize, currentCacheSize, maxCacheSize));
-
-        // Clear cache entries, if necessary.
-        while ((currentCacheSize + valSize) > maxCacheSize) {
+        /*
+         * Clear cache entries, if necessary.
+         *
+         * Catch-22: We need to know the size of the compressed bitmap as a file
+         * so that we can determine whether or not to free up additional space. However,
+         * we won't know the file size until we write it out. Instead, we make the
+         * assumption that the compressed file will be smaller than the original bitmap
+         * and use the original bitmap's size to determine whether or not to delete
+         * some of the cached files.
+         *
+         * NTH: It would be nice to delete more than just the minimum necessary from the cache.
+         * Doing that intelligently, however, would take some thought.
+         */
+        prSizes("Initial", entry);
+        while ((currentCacheSize + entry.getSizeBitmap()) > maxCacheSize) {
             if (icdLl.isEmpty()) {
                 /*
-                 * This should only happen if the first object is larger
+                 * This should only happen if the first bitmap size is larger
                  * than the entire cache.
                  */
                 throw new ImageDiskCacheException("cache is empty."); // TBD: hitting this on scrolling
@@ -203,33 +213,34 @@ final class ImageCacheDisk
             Entry lastEntry = icdHm.get(lastImage);
 
             // Delete the bitmap file.
-            long lastValSize = lastEntry.getSize();
-            trace(String.format("Removing [file=%s]: %s (cache size: %d - %d = %d).",
-                    lastEntry.shortName, lastEntry.url,
-                    currentCacheSize, lastValSize,
-                    currentCacheSize - lastValSize));
-
-            File f = new File(lastEntry.longName);
-            fileCheck(f, lastEntry.url);
-            deleteFile(f);
+            File le = new File(lastEntry.longName);
+            long lastFileSize = le.length();
+            prSizes("Removing", lastEntry);
+            fileCheck(le, lastEntry.url);
+            deleteFile(le);
             lastEntry.setStored(false);
-            currentCacheSize -= lastValSize;
+            currentCacheSize -= lastFileSize;
+            prSizes("Removed", lastEntry);
         }
 
-        currentCacheSize += valSize;
-
         try (FileOutputStream fos = new FileOutputStream(filename)) {
-            // PNG is the preferred format; that will also cause the second parameter, quality,
-            // to be ignored.
-            if (!bitmap.compress(Bitmap.CompressFormat.PNG, 0, fos)) {
-                String msg = String.format(
-                        "ImageCacheDisk - file could not be written out: %s",
-                        filename);
-                Toaster.display(a, msg);
-                Support.loge(msg);
+            /*
+             * PNG is the preferred format; that will also cause the second parameter, quality,
+             * to be ignored.
+             */
+            if (bitmap.compress(Bitmap.CompressFormat.PNG, 0, fos)) {
+                File f = new File(entry.longName);
+                entry.setSizeFile(f.length());
+                currentCacheSize += entry.getSizeFile();
+                icdLl.add(entry.url);
+                entry.setStored(true);
+                prSizes("Final", entry);
             }
             else {
-                entry.setStored(true);
+                String msg = String.format(
+                        "ImageCacheDisk - file could not be written out: %s", filename);
+                Toaster.display(a, msg);
+                Support.loge(msg);
             }
         }
         catch (IOException ioe) {
@@ -239,8 +250,17 @@ final class ImageCacheDisk
         }
     }
 
+    private void prSizes(String tag, Entry entry) {
+        String msg = String.format(
+                "  DC: %s: Cur:Max=%d:%d [File=%s  Url=%s] [File=%d, Bitmap=%d]",
+                tag, currentCacheSize, maxCacheSize,
+                entry.shortName, truncImageString(entry.url),
+                entry.getSizeFile(), entry.getSizeBitmap());
+        Support.logd(msg);
+    }
+
     /**
-     * Get / create a unique subdirectory in the app's standard cache directory.
+     * Get/create a unique subdirectory in the app's standard cache directory.
      * This uses external storage if there is any mounted; otherwise, it uses
      * internal storage.
      *
@@ -281,9 +301,7 @@ final class ImageCacheDisk
 
     /**
      * Get the Entry for the specified URL.
-     * Create the Entry, if necessary. All entries are stored in icdHm.
-     * However, entries are only stored in icdLl when their image is
-     * stored in the file system.
+     * Create the Entry, if necessary.
      *
      * @param url   url of the image to be loaded.
      * @return  Entry representing the image to be loaded.
@@ -293,7 +311,6 @@ final class ImageCacheDisk
         Entry entry = icdHm.get(url);
         if (entry == null) {
             entry = new Entry(url);
-            icdHm.put(url, entry);
         }
         return entry;
     }
@@ -321,6 +338,10 @@ final class ImageCacheDisk
      * be stored in the disk cache. Once an entry is created for a given image (as identified
      * by the image's url), it exists indefinitely.
      * <p>
+     * All entries are stored in icdHm.
+     * However, entries are only stored in icdLl when their image is
+     * stored in the file system.
+     * <p>
      * Each image is uniquely identified by its url. In addition, a unique long "id"
      * is generated for each image (there is a 1:1 mapping between urls and ids) and
      * used to create the cache filename.
@@ -330,22 +351,27 @@ final class ImageCacheDisk
      */
     private class Entry
     {
-        final private String url;         // unique identifier for the image.
-        final private long id;            // unique id for the image (usable in its filename).
-        final private String shortName;   // base name for the image file (including its id).
-        final private String longName;    // full name for the image file.
-        private long size;          // size of the image file in bytes.
-        private boolean stored;     // true iff the image has been stored in the file system.
+        final private String url;       // unique identifier for the image.
+        final private long id;          // unique id for the image (usable in its filename).
+        final private String shortName; // base name for the image file (including its id).
+        final private String longName;  // full name for the image file.
+        private long sizeBitmap;        // size of the bitmap in bytes.
+        private long sizeFile;          // size of the image file on disk in bytes.
+        private boolean stored;         // true iff the image has been stored in the file system.
 
         private Entry(String _url) {
             url   = _url;
             id    = entryCounter++;
             shortName = String.format("%s-%d", FILENAME_BASE, id);
             longName = cacheDirName + File.separator + shortName;
+            icdHm.put(url, this);
         }
 
-        private long getSize() { return size; }
-        private void setSize(long _size) { size = _size; }
+        private long getSizeBitmap() { return sizeBitmap; }
+        private void setSizeBitmap(long _sizeBitmap) { sizeBitmap = _sizeBitmap; }
+
+        private long getSizeFile() { return sizeFile; }
+        private void setSizeFile(long _sizeFile) { sizeFile = _sizeFile; }
 
         private boolean isStored() { return stored; }
         private void setStored(boolean _stored) { stored = _stored; }

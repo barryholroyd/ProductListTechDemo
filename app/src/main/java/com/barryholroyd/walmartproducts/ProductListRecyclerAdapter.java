@@ -268,15 +268,10 @@ public class ProductListRecyclerAdapter
 		 */
 		protected void bindData(ProductInfo pi) {
 			tvId.setText(pi.id);
-			tvImageName.setText(truncUrl(pi.imageUrl));
+			tvImageName.setText(Support.truncImageString(pi.imageUrl));
 			tvName.setText(pi.name);
 			tvShortDescription.setText(pi.shortDescription);
 			loadImage(a, ivProductImage, pi.imageUrl);
-		}
-
-		// DEL:
-		private String truncUrl(String url) { // DEL:
-			return url.replaceFirst(".*images/", ".../");
 		}
 
 		/**

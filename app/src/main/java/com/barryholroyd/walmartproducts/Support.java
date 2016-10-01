@@ -42,6 +42,16 @@ public class Support
 	}
 
 	/**
+	 * Truncate a Url or filename for an image to just the final component.
+	 *
+	 * @param name name to be truncated. Must have "images" just before the last component.
+	 * @return the trailing component (e.g., image.jpeg, image-5).
+     */
+	static public String truncImageString(String name) {
+		return name.replaceFirst(".*images/", ".../");
+	}
+
+	/**
 	 * Translate HTML tags (embedded in text) to simple text.
 	 *
 	 * Poor man's version -- mostly, just removes tags.

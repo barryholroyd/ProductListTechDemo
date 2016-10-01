@@ -8,6 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.barryholroyd.walmartproducts.Support.truncImageString;
+
 /**
  * General network support.
  */
@@ -87,7 +89,7 @@ public class NetworkSupport {
             throw new NetworkSupportException("null bitmap");
 
         trace(String.format("Found: %s", urlStr));
-        logBitmapInfo(urlStr, bitmap, opts);
+//        DEL: logBitmapInfo(urlStr, bitmap, opts);
         return bitmap;
     }
 
@@ -175,10 +177,10 @@ public class NetworkSupport {
      * @param opts      the options used to create the bitmap.
      */
     static private void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
-        Support.logd(String.format("Image File Name:      %s", url));
-        Support.logd(String.format("Image File Mime Type: %s", opts.outMimeType));
-        Support.logd(String.format("Bitmap Format:        %s", bitmap.getConfig()));
-        Support.logd(String.format("Bitmap Size:          %d", bitmap.getByteCount()));
+        Support.logd(String.format(
+                "Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
+                truncImageString(url), opts.outMimeType,
+                bitmap.getConfig(), bitmap.getByteCount()));
     }
 
     /**

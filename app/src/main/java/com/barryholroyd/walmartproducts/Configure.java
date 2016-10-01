@@ -54,7 +54,8 @@ final class Configure {
         /**
          * Disk space (in bytes) to allocate for the disk cache.
          */
-        static final long DC_SIZE_BYTES = 1000000;
+//      static final long DC_SIZE_BYTES = 500000;
+        static final long DC_SIZE_BYTES = 100000; // DEL:
 
         /**
          * Clear the disk cache when the app starts up.
