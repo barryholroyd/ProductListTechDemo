@@ -70,6 +70,8 @@ final class ImageCacheDisk
      * @param cacheSubdirName  subdirectory name for the cache -- unique to this app/usage.
      */
     private ImageCacheDisk(Activity a, String cacheSubdirName, long _maxCacheSize) {
+        Support.logi(String.format(
+                "Disk caching: %s.", Configure.DiskCache.DC_ON ? "ON" : "OFF"));
         maxCacheSize = _maxCacheSize;
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);

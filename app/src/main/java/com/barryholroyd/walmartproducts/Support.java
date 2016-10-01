@@ -19,16 +19,25 @@ public class Support
 	 */
 	static void loge(String msg) { Log.e(ActivityProductList.LOGTAG, msg); }
 
-	/**
-	 * Logs a debug message.
-	 *
-	 * @param msg the message to be logged.
-	 */
-	static void logd(String msg) {
-		Log.d(ActivityProductList.LOGTAG, msg);
-	}
+    /**
+     * Logs a debug message.
+     *
+     * @param msg the message to be logged.
+     */
+    static void logd(String msg) {
+        Log.d(ActivityProductList.LOGTAG, msg);
+    }
 
-	/**
+    /**
+     * Logs an information message.
+     *
+     * @param msg the message to be logged.
+     */
+    static void logi(String msg) {
+        Log.i(ActivityProductList.LOGTAG, msg);
+    }
+
+    /**
 	 * Workhorse trc method -- toggle-controlled logging.
      * <p>
      * This is called by module-specific trace() methods. The trace() methods

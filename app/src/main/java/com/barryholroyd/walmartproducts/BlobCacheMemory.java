@@ -9,14 +9,11 @@ import java.util.LinkedList;
  * I used ideas from LruCache for this implementation. I wrote my own cache
  * implementation just for the practice.
  * <p>
- * Either setCacheSize() or setCacheSizePercentMaxMemory() must be called to set
- * the maximum size of the cache.
- * <p>
  * LinkedHashMap could not be used for the internal hash map because it
  * doesn't allow multiple "oldest" entries to be identified and removed
  * for a single put request (i.e., for those situations where the item to
  * be inserted in the list is larger than the item to be removed from the
- * list and the list is currently at its absolute maximum, in terms of bytes.
+ * list and the list is currently at its absolute maximum, in terms of bytes).
  * <p>
  * By default, size is specified as the number of maximum number of bytes.
  * <p>
@@ -41,8 +38,16 @@ public class BlobCacheMemory<K,V>
     /** Current cache size in bytes. */
     protected long currentCacheSize;
 
+    /** Indicates whether memory cache on/off message has been logged already or not. */
+    static private boolean msglogged = false;
+
     /** Create new instances using factory methods. */
     BlobCacheMemory(long _maxCacheSize) {
+        if (!msglogged) {
+            Support.logi(String.format(
+                    "Memory caching: %s.", Configure.MemoryCache.MC_ON ? "ON" : "OFF"));
+            msglogged = true;
+        }
         maxCacheSize = _maxCacheSize;
         trace(String.format("Maximum Cache Size: %d", maxCacheSize));
     }
