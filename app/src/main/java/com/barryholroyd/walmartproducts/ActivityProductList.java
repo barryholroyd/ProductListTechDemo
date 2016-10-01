@@ -6,39 +6,31 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /*
- * TODO: Make Support a singleton?
  * TODO: ProductInfo page: move the image into the Price row.
  * TODO: Product Info page: use PiTextStyle for all TextViews.
- * BUG: Name and Description are not vertically centered.
- * TODO: Display image in listing page.
  * TODO: Code unit tests.
  * TODO: GUI unit tests.
  * TBD: no image for header
  * BUG: Back button (push into background onto Overview screen), bring foreground: crashes with:
  * Total downloaded count corrupted (totalDownloaded=75 itemCount=25.
  * TBD: ALL PRODUCTS button doesn't show if there is a long description
- * (product info page, landscape mode).
+ * (product info page, landscape mode). E.g.: Tivo Romio Pro.
  * TBD: Add blank icon to header row.
  * TBD: Display correct image on individual product page.
- * TBD: check images for correctness in list page.
- * TBD: remove image5.jpeg and noimage.png from drawable directory if not needed.
  *
  * "NTH" means "Nice to have"
  * NTH: Product Info screen's table should have the same border coloring as the Product List screen.
- *
  */
 
 /**
- * Demo to list the Walmart products.
- *
- * This is the main activity. The overall app calls this to list products. Clicking on a product
- * will call ActivityProductInfo to display product-specific information.
+ * This is the main activity -- it lists the products.
+ * <p>
+ * Clicking on a product will call ActivityProductInfo to display product-specific information.
  *
  * @author Barry Holroyd
  * @see    <a href="https://walmartlabs-test.appspot.com">Walmart Products API (mock)</a>
  * @see    <a href="https://walmartlabs-test.appspot.com/_ah/api/walmart/v1">Documentation</a>
  */
-
 public class ActivityProductList extends AppCompatActivity
 {
 	/**
