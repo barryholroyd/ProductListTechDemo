@@ -179,7 +179,7 @@ public class NetworkSupport {
     static private void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
         if (Configure.TRACE_DETAILS) {
             trace(String.format(
-                    "Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
+                    "  NT: Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
                     truncImageString(url), opts.outMimeType,
                     bitmap.getConfig(), bitmap.getByteCount()));
         }
