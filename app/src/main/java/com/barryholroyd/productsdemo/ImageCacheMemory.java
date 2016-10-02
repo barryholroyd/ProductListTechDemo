@@ -3,7 +3,7 @@ package com.barryholroyd.productsdemo;
 import android.graphics.Bitmap;
 
 /**
- * Memory cache system extending BlobCacheMemory to be specific to a String
+ * Memory cache system extending CacheMemoryBlob to be specific to a String
  * (url) for the key and a Bitmap for the blob. sizeOf() is overridden so that
  * we can specify the maximum amount of storage allocated using bytes for the
  * unit size.
@@ -13,7 +13,7 @@ import android.graphics.Bitmap;
  * the total available memory (if implemented using constructors, the
  * constructors would have the same signature and hence be indistinguishable).
  */
-class ImageCacheMemory extends BlobCacheMemory<String, Bitmap> {
+class ImageCacheMemory extends CacheMemoryBlob<String, Bitmap> {
     /** Private constructor. */
     private ImageCacheMemory(long bytes) {
         super(bytes);

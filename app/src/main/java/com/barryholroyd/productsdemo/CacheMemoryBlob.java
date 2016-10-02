@@ -24,7 +24,7 @@ import java.util.LinkedList;
  *     <li>multiple caches can be used in the same app.
  * </ol>
  */
-public class BlobCacheMemory<K,V>
+public class CacheMemoryBlob<K,V>
 {
     /** Internal key/value mapping for cache storage. */
     final HashMap<K,V> bcmHm  = new HashMap<>();
@@ -38,16 +38,8 @@ public class BlobCacheMemory<K,V>
     /** Current cache size in bytes. */
     protected long currentCacheSize;
 
-    /** Indicates whether memory cache on/off message has been logged already or not. */
-    static private boolean msglogged = false;
-
     /** Create new instances using factory methods. */
-    BlobCacheMemory(long _maxCacheSize) {
-        if (!msglogged) {
-            Support.logi(String.format(
-                    "Memory caching: %s.", Configure.MemoryCache.MC_ON ? "ON" : "OFF"));
-            msglogged = true;
-        }
+    CacheMemoryBlob(long _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
         trace(String.format("Maximum Cache Size: %d", maxCacheSize));
     }

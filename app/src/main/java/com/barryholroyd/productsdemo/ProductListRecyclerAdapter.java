@@ -40,7 +40,7 @@ public class ProductListRecyclerAdapter
     static private final String NO_IMAGE = "NO IMAGE";
 
 	/** Standard Activity instance. */
-	Activity a;
+	private Activity a;
 
     /** In-memory caching instance. */
     private ImageCacheMemory cacheMemory;
@@ -54,6 +54,16 @@ public class ProductListRecyclerAdapter
 				? ImageCacheMemory.createWithPercent(MC_SIZE_PERCENT)
 				: ImageCacheMemory.createWithBytes(MC_SIZE_BYTES);
         imageCacheDisk = ImageCacheDisk.getInstance(a, DC_CACHE_DIR, DC_SIZE_BYTES);
+
+        Support.logi(String.format(
+                "Approach for loading images in the background: %s.",
+                App.USE_THREADS ? "Threads" : "AsyncTask"));
+        Support.logi(String.format(
+                "Memory caching: %s.",
+                MemoryCache.MC_ON ? "ON" : "OFF"));
+        Support.logi(String.format(
+                "Disk caching: %s.",
+                DiskCache.DC_ON ? "ON" : "OFF"));
     }
 
 	/**
@@ -281,7 +291,7 @@ public class ProductListRecyclerAdapter
 			tvImageName.setText(Support.truncImageString(pi.imageUrl));
 			tvName.setText(pi.name);
 			tvShortDescription.setText(pi.shortDescription);
-			loadImage(a, ivProductImage, pi.imageUrl);
+			loadImage(ivProductImage, pi.imageUrl);
 		}
 
 		/**
@@ -304,7 +314,7 @@ public class ProductListRecyclerAdapter
 		 *     </ol>
 		 * </ol>
 		 */
-		private void loadImage(Activity a, ImageView iv, String url) {
+		private void loadImage(ImageView iv, String url) {
 			/*
 			 * Foreground: load from memory cache, if present.
 			 */
@@ -322,18 +332,19 @@ public class ProductListRecyclerAdapter
 			 * Both LiThread and LiAsyncTask have to be defined as nested classes so that
 			 * they can have access to "currentUrl".
 			 */
-			if (USE_THREADS) (new LiThread(a, iv, url)).start();
-			else new LiAsyncTask(url).execute();
+			if (USE_THREADS) (new LiThread(iv, url)).start();
+			else new LiAsyncTask(iv, url).execute();
 		}
 
+        /**
+         * Threads-based version of loading the image in the background.
+         */
 		private class LiThread extends Thread
 		{
-			private Activity a;
 			private ImageView iv;
 			private String url;
 
-			LiThread(Activity _a, ImageView _iv, String _url) {
-				a = _a;
+			LiThread(ImageView _iv, String _url) {
 				iv= _iv;
 				url = _url;
 			}
@@ -363,13 +374,10 @@ public class ProductListRecyclerAdapter
                     return;
                 }
 
-                // Get the image from the network.
+                // Get the image from the network. Bitmap is guaranteed to be non-null.
                 url = checkUrlChanged("Pre-network", url, currentUrl);
                 bitmap = setImageNetwork(url);
-                if (bitmap != null) {
-                    setImageView(iv, bitmap);
-                    return;
-                }
+                setImageView(iv, bitmap);
 			}
 
             /** Set the ImageView on the main thread. */
@@ -380,17 +388,45 @@ public class ProductListRecyclerAdapter
             }
         }
 
-		private class LiAsyncTask extends AsyncTask<String, Void, Bitmap>
+        /**
+         * AsyncTask-based version of loading the image in the background.
+         */
+        private class LiAsyncTask extends AsyncTask<String, Void, Bitmap>
 		{
-			String url;
+            private ImageView iv;
+            private String url;
 
-			LiAsyncTask(String _url) { url = _url; }
+            LiAsyncTask(ImageView _iv, String _url) {
+                iv= _iv;
+                url = _url;
+            }
 
-			protected Bitmap doInBackground(String... args) {
-                return null; // TBD: placeholder
-			}
+            protected Bitmap doInBackground(String... args) {
+                /*
+                 * We have already tried pulling the bitmap from the memory
+                 * cache (that happens in the foreground), but didn't find it
+                 * there.
+                 */
+
+                Bitmap bitmap;
+
+                // Check for a null url.
+                bitmap = setImageNullCheck(url);
+                if (bitmap != null) { return bitmap; }
+
+                // Try the disk cache.
+                url = checkUrlChanged("Pre-disk cache", url, currentUrl);
+                bitmap = setImageDiskCache(url);
+                if (bitmap != null) { return bitmap; }
+
+                // Get the image from the network. Bitmap is guaranteed to be non-null.
+                url = checkUrlChanged("Pre-network", url, currentUrl);
+                bitmap = setImageNetwork(url);
+                return bitmap;
+            }
 
 			void postExecute(Bitmap bitmap) {
+                iv.setImageBitmap(bitmap);
 			}
 		}
         // DEL:
