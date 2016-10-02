@@ -51,23 +51,7 @@ public class ProductListRecyclerAdapter
 				? ImageCacheMemory.createWithPercent(MC_SIZE_PERCENT)
 				: ImageCacheMemory.createWithBytes(MC_SIZE_BYTES);
 
-//		testImages(); DEL: Remove canoe image
     }
-//DEL:
-//	private void testImages() {
-//		ImageView iv3 = (ImageView) a.findViewById(R.id.testimage3);
-//		ImageView iv4 = (ImageView) a.findViewById(R.id.testimage4);
-//		ImageView iv5 = (ImageView) a.findViewById(R.id.testimage5);
-//
-//		Bitmap bitmap3 = BitmapFactory.decodeResource(a.getResources(), R.drawable.canoe);
-//		iv3.setImageBitmap(bitmap3);
-//		Bitmap bitmap4 = BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
-//		iv4.setImageBitmap(bitmap4);
-//
-//		Bitmap bitmap5 = cacheMemory.get(NO_IMAGE);
-//		iv5.setImageBitmap(bitmap5);
-//
-//	}
 
 	/**
 	 * Enum to communicate the type of the row that a given ViewHolder is initialized
