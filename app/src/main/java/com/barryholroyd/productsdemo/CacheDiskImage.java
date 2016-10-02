@@ -21,7 +21,7 @@ import static com.barryholroyd.productsdemo.Support.truncImageString;
  * @see <a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java">
  *      DiskLruCache Implementation</a>
  */
-final class ImageCacheDisk
+final class CacheDiskImage
 {
     /**
      * Singleton.
@@ -37,7 +37,7 @@ final class ImageCacheDisk
      * making the instance "volatile" -- that ensure that the instance is fully initialized
      * before becoming visible to any other threads.
      */
-    static volatile private ImageCacheDisk instance;
+    static volatile private CacheDiskImage instance;
 
     /** Base name for image files. */
     static final private String FILENAME_BASE = "image";
@@ -69,7 +69,7 @@ final class ImageCacheDisk
      * @param a   standard Activity instance.
      * @param cacheSubdirName  subdirectory name for the cache -- unique to this app/usage.
      */
-    private ImageCacheDisk(Activity a, String cacheSubdirName, long _maxCacheSize) {
+    private CacheDiskImage(Activity a, String cacheSubdirName, long _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);
@@ -85,7 +85,7 @@ final class ImageCacheDisk
             else {
                 trace(String.format("retaining cache directory: %s", cacheDirName));
                 if (!cacheDir.isDirectory()) {
-                    throw new ImageDiskCacheException(
+                    throw new CacheDiskImageException(
                             String.format("Disk cache exists but is not a directory: %s",
                                     cacheDirName));
                 }
@@ -94,7 +94,7 @@ final class ImageCacheDisk
         }
         trace(String.format("creating cache directory: %s", cacheDirName));
         if (!cacheDir.mkdirs()) {
-            throw new ImageDiskCacheException("Could not create disk cache directory.");
+            throw new CacheDiskImageException("Could not create disk cache directory.");
         }
     }
 
@@ -105,7 +105,7 @@ final class ImageCacheDisk
      */
     static private void deleteFile(File f) {
         if (!f.delete()) {
-            throw new ImageDiskCacheException(
+            throw new CacheDiskImageException(
                     String.format("Could not delete file: %s", f.getName()));
         }
     }
@@ -118,13 +118,13 @@ final class ImageCacheDisk
      * @param cacheDirName  subdirectory name for the cache -- unique to this app/usage.
      * @return  singleton instance.
      */
-    static ImageCacheDisk getInstance(Activity a, String cacheDirName, long maxCacheSize) {
+    static CacheDiskImage getInstance(Activity a, String cacheDirName, long maxCacheSize) {
         if (instance != null)
             return instance;
 
-        synchronized(ImageCacheDisk.class) {
+        synchronized(CacheDiskImage.class) {
             if (instance == null)
-                instance = new ImageCacheDisk(a, cacheDirName, maxCacheSize);
+                instance = new CacheDiskImage(a, cacheDirName, maxCacheSize);
         }
         return instance;
     }
@@ -153,7 +153,7 @@ final class ImageCacheDisk
         fileCheck(f, url);
         Bitmap bitmap = BitmapFactory.decodeFile(filename);
         if (bitmap == null) {
-            throw new ImageDiskCacheException("Could not obtain bitmap from factory.");
+            throw new CacheDiskImageException("Could not obtain bitmap from factory.");
         }
         return bitmap;
     }
@@ -164,7 +164,7 @@ final class ImageCacheDisk
 
         if (url == null) {
             trace(String.format("Adding: %s", url));
-            throw new ImageDiskCacheException("null url");
+            throw new CacheDiskImageException("null url");
         }
 
         Entry entry = getEntry(url);
@@ -172,7 +172,7 @@ final class ImageCacheDisk
         trace(String.format("Adding [file=%s]: %s", entry.shortName, url));
 
         if (maxCacheSize == 0) {
-            throw new ImageDiskCacheException("cache sizeBitmap not initialized.");
+            throw new CacheDiskImageException("cache sizeBitmap not initialized.");
         }
 
         if (entry.isStored()) {
@@ -202,13 +202,13 @@ final class ImageCacheDisk
                  * This should only happen if the first bitmap size is larger
                  * than the entire cache.
                  */
-                throw new ImageDiskCacheException("cache is empty."); // TBD: hitting this on scrolling
+                throw new CacheDiskImageException("cache is empty."); // TBD: hitting this on scrolling
             }
 
             // Remove entry from internal data structures.
             String lastImage = icdLl.removeLast();
             if (lastImage == null) {
-                throw new ImageDiskCacheException("null key when removing entries.");
+                throw new CacheDiskImageException("null key when removing entries.");
             }
             Entry lastEntry = icdHm.get(lastImage);
 
@@ -238,13 +238,13 @@ final class ImageCacheDisk
             }
             else {
                 String msg = String.format(
-                        "ImageCacheDisk - file could not be written out: %s", filename);
+                        "CacheDiskImage - file could not be written out: %s", filename);
                 Toaster.display(a, msg);
                 Support.loge(msg);
             }
         }
         catch (IOException ioe) {
-            String msg = String.format("ImageCacheDisk - IO Exception: %s", filename);
+            String msg = String.format("CacheDiskImage - IO Exception: %s", filename);
             Toaster.display(a, msg);
             Support.loge(msg);
         }
@@ -279,11 +279,11 @@ final class ImageCacheDisk
 
     void fileCheck(File f, String url) {
         if (!f.exists()) {
-            throw new ImageDiskCacheException(
+            throw new CacheDiskImageException(
                     String.format("Missing [file=%s]: %s", f.getName(), url));
         }
         if (!f.isFile()) {
-            throw new ImageDiskCacheException(
+            throw new CacheDiskImageException(
                     String.format("File is not a normal file [file=%s]: %s", f.getName(), url));
         }
     }

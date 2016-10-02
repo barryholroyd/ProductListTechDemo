@@ -3,7 +3,6 @@ package com.barryholroyd.productsdemo;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
@@ -43,17 +42,17 @@ public class ProductListRecyclerAdapter
 	private Activity a;
 
     /** In-memory caching instance. */
-    private ImageCacheMemory cacheMemory;
+    private CacheMemoryImage cacheMemory;
 
     /** Disk caching instance (singleton). */
-    private ImageCacheDisk imageCacheDisk;
+    private CacheDiskImage cacheDiskImage;
 
     ProductListRecyclerAdapter(Activity _a) {
         a = _a;
         cacheMemory = MC_PERCENT
-				? ImageCacheMemory.createWithPercent(MC_SIZE_PERCENT)
-				: ImageCacheMemory.createWithBytes(MC_SIZE_BYTES);
-        imageCacheDisk = ImageCacheDisk.getInstance(a, DC_CACHE_DIR, DC_SIZE_BYTES);
+				? CacheMemoryImage.createWithPercent(MC_SIZE_PERCENT)
+				: CacheMemoryImage.createWithBytes(MC_SIZE_BYTES);
+        cacheDiskImage = CacheDiskImage.getInstance(a, DC_CACHE_DIR, DC_SIZE_BYTES);
 
         Support.logi(String.format(
                 "Approach for loading images in the background: %s.",
@@ -460,7 +459,7 @@ public class ProductListRecyclerAdapter
         }
 
         private Bitmap setImageDiskCache(String url) {
-            Bitmap bitmap = imageCacheDisk.get(url);
+            Bitmap bitmap = cacheDiskImage.get(url);
             if (bitmap != null) {
                 cacheMemory.add(url, bitmap);
             }
@@ -497,7 +496,7 @@ public class ProductListRecyclerAdapter
 
             if (bitmap != null) {
                 cacheMemory.add(url, bitmap);
-                imageCacheDisk.add(a, url, bitmap);
+                cacheDiskImage.add(a, url, bitmap);
             }
             else {
                 bitmap = Support.getNoImageBitmap(a);

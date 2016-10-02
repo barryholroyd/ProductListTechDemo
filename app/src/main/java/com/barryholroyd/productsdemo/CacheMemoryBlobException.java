@@ -3,8 +3,8 @@ package com.barryholroyd.productsdemo;
 /**
  * Runtime exception for the CacheMemoryBlob module.
  */
-class BlobCacheMemoryException extends RuntimeException {
-    BlobCacheMemoryException(String s) {
+class CacheMemoryBlobException extends RuntimeException {
+    CacheMemoryBlobException(String s) {
         super(s);
     }
 }

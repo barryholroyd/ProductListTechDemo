@@ -85,11 +85,11 @@ public class CacheMemoryBlob<K,V>
 
         // Disallow null keys.
         if (key == null) {
-            throw new BlobCacheMemoryException("null key.");
+            throw new CacheMemoryBlobException("null key.");
         }
 
         if (maxCacheSize == 0) {
-            throw new BlobCacheMemoryException("cache size not initialized.");
+            throw new CacheMemoryBlobException("cache size not initialized.");
         }
 
 	    // Don't allow overwriting a key's value.
@@ -107,12 +107,12 @@ public class CacheMemoryBlob<K,V>
                  * This should only happen if the first object is larger
                  * than the entire cache.
                  */
-                throw new BlobCacheMemoryException("cache is empty.");
+                throw new CacheMemoryBlobException("cache is empty.");
             }
 
             K lastKey = bcmLl.removeLast();
             if (lastKey == null) {
-              throw new BlobCacheMemoryException("null key when removing entries.");
+              throw new CacheMemoryBlobException("null key when removing entries.");
             }
             V lastVal = bcmHm.remove(lastKey);
             long lastValSize = sizeOf(lastKey, lastVal);

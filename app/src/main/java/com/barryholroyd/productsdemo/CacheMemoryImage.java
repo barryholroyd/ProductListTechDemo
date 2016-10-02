@@ -13,9 +13,9 @@ import android.graphics.Bitmap;
  * the total available memory (if implemented using constructors, the
  * constructors would have the same signature and hence be indistinguishable).
  */
-class ImageCacheMemory extends CacheMemoryBlob<String, Bitmap> {
+class CacheMemoryImage extends CacheMemoryBlob<String, Bitmap> {
     /** Private constructor. */
-    private ImageCacheMemory(long bytes) {
+    private CacheMemoryImage(long bytes) {
         super(bytes);
     }
 
@@ -27,7 +27,7 @@ class ImageCacheMemory extends CacheMemoryBlob<String, Bitmap> {
      * @param percent percentage of the available memory to use for
      *                the memory cache.
      */
-    static public ImageCacheMemory createWithPercent(int  percent) {
+    static public CacheMemoryImage createWithPercent(int  percent) {
         return createWithBytes(convertPercentToBytes(percent));
     }
 
@@ -36,8 +36,8 @@ class ImageCacheMemory extends CacheMemoryBlob<String, Bitmap> {
      *
      * @param maxCacheSize maximum cache size in bytes
      */
-    static public ImageCacheMemory createWithBytes(long maxCacheSize) {
-        ImageCacheMemory icm = new ImageCacheMemory(maxCacheSize);
+    static public CacheMemoryImage createWithBytes(long maxCacheSize) {
+        CacheMemoryImage icm = new CacheMemoryImage(maxCacheSize);
         return icm;
     }
 
