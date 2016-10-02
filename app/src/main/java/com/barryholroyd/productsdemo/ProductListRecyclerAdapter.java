@@ -428,28 +428,7 @@ public class ProductListRecyclerAdapter
                 iv.setImageBitmap(bitmap);
 			}
 		}
-        // DEL:
-//class AsyncTaskNetworkLoader extends AsyncTask<String, Void, Bitmap> {
-//    Activity a;
-//    ImageView iv;
-//
-//    AsyncTaskNetworkLoader(Activity _a, ImageView _iv) {
-//        a = _a;
-//        iv  = _iv;
-//    }
-//
-//    @Override
-//    protected Bitmap doInBackground(String ... params) {
-//        return NetworkSupport.getImageFromNetwork(a, params[0], 100, 100);
-//    }
-//
-//    @Override
-//    protected void onPostExecute(Bitmap bitmap) {
-//        if (bitmap != null) {
-//            iv.setImageBitmap(bitmap);
-//        }
-//    }
-//}
+
         private Bitmap setImageNullCheck(String url) {
             if (url == null) {
                 trace(String.format("No image provided -- loading default image."));

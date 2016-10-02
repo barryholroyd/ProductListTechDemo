@@ -18,6 +18,10 @@
         android:layout_height="wrap_content"
         android:background="@color/blueDeep"
         >
+        <ImageView
+            style="@style/PiTextView"
+            android:id="@+id/product_image"
+            />
         <TextView
             style="@style/PiTextView"
             android:text="Price: "
@@ -57,20 +61,6 @@
         android:layout_height="wrap_content"
         android:background="@color/blueDeep"
         >
-        <!-- TBD: delete tmp image source and the drawable itself. -->
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:background="@color/blueLight"
-            >
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="centerInside"
-                android:id="@+id/product_image"
-                />
-        </FrameLayout>
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"

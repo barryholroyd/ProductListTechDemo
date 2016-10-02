@@ -15,7 +15,6 @@ public class ActivityProductInfo extends AppCompatActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// DEL: new Support(this);
 		setContentView(R.layout.productinfo);
 
 		Intent intent = getIntent();
@@ -38,7 +37,7 @@ public class ActivityProductInfo extends AppCompatActivity
 		tvRating.setText(Double.toString(pi.reviewRating));
 		tvReviewCount.setText(Integer.toString(pi.reviewCount));
 		tvInStock.setText(Boolean.toString(pi.inStock));
-//		TBD: tvProductImage.setImageURI(Uri.parse(pi.imageUrl));
+		tvProductImage.setImageURI(Uri.parse(pi.imageUrl));
 		tvProductDescription.setText(pi.longDescription);
 	}
 

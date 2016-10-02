@@ -13,7 +13,7 @@ import android.util.Log;
  *
  * @author Barry Holroyd
  */
-public class Support
+class Support
 {
 	/**
 	 * Logs an error.
@@ -43,12 +43,10 @@ public class Support
     /**
 	 * Workhorse trc method -- toggle-controlled logging.
      * <p>
-     * This is called by module-specific trace() methods. The trace() methods
-     * are intended to be a permanent part of the code (as opposed to calls to
-     * the Support.logd() method, which are intended to be temporary and should
-     * be deleted for production code).
-     * <p>
-     * NTH: add screen to toggle trace method flags during runtime.
+     * This is called by module-specific trace() methods. Other than that,
+	 * it should not be called directly.
+	 * <p>
+     * NTH: add screen for toggling trace method flags during runtime.
 	 *
 	 * @param flag print the message iff flag is "true".
 	 * @param component the component being traced.
@@ -84,7 +82,7 @@ public class Support
 		if (in == null)
 			return "";
 
-        String s = null;
+        String s;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
 			s = Html.fromHtml(in).toString();
 		}
