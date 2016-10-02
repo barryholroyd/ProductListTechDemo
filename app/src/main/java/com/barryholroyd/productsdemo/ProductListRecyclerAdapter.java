@@ -18,6 +18,7 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 import static com.barryholroyd.productsdemo.Configure.*;
+import static com.barryholroyd.productsdemo.Configure.App.USE_THREADS;
 import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_CACHE_DIR;
 import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
 import static com.barryholroyd.productsdemo.Configure.MemoryCache.MC_PERCENT;
@@ -50,10 +51,23 @@ public class ProductListRecyclerAdapter
 				? ImageCacheMemory.createWithPercent(MC_SIZE_PERCENT)
 				: ImageCacheMemory.createWithBytes(MC_SIZE_BYTES);
 
-        // Load in the default "no image" image.
-        Bitmap bitmap = BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
-        cacheMemory.add(NO_IMAGE, bitmap);
+//		testImages(); DEL: Remove canoe image
     }
+//DEL:
+//	private void testImages() {
+//		ImageView iv3 = (ImageView) a.findViewById(R.id.testimage3);
+//		ImageView iv4 = (ImageView) a.findViewById(R.id.testimage4);
+//		ImageView iv5 = (ImageView) a.findViewById(R.id.testimage5);
+//
+//		Bitmap bitmap3 = BitmapFactory.decodeResource(a.getResources(), R.drawable.canoe);
+//		iv3.setImageBitmap(bitmap3);
+//		Bitmap bitmap4 = BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
+//		iv4.setImageBitmap(bitmap4);
+//
+//		Bitmap bitmap5 = cacheMemory.get(NO_IMAGE);
+//		iv5.setImageBitmap(bitmap5);
+//
+//	}
 
 	/**
 	 * Enum to communicate the type of the row that a given ViewHolder is initialized
@@ -167,7 +181,7 @@ public class ProductListRecyclerAdapter
 	 * @param msg message to be logged.
 	 */
 	static private void trace(String msg) {
-		Support.trc(Configure.APP_TRACE, "App", msg);
+		Support.trc(Configure.App.APP_TRACE, "App", msg);
 	}
 
 	/**
@@ -344,7 +358,7 @@ public class ProductListRecyclerAdapter
 			public void run() {
                 if (url == null) {
 					trace(String.format("No image provided -- loading default image."));
-                    setImageView(iv, cacheMemory.get(NO_IMAGE));
+                    setImageView(iv, Support.getNoImageBitmap(a));
                     return;
                 }
 
@@ -376,10 +390,16 @@ public class ProductListRecyclerAdapter
 				if (!isSameUrlString("Post-network", url, currentUrl)) {
                     /*
                      * The image request changed at the last instant. Give up and let the
-                     * later thread handling the newer image request get it loaded.
+                     * later thread handling the newer image request get it loaded. In rare
+                     * cases, the default image may stayed displayed. I believe this happens if
+                     * this thread ends up executing after the "other" thread. Pragmatically,
+                     * this isn't a problem with the memory and disk caches in place.
+                     * NTH: display the proper image if the other thread has already run.
                      */
-					trace(String.format("Image request has changed -- loading default image."));
-                    setImageView(iv, cacheMemory.get(NO_IMAGE));
+                    String oldUrl = Support.truncImageString(url);
+                    String newUrl = Support.truncImageString(currentUrl);
+                    trace(String.format("Loading default image instead of %s.", newUrl));
+                    setImageView(iv, Support.getNoImageBitmap(a));
                     return;
                 }
                 if (bitmap != null) {
@@ -452,8 +472,11 @@ public class ProductListRecyclerAdapter
          */
         private boolean isSameUrlString(String label, String url, String currentUrl) {
             if (!url.equals(currentUrl)) {
-				trace(String.format("Outdated url (%s): old=%s, new=%s",
-                        label, url, currentUrl));
+                String oldUrl = Support.truncImageString(url);
+                String newUrl = Support.truncImageString(currentUrl);
+                trace(String.format(
+                        "Image request has changed [%s]: old=%s new=%s.",
+                        label, oldUrl, newUrl));
                 return false;
             }
             else

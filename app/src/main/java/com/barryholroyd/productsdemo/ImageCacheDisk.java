@@ -253,7 +253,7 @@ final class ImageCacheDisk
     }
 
     private void prSizes(String tag, Entry entry) {
-        if (Configure.TRACE_DETAILS) {
+        if (Configure.App.TRACE_DETAILS) {
             String msg = String.format(
                     "  DC: %s: Cur:Max=%d:%d [File=%s  Url=%s] [File=%d, Bitmap=%d]",
                     tag, currentCacheSize, maxCacheSize,

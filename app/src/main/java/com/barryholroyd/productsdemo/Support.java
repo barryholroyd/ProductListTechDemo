@@ -1,6 +1,9 @@
 package com.barryholroyd.productsdemo;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.Html;
 import android.util.Log;
@@ -107,4 +110,9 @@ public class Support
      * "Intent extra" key: identifies product info data when starting ActivityProductInfo activity.
      */
     static String getKeyProductInfo(Context c) { return c.getPackageName() + "_PRODUCTINFO"; }
+
+	// Load in the default "no image" image.
+	static Bitmap getNoImageBitmap(Activity a) {
+		return BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
+	}
 }

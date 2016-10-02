@@ -177,7 +177,7 @@ public class NetworkSupport {
      * @param opts      the options used to create the bitmap.
      */
     static private void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
-        if (Configure.TRACE_DETAILS) {
+        if (Configure.App.TRACE_DETAILS) {
             trace(String.format(
                     "  NT: Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
                     truncImageString(url), opts.outMimeType,

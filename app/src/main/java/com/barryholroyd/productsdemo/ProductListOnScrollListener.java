@@ -41,7 +41,7 @@ import android.support.v7.widget.RecyclerView;
 public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 {
 	/** The look-ahead distance -- triggers preloading from cloud. */
-	private static final int TRIGGER_DISTANCE = 25;
+	private static final int TRIGGER_DISTANCE = 50;
 
 	/** Saved value of totalLoadedRows; used to determine when adapter array has been refreshed. */
 	private int totalLoadedRowsPrevious = 0;

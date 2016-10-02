@@ -2,20 +2,22 @@ package com.barryholroyd.productsdemo;
 
 /** Class with static constants to configure the app. */
 final class Configure {
-    /**
-     * If true, use Thread for image loading, otherwise use AsyncTask.
-     */
-    static final boolean USE_THREADS = true;
+    static class App {
+        /**
+         * If true, use Thread for image loading, otherwise use AsyncTask.
+         */
+        static final boolean USE_THREADS = true;
 
-    /**
-     * Tracing flag for general logging.
-     */
-    static final boolean APP_TRACE = false;
+        /**
+         * Tracing flag for general logging.
+         */
+        static final boolean APP_TRACE = true;
 
-    /**
-     * Tracing flag for detailed cache tracing.
-     */
-    static final boolean TRACE_DETAILS = false;
+        /**
+         * Tracing flag for detailed cache tracing.
+         */
+        static final boolean TRACE_DETAILS = false;
+    }
 
     /**
      * Memory cache configuration.
@@ -24,7 +26,7 @@ final class Configure {
         /**
          * Memory cache toggle
          */
-        static final boolean MC_ON = true;
+        static final boolean MC_ON = false;
 
         /**
          * Tracing flag for the image memory cache.
@@ -56,7 +58,7 @@ final class Configure {
         /**
          * Disk cache toggle.
          */
-        static final boolean DC_ON = true;
+        static final boolean DC_ON = false;
 
         /**
          * Tracing flag for the image disk cache.
@@ -86,6 +88,6 @@ final class Configure {
         /**
          * Tracing flag for the networking module.
          */
-        static final boolean NM_TRACE = false;
+        static final boolean NM_TRACE = true;
     }
 }
