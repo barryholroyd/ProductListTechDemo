@@ -6,7 +6,7 @@ final class Configure {
         /**
          * If true, use Thread for image loading, otherwise use AsyncTask.
          */
-        static final boolean USE_THREADS = true;
+        static final boolean USE_THREADS = false;
 
         /**
          * Tracing flag for general logging.
