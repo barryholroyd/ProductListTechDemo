@@ -6,17 +6,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 /*
- * TODO: ProductInfo page: move the image into the Price row.
- * TODO: Product Info page: use PiTextStyle for all TextViews.
  * TODO: Code unit tests.
  * TODO: GUI unit tests.
- * TBD: no image for header
  * BUG: Back button (push into background onto Overview screen), bring foreground: crashes with:
  * Total downloaded count corrupted (totalDownloaded=75 itemCount=25.
- * TBD: ALL PRODUCTS button doesn't show if there is a long description
- * (product info page, landscape mode). E.g.: Tivo Romio Pro.
  * TBD: Add blank icon to header row.
- * TBD: Display correct image on individual product page.
  *
  * "NTH" means "Nice to have"
  * NTH: Product Info screen's table should have the same border coloring as the Product List screen.
