@@ -10,10 +10,7 @@ import android.support.v7.widget.RecyclerView;
  * TODO: GUI unit tests.
  * BUG: Back button (push into background onto Overview screen), bring foreground: crashes with:
  * Total downloaded count corrupted (totalDownloaded=75 itemCount=25.
- * TBD: Add blank icon to header row.
- *
- * "NTH" means "Nice to have"
- * NTH: Product Info screen's table should have the same border coloring as the Product List screen.
+ * TODO: Code cleanup.
  */
 
 /**
@@ -30,7 +27,7 @@ public class ActivityProductList extends AppCompatActivity
 	/**
 	 * Logger tag for this application.
 	 */
-	static final public String LOGTAG = "WalmartProduct";
+	static final public String LOGTAG = "ProductDemo";
 	/**
 	 * RecyclerView used to display the list of products pulled from the cloud.
 	 */

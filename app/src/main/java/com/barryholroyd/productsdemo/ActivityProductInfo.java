@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 /*
  * Display the information about a specific product.
- */
+ *
+ * NTH: Product Info screen's table should have the same border coloring as the Product List screen.
+*/
 public class ActivityProductInfo extends AppCompatActivity
 {
 	ImageLoader imageLoader;
