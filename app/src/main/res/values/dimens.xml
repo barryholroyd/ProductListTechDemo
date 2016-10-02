@@ -6,10 +6,14 @@
     <!--
       Sizes for the thumbnails to be displayed. There are two different requirements:
       one size for each row in the product list and a larger size for the single-item
-      image displayed on the product info page. The sizes specified here are for the
-      product list page. The actual images downloaded should be larger, to accommodate
-      the larger display on the product info page.
+      image displayed on the product info page.
+      The actual images downloaded should be no smaller than the size of the larger
+      of the two (i.e., the product info page images).
     -->
-    <dimen name="product_image_height">50dp</dimen>
-    <dimen name="product_image_width">50dp</dimen>
+    <!-- Product List Page -->
+    <dimen name="pl_image_height">50dp</dimen>
+    <dimen name="pl_image_width">50dp</dimen>
+    <!-- Product Info Page -->
+    <dimen name="pi_image_height">50dp</dimen>
+    <dimen name="pi_image_width">50dp</dimen>
 </resources>

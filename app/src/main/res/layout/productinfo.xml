@@ -19,7 +19,7 @@
         android:background="@color/blueDeep"
         >
         <ImageView
-            style="@style/PiTextView"
+            style="@style/PiImageView"
             android:id="@+id/product_image"
             />
         <TextView

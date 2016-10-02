@@ -32,8 +32,8 @@ height increase (and so needs to be wrap_content) but the other must then be mat
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:adjustViewBounds="true"
-            android:maxHeight="@dimen/product_image_height"
-            android:maxWidth="@dimen/product_image_width"
+            android:maxHeight="@dimen/pl_image_height"
+            android:maxWidth="@dimen/pl_image_width"
             android:id="@+id/pd_product_image"
             />
     </FrameLayout>
