@@ -55,25 +55,28 @@
             android:id="@+id/in_stock"
             />
     </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/blueDeep"
+        android:layout_height="match_parent"
         >
-        <TextView
-            android:layout_width="0dp"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="8"
-            android:layout_margin="1dp"
-            android:padding="5dp"
             android:background="@color/blueLight"
-            android:id="@+id/product_description"
-            />
-    </LinearLayout>
-    <Button
-        style="@style/Button"
-        android:text="All Products"
-        android:onClick="displayProductList"
-        />
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:padding="5dp"
+                android:id="@+id/product_description"
+                />
+            <Button
+                style="@style/Button"
+                android:text="All Products"
+                android:onClick="displayProductList"
+                />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
