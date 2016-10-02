@@ -9,14 +9,24 @@ final class Configure {
         static final boolean USE_THREADS = false;
 
         /**
-         * Tracing flag for general logging.
+         * Tracing flag for app-level logging.
          */
-        static final boolean APP_TRACE = true;
+        static final boolean AP_TRACE = true;
 
         /**
-         * Tracing flag for detailed cache tracing.
+         * Tracing flag for detailed cache logging.
          */
         static final boolean TRACE_DETAILS = true;
+    }
+
+    /**
+     * ImageLoader configuration.
+     */
+    static class ImageLoader {
+        /**
+         * Tracing flag for ImageLoader logging.
+         */
+        static final boolean IL_TRACE = true;
     }
 
     /**

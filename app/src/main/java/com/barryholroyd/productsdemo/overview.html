@@ -32,16 +32,19 @@
         that situation in both the Threads and AsyncTask approaches.
     <p>
         Watching the log output can be very instructive, especially with respect
-	to the caching and networking subsystems. The following tracing flags
-	can all be set, along with many other parameters, in
+        to the caching and networking subsystems. Set the log level to verbose
+        and filter on both the package name and "TRACE". The following tracing flags
+        can all be set, along with many other parameters, in
         {@link com.barryholroyd.walmartproducts.Configure}.
 	<ul>
-          <li>APP_TRACE     (app-level)
-          <li>DC_TRACE      (disk cache)
-          <li>MC_TRACE      (memory cache)
-          <li>NM_TRACE      (network)
-          <li>TRACE_DETAILS (more detailed tracing)
+        <li>AP_TRACE     (app-level)
+        <li>IL_TRACE     (app-level)
+        <li>DC_TRACE      (disk cache)
+        <li>MC_TRACE      (memory cache)
+        <li>NM_TRACE      (network)
+        <li>TRACE_DETAILS (more detailed tracing)
 	</ul>
+
     @author Barry Holroyd
   </body>
 </html>

@@ -12,10 +12,14 @@ import android.widget.TextView;
  */
 public class ActivityProductInfo extends AppCompatActivity
 {
+	ImageLoader imageLoader;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.productinfo);
+
+		imageLoader = new ImageLoader(this);
 
 		Intent intent = getIntent();
 		ProductInfo productInfo = intent.getParcelableExtra(Support.getKeyProductInfo(this));
@@ -37,7 +41,7 @@ public class ActivityProductInfo extends AppCompatActivity
 		tvRating.setText(Double.toString(pi.reviewRating));
 		tvReviewCount.setText(Integer.toString(pi.reviewCount));
 		tvInStock.setText(Boolean.toString(pi.inStock));
-		tvProductImage.setImageURI(Uri.parse(pi.imageUrl));
+		imageLoader.load(tvProductImage, pi.imageUrl);
 		tvProductDescription.setText(pi.longDescription);
 	}
 
