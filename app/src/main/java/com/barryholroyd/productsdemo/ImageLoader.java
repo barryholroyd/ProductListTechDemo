@@ -2,6 +2,7 @@ package com.barryholroyd.productsdemo;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
@@ -23,16 +24,20 @@ class ImageLoader {
      */
 
     /** Max. number of height pixels in product image. */
-    final int IMAGE_HSIZE = 100;
+    static final int IMAGE_HSIZE = 100;
 
     /** Max. number of width pixels in product image. */
-    final int IMAGE_WSIZE = 100;
+    static final int IMAGE_WSIZE = 100;
 
     /** In-memory caching instance. */
     private static CacheMemoryImage cacheMemory = null;
 
     /** Disk caching instance (singleton). */
     private static CacheDiskImage cacheDiskImage = null;
+
+    /** Blank image bitmap used to fill the header "image" slot. */
+    private static Bitmap blankImageBitmap =
+            Bitmap.createBitmap(IMAGE_WSIZE, IMAGE_HSIZE, Bitmap.Config.ARGB_8888);
 
     /** Standard Activity instance. */
     Activity a;
@@ -124,7 +129,7 @@ class ImageLoader {
             // Check for a null url.
             bitmap = setImageNullCheck(url);
             if (bitmap != null) {
-                setImageView(iv, Support.getNoImageBitmap(a));
+                setImageView(iv, getNoImageBitmap(a));
                 return;
             }
 
@@ -195,7 +200,7 @@ class ImageLoader {
     private Bitmap setImageNullCheck(String url) {
         if (url == null) {
             trace(String.format("No image provided -- loading default image."));
-            return Support.getNoImageBitmap(a);
+            return getNoImageBitmap(a);
         }
         return null;
     }
@@ -218,7 +223,7 @@ class ImageLoader {
                     "NetworkSupportException: %s", nse.getMessage()));
             Support.loge(msg);
             Toaster.display(a, msg);
-            return Support.getNoImageBitmap(a);
+            return getNoImageBitmap(a);
         }
 
         // We may have obtained a bitmap, but has the url changed since we requested it?
@@ -233,7 +238,7 @@ class ImageLoader {
                  */
             String newUrl = Support.truncImageString(currentUrl);
             trace(String.format("Loading default image instead of %s.", newUrl));
-            return Support.getNoImageBitmap(a);
+            return getNoImageBitmap(a);
         }
 
         if (bitmap != null) {
@@ -241,7 +246,7 @@ class ImageLoader {
             cacheDiskImage.add(a, url, bitmap);
         }
         else {
-            bitmap = Support.getNoImageBitmap(a);
+            bitmap = getNoImageBitmap(a);
         }
 
         return bitmap;
@@ -277,6 +282,16 @@ class ImageLoader {
         }
         else
             return url;
+    }
+
+    /** Get the default "no image" image. */
+    static Bitmap getNoImageBitmap(Activity a) {
+        return BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
+    }
+
+    /** Create a blank image. */
+    static Bitmap getBlankImageBitmap() {
+        return blankImageBitmap;
     }
 
     /**

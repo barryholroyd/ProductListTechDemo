@@ -35,15 +35,10 @@ public class ProductListRecyclerAdapter
 
     ProductListRecyclerAdapter(Activity _a) {
         a = _a;
-        trace(String.format(
-                "Approach for loading images in the background: %s.",
+        trace(String.format("Approach for loading images in the background: %s.",
                 App.USE_THREADS ? "Threads" : "AsyncTask"));
-        trace(String.format(
-                "Memory caching: %s.",
-                MemoryCache.MC_ON ? "ON" : "OFF"));
-        trace(String.format(
-                "Disk caching: %s.",
-                DiskCache.DC_ON ? "ON" : "OFF"));
+        trace(String.format("Memory caching: %s.", MemoryCache.MC_ON ? "ON" : "OFF"));
+        trace(String.format("Disk caching: %s.",   DiskCache.DC_ON   ? "ON" : "OFF"));
     }
 
 	/**
@@ -222,6 +217,7 @@ public class ProductListRecyclerAdapter
 		 * Binds column names to the header row.
 		 */
 		protected void bindHeader() {
+            ivProductImage.setImageBitmap(ImageLoader.getBlankImageBitmap());
 			formatHeaderField(tvName, "Name");
 			formatHeaderField(tvShortDescription, "Description");
 		}

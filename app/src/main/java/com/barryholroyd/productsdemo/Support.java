@@ -108,9 +108,4 @@ class Support
      * "Intent extra" key: identifies product info data when starting ActivityProductInfo activity.
      */
     static String getKeyProductInfo(Context c) { return c.getPackageName() + "_PRODUCTINFO"; }
-
-	// Load in the default "no image" image.
-	static Bitmap getNoImageBitmap(Activity a) {
-		return BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
-	}
 }
