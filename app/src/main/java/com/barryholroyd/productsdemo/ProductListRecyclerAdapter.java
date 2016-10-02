@@ -45,12 +45,15 @@ public class ProductListRecyclerAdapter
     /** In-memory caching instance. */
     private ImageCacheMemory cacheMemory;
 
+    /** Disk caching instance (singleton). */
+    private ImageCacheDisk imageCacheDisk;
+
     ProductListRecyclerAdapter(Activity _a) {
         a = _a;
         cacheMemory = MC_PERCENT
 				? ImageCacheMemory.createWithPercent(MC_SIZE_PERCENT)
 				: ImageCacheMemory.createWithBytes(MC_SIZE_BYTES);
-
+        imageCacheDisk = ImageCacheDisk.getInstance(a, DC_CACHE_DIR, DC_SIZE_BYTES);
     }
 
 	/**
@@ -205,7 +208,7 @@ public class ProductListRecyclerAdapter
 		/**
          * This stores the most current requested url for the ViewHolder instance.
          *
-         * @see #isSameUrlString(String, String, String)
+         * @see #checkUrlChanged(String, String, String)
          */
 		private String currentUrl;
 
@@ -328,76 +331,54 @@ public class ProductListRecyclerAdapter
 			private Activity a;
 			private ImageView iv;
 			private String url;
-			private Bitmap bitmap;
-			private ImageCacheDisk imageCacheDisk;
 
 			LiThread(Activity _a, ImageView _iv, String _url) {
 				a = _a;
 				iv= _iv;
 				url = _url;
-				imageCacheDisk = ImageCacheDisk.getInstance(a, DC_CACHE_DIR, DC_SIZE_BYTES);
 			}
 
 			@Override
 			public void run() {
-                if (url == null) {
-					trace(String.format("No image provided -- loading default image."));
+                /*
+                 * We have already tried pulling the bitmap from the memory
+                 * cache (that happens in the foreground), but didn't find it
+                 * there.
+                 */
+
+                Bitmap bitmap;
+
+                // Check for a null url.
+                bitmap = setImageNullCheck(url);
+                if (bitmap != null) {
                     setImageView(iv, Support.getNoImageBitmap(a));
                     return;
                 }
 
                 // Try the disk cache.
-                if (!isSameUrlString("Pre-disk cache", url, currentUrl))
-                    url = currentUrl;
-				bitmap = imageCacheDisk.get(url);
-				if (bitmap != null) {
-					cacheMemory.add(url, bitmap);
-					setImageView(iv, bitmap);
-					return;
-				}
-
-                if (!isSameUrlString("Pre-network", url, currentUrl)) {
-                    url = currentUrl;
-				}
-
-				try {
-                	bitmap = NetworkSupport.getImageFromNetwork(url, IMAGE_HSIZE, IMAGE_WSIZE);
-				}
-				catch (NetworkSupportException nse) {
-					String msg = String.format(String.format(
-							"NetworkSupportException: %s", nse.getMessage()));
-					Support.loge(msg);
-                    Toaster.display(a, msg);
-					return;
-				}
-
-				if (!isSameUrlString("Post-network", url, currentUrl)) {
-                    /*
-                     * The image request changed at the last instant. Give up and let the
-                     * later thread handling the newer image request get it loaded. In rare
-                     * cases, the default image may stayed displayed. I believe this happens if
-                     * this thread ends up executing after the "other" thread. Pragmatically,
-                     * this isn't a problem with the memory and disk caches in place.
-                     * NTH: display the proper image if the other thread has already run.
-                     */
-                    String oldUrl = Support.truncImageString(url);
-                    String newUrl = Support.truncImageString(currentUrl);
-                    trace(String.format("Loading default image instead of %s.", newUrl));
-                    setImageView(iv, Support.getNoImageBitmap(a));
+                url = checkUrlChanged("Pre-disk cache", url, currentUrl);
+                bitmap = setImageDiskCache(url);
+                if (bitmap != null) {
+                    setImageView(iv, bitmap);
                     return;
                 }
+
+                // Get the image from the network.
+                url = checkUrlChanged("Pre-network", url, currentUrl);
+                bitmap = setImageNetwork(url);
                 if (bitmap != null) {
-                    cacheMemory.add(url, bitmap);
-					imageCacheDisk.add(a, url, bitmap);
-					setImageView(iv, bitmap);
-					return;
-				}
-				Support.loge(String.format(
-						"ImageLoaderThreads() - Could not load image from %s\n",
-						url));
+                    setImageView(iv, bitmap);
+                    return;
+                }
 			}
 
-		}
+            /** Set the ImageView on the main thread. */
+            private void setImageView(final ImageView iv, final Bitmap bitmap) {
+                a.runOnUiThread(new Runnable() {
+                    public void run() { iv.setImageBitmap(bitmap); }
+                });
+            }
+        }
 
 		private class LiAsyncTask extends AsyncTask<String, Void, Bitmap>
 		{
@@ -406,11 +387,10 @@ public class ProductListRecyclerAdapter
 			LiAsyncTask(String _url) { url = _url; }
 
 			protected Bitmap doInBackground(String... args) {
-				return null; // TBD: placeholder
+                return null; // TBD: placeholder
 			}
+
 			void postExecute(Bitmap bitmap) {
-				// TBD: check currentUrl.
-				// TBD: iv = ...;
 			}
 		}
         // DEL:
@@ -435,8 +415,60 @@ public class ProductListRecyclerAdapter
 //        }
 //    }
 //}
+        private Bitmap setImageNullCheck(String url) {
+            if (url == null) {
+                trace(String.format("No image provided -- loading default image."));
+                return Support.getNoImageBitmap(a);
+            }
+            return null;
+        }
 
+        private Bitmap setImageDiskCache(String url) {
+            Bitmap bitmap = imageCacheDisk.get(url);
+            if (bitmap != null) {
+                cacheMemory.add(url, bitmap);
+            }
+            return bitmap;
+        }
 
+        private Bitmap setImageNetwork(String url) {
+            Bitmap bitmap;
+            try {
+                bitmap = NetworkSupport.getImageFromNetwork(url, IMAGE_HSIZE, IMAGE_WSIZE);
+            }
+            catch (NetworkSupportException nse) {
+                String msg = String.format(String.format(
+                        "NetworkSupportException: %s", nse.getMessage()));
+                Support.loge(msg);
+                Toaster.display(a, msg);
+                return Support.getNoImageBitmap(a);
+            }
+
+            // We may have obtained a bitmap, but has the url changed since we requested it?
+            if (!url.equals(currentUrl)) {
+                /*
+                 * The image request changed at the last instant. Give up and let the
+                 * later thread handling the newer image request get it loaded. In rare
+                 * cases, the default image may stayed displayed. I believe this happens if
+                 * this thread ends up executing after the "other" thread. Pragmatically,
+                 * this isn't a problem with the memory and disk caches in place.
+                 * NTH: display the proper image if the other thread has already run.
+                 */
+                String newUrl = Support.truncImageString(currentUrl);
+                trace(String.format("Loading default image instead of %s.", newUrl));
+                return Support.getNoImageBitmap(a);
+            }
+
+            if (bitmap != null) {
+                cacheMemory.add(url, bitmap);
+                imageCacheDisk.add(a, url, bitmap);
+            }
+            else {
+                bitmap = Support.getNoImageBitmap(a);
+            }
+
+            return bitmap;
+        }
 
         /** Check to see if the url has changed.
          * <p>
@@ -453,25 +485,21 @@ public class ProductListRecyclerAdapter
          * Since "url" is passed in to the constructor and stored locally, it retains
          * the original value. Since "currentUrl" is a field of ProductListViewHolder,
          * its current value is accessible to the caller of this method (LiThread's run()).
+         *
+         * @param url original url
+         * @param currentUrl updated (potentially different) url
          */
-        private boolean isSameUrlString(String label, String url, String currentUrl) {
+        private String checkUrlChanged(String label, String url, String currentUrl) {
             if (!url.equals(currentUrl)) {
                 String oldUrl = Support.truncImageString(url);
                 String newUrl = Support.truncImageString(currentUrl);
                 trace(String.format(
                         "Image request has changed [%s]: old=%s new=%s.",
                         label, oldUrl, newUrl));
-                return false;
+                return currentUrl;
             }
             else
-                return true;
-        }
-
-        /** Set the ImageView on the main thread. */
-        private void setImageView(final ImageView iv, final Bitmap bitmap) {
-            a.runOnUiThread(new Runnable() {
-                public void run() { iv.setImageBitmap(bitmap); }
-            });
+                return url;
         }
 
 		/**

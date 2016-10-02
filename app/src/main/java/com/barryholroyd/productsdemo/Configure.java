@@ -16,7 +16,7 @@ final class Configure {
         /**
          * Tracing flag for detailed cache tracing.
          */
-        static final boolean TRACE_DETAILS = false;
+        static final boolean TRACE_DETAILS = true;
     }
 
     /**
@@ -26,12 +26,12 @@ final class Configure {
         /**
          * Memory cache toggle
          */
-        static final boolean MC_ON = false;
+        static final boolean MC_ON = true;
 
         /**
          * Tracing flag for the image memory cache.
          */
-        static final boolean MC_TRACE = false;
+        static final boolean MC_TRACE = true;
 
         /**
          * Specify memory cache in percent of total memory or in bytes.
@@ -58,12 +58,12 @@ final class Configure {
         /**
          * Disk cache toggle.
          */
-        static final boolean DC_ON = false;
+        static final boolean DC_ON = true;
 
         /**
          * Tracing flag for the image disk cache.
          */
-        static final boolean DC_TRACE = false;
+        static final boolean DC_TRACE = true;
 
         /**
          * Disk space (in bytes) to allocate for the disk cache.
@@ -73,7 +73,7 @@ final class Configure {
         /**
          * Clear the disk cache when the app starts up.
          */
-        static final boolean DC_CLEAR = false;
+        static final boolean DC_CLEAR = true;
 
         /**
          * Names for the cache directories.
