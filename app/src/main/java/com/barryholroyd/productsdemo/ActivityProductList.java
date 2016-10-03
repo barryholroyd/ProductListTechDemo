@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 /*
  * TODO: Code unit tests.
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
  * BUG: Back button (push into background onto Overview screen), bring foreground: crashes with:
  * Total downloaded count corrupted (totalDownloaded=75 itemCount=25.
  * TODO: Code cleanup.
+ * TODO: check for remaining TBDs, etc.
  */
 
 /**
@@ -22,7 +24,7 @@ import android.support.v7.widget.RecyclerView;
  * @see    <a href="https://walmartlabs-test.appspot.com">Walmart Products API (mock)</a>
  * @see    <a href="https://walmartlabs-test.appspot.com/_ah/api/walmart/v1">Documentation</a>
  */
-public class ActivityProductList extends AppCompatActivity
+public class ActivityProductList extends ActivityPrintStates
 {
 	/**
 	 * Logger tag for this application.
@@ -54,11 +56,13 @@ public class ActivityProductList extends AppCompatActivity
 		initRecyclerView();
 		if (savedInstanceState == null) {
 			// Display the product list for the first time.
-			GetProducts.instance.getNextPage(this);
+            Support.logd("OSI: ON CREATE: savedInstanceState is NULL");
+            GetProducts.instance.getNextPage(this);
 		}
 		else {
 			// Display the product list on device reconfiguration.
-			refreshListDisplay(savedInstanceState);
+            Support.logd("OSI: ON CREATE: savedInstanceState is NOT NULL");
+            refreshListDisplay(savedInstanceState);
 		}
 	}
 
@@ -142,6 +146,17 @@ public class ActivityProductList extends AppCompatActivity
 		super.onSaveInstanceState(outState);
 		ProductInfoArrayList pial =
 			((ProductListRecyclerAdapter) recyclerView.getAdapter()).getProductInfoArrayList();
+
+        // TBD:
+        outState.putString("TEST", "TEST");
 		outState.putParcelableArrayList(PIAL, pial);
+
+        String s = outState.getString("TEST");
+        ProductInfoArrayList pial2 =
+                (ProductInfoArrayList) outState.<ProductInfo>getParcelableArrayList(PIAL);
+
+        Support.logd(String.format("OSI: s=[%s]\n", s == null ? "<null>" : s));
+        Support.logd(String.format("OSI: pial2=[%s]\n", s == null ? "<null>" : pial2.toString()));
+
 	}
 }

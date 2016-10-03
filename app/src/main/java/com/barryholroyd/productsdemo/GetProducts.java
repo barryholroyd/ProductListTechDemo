@@ -109,10 +109,6 @@ public class GetProducts
 	/**
 	 * Get the next batch of products.
 	 *
-	 * TBD: How to we display the correct image for a row about to be displayed
-	 *      (given that the ViewHolder could have an old URL in it? (Probably
-	 *      use the url in the surrounding closure when the runnable is issued (???).
-	 *
      * @param a
      * @param batch The batch to be downloaded.
      * @param count the number of items in the batch to be downloaded.
@@ -176,6 +172,10 @@ public class GetProducts
 			// TBD: I actually hit this -- fix it! I had put it in the background (perhaps
 			// it was still scrolling?); when I tried to bring it to the foreground (I think
 			// that is what I was doing), it crashed here.
+
+			// TWO POSSIBLE ISSUES:
+			//   1. Synchronization issue -- this got hit immediately *after* onSaveInstanceState was called.
+			//   2. onSaveInstanceState not always getting called (print out Activity lifecycle transitions).
 
             // Sanity check. -1 because of the header added locally.
 			int itemCount = plra.getItemCount() - 1;

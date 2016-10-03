@@ -251,7 +251,7 @@ final class CacheDiskImage
     }
 
     private void prSizes(String tag, Entry entry) {
-        if (Configure.App.TRACE_DETAILS) {
+        if (Configure.App.AP_TRACE_DETAILS) {
             String msg = String.format(
                     "  DETAILS: %s: Cur:Max=%d:%d [File=%s  Url=%s] [File=%d, Bitmap=%d]",
                     tag, currentCacheSize, maxCacheSize,

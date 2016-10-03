@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import static com.barryholroyd.productsdemo.Configure.App.USE_THREADS;
+import static com.barryholroyd.productsdemo.Configure.App.AP_USE_THREADS;
 import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_CACHE_DIR;
 import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
 import static com.barryholroyd.productsdemo.Configure.MemoryCache.MC_PERCENT;
@@ -14,7 +14,7 @@ import static com.barryholroyd.productsdemo.Configure.MemoryCache.MC_SIZE_BYTES;
 import static com.barryholroyd.productsdemo.Configure.MemoryCache.MC_SIZE_PERCENT;
 
 /**
- * TBD:
+ * Load
  */
 
 class ImageLoader {
@@ -99,7 +99,7 @@ class ImageLoader {
 			 * Both LiThread and LiAsyncTask have to be defined as nested classes so that
 			 * they can have access to "currentUrl".
 			 */
-        if (USE_THREADS) (new LiThread(iv, url)).start();
+        if (AP_USE_THREADS) (new LiThread(iv, url)).start();
         else new LiAsyncTask(iv, url).execute();
     }
 

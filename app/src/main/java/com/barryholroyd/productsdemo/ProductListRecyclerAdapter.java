@@ -36,7 +36,7 @@ public class ProductListRecyclerAdapter
     ProductListRecyclerAdapter(Activity _a) {
         a = _a;
         trace(String.format("Approach for loading images in the background: %s.",
-                App.USE_THREADS ? "Threads" : "AsyncTask"));
+                App.AP_USE_THREADS ? "Threads" : "AsyncTask"));
         trace(String.format("Memory caching: %s.", MemoryCache.MC_ON ? "ON" : "OFF"));
         trace(String.format("Disk caching: %s.",   DiskCache.DC_ON   ? "ON" : "OFF"));
     }
@@ -246,7 +246,13 @@ public class ProductListRecyclerAdapter
 		 */
 		protected void bindData(ProductInfo pi) {
 			tvId.setText(pi.id);
-			tvName.setText(pi.name);
+
+            // Optionally display image url, for debugging purposes.
+            String name = App.AP_DISPLAY_URL
+                    ? String.format("[%s]\n%s", pi.imageUrl, pi.name)
+                    : pi.name;
+            tvName.setText(name);
+
 			tvShortDescription.setText(pi.shortDescription);
 			imageLoader.load(ivProductImage, pi.imageUrl);
 		}
