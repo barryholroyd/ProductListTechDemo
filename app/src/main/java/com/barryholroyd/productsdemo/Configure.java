@@ -4,19 +4,19 @@ package com.barryholroyd.productsdemo;
 final class Configure {
     static class App {
         /** If true, use Thread for image loading, otherwise use AsyncTask. */
-        static final boolean USE_THREADS = false;
+        static final boolean USE_THREADS = true;
 
         /** Tracing flag for app-level logging. */
         static final boolean TRACE = true;
 
         /** Tracing flag for activity lifecycle events. */
-        static final boolean TRACE_ALC = true;
+        static final boolean TRACE_ALC = false;
 
         /** Tracing flag for detailed cache logging. */
         static final boolean TRACE_DETAILS = false;
 
         /** Toggle display of image url in name field (for debugging). */
-        static final boolean DISPLAY_URL = true;
+        static final boolean DISPLAY_URL = false;
     }
 
     /** ImageLoader configuration. */
@@ -28,7 +28,7 @@ final class Configure {
     /** Memory cache configuration. */
     static class MemoryCache {
         /** Memory cache toggle */
-        static final boolean ON = false;
+        static final boolean ON = true;
 
         /** Tracing flag for the image memory cache. */
         static final boolean TRACE = false;
@@ -52,7 +52,7 @@ final class Configure {
     /** Disk cache configuration. */
     static class DiskCache {
         /** Disk cache toggle. */
-        static final boolean ON = false;
+        static final boolean ON = true;
 
         /** Tracing flag for the image disk cache. */
         static final boolean TRACE = false;
@@ -61,7 +61,7 @@ final class Configure {
         static final long DC_SIZE_BYTES = 500000;
 
         /** Clear the disk cache when the app starts up. */
-        static final boolean CLEAR = false;
+        static final boolean CLEAR = true;
 
         /** Names for the cache directories. */
         static final String CACHE_DIR = "images";
@@ -70,6 +70,6 @@ final class Configure {
     /** Memory cache configuration. */
     static class Network {
         /** Tracing flag for the networking module. */
-        static final boolean TRACE = true;
+        static final boolean TRACE = false;
     }
 }

@@ -97,7 +97,6 @@ public class GetProducts
 	 */
 	static void reset() {
 		if (instance != null) {
-			trace("Resetting the GetProducts singleton's data.");
 			instance.pageNumber = 1;
 			instance.maxProducts = 0;
 			instance.totalDownloaded = 0;

@@ -168,6 +168,7 @@ class ImageLoader {
             url = _url;
         }
 
+        @Override
         protected Bitmap doInBackground(String... args) {
                 /*
                  * We have already tried pulling the bitmap from the memory
@@ -192,7 +193,8 @@ class ImageLoader {
             return bitmap;
         }
 
-        void postExecute(Bitmap bitmap) {
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
             iv.setImageBitmap(bitmap);
         }
     }

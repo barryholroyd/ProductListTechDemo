@@ -64,13 +64,11 @@ public class ActivityProductList extends ActivityPrintStates
 		 * uninitialized).
 		 */
 		if (savedInstanceState == null) {
-            trace("onCreate: savedInstanceState is NULL"); // DEL:
 			GetProducts.reset();
 			GetProducts.instance.getNextPage(this);
 		}
 		else {
 			// Display the product list on device reconfiguration.
-            trace("onCreate: savedInstanceState is NOT NULL"); // DEL:
             refreshListDisplay(savedInstanceState);
 		}
 	}
@@ -157,12 +155,6 @@ public class ActivityProductList extends ActivityPrintStates
 			((ProductListRecyclerAdapter) recyclerView.getAdapter()).getProductInfoArrayList();
 
 		outState.putParcelableArrayList(PIAL, pial);
-
-        // DEL:
-        ProductInfoArrayList pial2 =
-                (ProductInfoArrayList) outState.<ProductInfo>getParcelableArrayList(PIAL);
-        if (pial2 == null) trace("onSaveInstanceState: pial2 = null");
-        else               trace(String.format("onSaveInstanceState: pial2 size=%d", pial2.size()));
 	}
 
     /**
