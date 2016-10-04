@@ -12,7 +12,7 @@ import android.widget.TextView;
  *
  * NTH: Product Info screen's table should have the same border coloring as the Product List screen.
 */
-public class ActivityProductInfo extends AppCompatActivity
+public class ActivityProductInfo extends ActivityPrintStates
 {
 	ImageLoader imageLoader;
 

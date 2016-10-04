@@ -61,7 +61,7 @@ public class CacheMemoryBlob<K,V>
      * Get the item, if it exists.
      */
     public V get(K key) {
-        if (!Configure.MemoryCache.MC_ON)
+        if (!Configure.MemoryCache.ON)
             return null;
 
         trace(String.format("Getting [%s]: %s",
@@ -78,7 +78,7 @@ public class CacheMemoryBlob<K,V>
      */
     // TBD: ensure everything get synchronized correctly!
     public void add(K key, V val) {
-        if (!Configure.MemoryCache.MC_ON)
+        if (!Configure.MemoryCache.ON)
             return;
 
         trace(String.format("Adding: %s", key));
@@ -136,6 +136,6 @@ public class CacheMemoryBlob<K,V>
      * @param msg message to be logged.
      */
     static protected void trace(String msg) {
-        Support.trc(Configure.MemoryCache.MC_TRACE, "Cache Memory", msg);
+        Support.trc(Configure.MemoryCache.TRACE, "Cache Memory", msg);
     }
 }

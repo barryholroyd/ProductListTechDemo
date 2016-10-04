@@ -74,7 +74,7 @@ final class CacheDiskImage
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
-            if (Configure.DiskCache.DC_CLEAR) {
+            if (Configure.DiskCache.CLEAR) {
                 trace(String.format("deleting cache directory: %s", cacheDirName));
                 for (File f : cacheDir.listFiles()) {
                     trace(String.format("  Deleting: %s", f.getName()));
@@ -137,7 +137,7 @@ final class CacheDiskImage
      * @return bitmap obtained from the URL.
      */
     Bitmap get(String url) {
-        if (!Configure.DiskCache.DC_ON)
+        if (!Configure.DiskCache.ON)
             return null;
 
         Entry entry = getEntry(url);   // this always returns a valid entry.
@@ -159,7 +159,7 @@ final class CacheDiskImage
     }
 
     void add(Activity a, String url, Bitmap bitmap) {
-        if (!Configure.DiskCache.DC_ON)
+        if (!Configure.DiskCache.ON)
             return;
 
         if (url == null) {
@@ -251,7 +251,7 @@ final class CacheDiskImage
     }
 
     private void prSizes(String tag, Entry entry) {
-        if (Configure.App.AP_TRACE_DETAILS) {
+        if (Configure.App.TRACE_DETAILS) {
             String msg = String.format(
                     "  DETAILS: %s: Cur:Max=%d:%d [File=%s  Url=%s] [File=%d, Bitmap=%d]",
                     tag, currentCacheSize, maxCacheSize,
@@ -323,7 +323,7 @@ final class CacheDiskImage
      * @param msg message to be logged.
      */
     private void trace(String msg) {
-        Support.trc(Configure.DiskCache.DC_TRACE, "Cache Disk", msg);
+        Support.trc(Configure.DiskCache.TRACE, "Cache Disk", msg);
     }
 
     /**

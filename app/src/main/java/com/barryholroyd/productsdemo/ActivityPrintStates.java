@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 
 abstract public class ActivityPrintStates extends AppCompatActivity
 {
-  //<editor-fold desc="OVERRIDDEN METHODS">
   // Called at the start of the full lifetime.
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +92,16 @@ abstract public class ActivityPrintStates extends AppCompatActivity
     super.onDestroy();
     runme("onDestroy()");
   }
-  //</editor-fold>
-  //<editor-fold desc="SUPPORT METHODS">
+
+  /** default method to execute from each callback. */
   protected void runme(String label) {
-//    Tracer.log(bhAps, ConfigureControls.TRACING_LIFECYCLE_ACTIVITY, label);
-    Support.logd("TRACE [*APS*]: " + label);
+    trace(label);
   }
-  //</editor-fold>
+
+    /** standard module-specific trace method for this app */
+    private void trace(String msg) {
+      String className = this.getClass().getSimpleName();
+      String msg2 = String.format("%s: %s", className, msg);
+        Support.trc(Configure.App.TRACE_ALC, "Alc", msg2);
+    }
 }

@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import static com.barryholroyd.productsdemo.ActivityProductList.trace;
+
 /**
  * Get a list of products.
  *
@@ -22,7 +24,12 @@ import java.io.UnsupportedEncodingException;
  */
 public class GetProducts
 {
-	/** Singleton */
+	/**
+	 * Singleton.
+	 * <p>
+	 *     This was made a singleton because we only need a single instance of it
+	 *     and it makes it easier to access from anywhere in the app.
+	 */
 	static public final GetProducts instance = new GetProducts();
 
 	/**
@@ -70,7 +77,32 @@ public class GetProducts
 	 */
 	private int totalDownloaded = 0;
 
-	public int getMaxProducts() { return maxProducts; }
+	int getMaxProducts() { return maxProducts; }
+
+	/**
+	 * Reset the instance data for this (static) singleton.
+	 * <p>
+	 * Because this class is a singleton, the reference for it is hung on a static variable.
+	 * This can cause problems when the "Back" key is used.
+	 * <p>
+	 * When the user hits the "Back" key and there is only a single Activity present, that
+	 * final Activity is destroyed and the app is moved to the background. The system assumes
+	 * that the app is effectively being exited and so doesn't call onSaveInstanceState().
+	 * However, the app's process is not actually killed, so the app's static data is retained.
+	 * In addition, the app remains accessible on the Overview screen so the user can easily
+	 * restart it.
+	 * <p>
+	 * When that happens, the app needs to understand whether or not its static data has
+	 * already been initialized and, if necessary, reset it.
+	 */
+	static void reset() {
+		if (instance != null) {
+			trace("Resetting the GetProducts singleton's data.");
+			instance.pageNumber = 1;
+			instance.maxProducts = 0;
+			instance.totalDownloaded = 0;
+		}
+	}
 
 	/**
 	 * Get the next batch of products to be displayed.

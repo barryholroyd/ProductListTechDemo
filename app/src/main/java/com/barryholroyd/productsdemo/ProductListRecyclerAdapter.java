@@ -35,10 +35,10 @@ public class ProductListRecyclerAdapter
 
     ProductListRecyclerAdapter(Activity _a) {
         a = _a;
-        trace(String.format("Approach for loading images in the background: %s.",
-                App.AP_USE_THREADS ? "Threads" : "AsyncTask"));
-        trace(String.format("Memory caching: %s.", MemoryCache.MC_ON ? "ON" : "OFF"));
-        trace(String.format("Disk caching: %s.",   DiskCache.DC_ON   ? "ON" : "OFF"));
+        ActivityProductList.trace(String.format("Approach for loading images in the background: %s.",
+                App.USE_THREADS ? "Threads" : "AsyncTask"));
+        ActivityProductList.trace(String.format("Memory caching: %s.", MemoryCache.ON ? "ON" : "OFF"));
+        ActivityProductList.trace(String.format("Disk caching: %s.",   DiskCache.ON ? "ON" : "OFF"));
     }
 
 	/**
@@ -148,15 +148,6 @@ public class ProductListRecyclerAdapter
 	}
 
     /**
-     * Tracing method for app overall.
-     *
-     * @param msg message to be logged.
-     */
-    static private void trace(String msg) {
-        Support.trc(Configure.App.AP_TRACE, "App", msg);
-    }
-
-    /**
 	 * ViewHolder class specific to ProductListRecyclerAdapter.
 	 */
 	protected class ProductListViewHolder extends RecyclerView.ViewHolder
@@ -248,8 +239,8 @@ public class ProductListRecyclerAdapter
 			tvId.setText(pi.id);
 
             // Optionally display image url, for debugging purposes.
-            String name = App.AP_DISPLAY_URL
-                    ? String.format("[%s]\n%s", pi.imageUrl, pi.name)
+            String name = App.DISPLAY_URL
+                    ? String.format("[%s]\n%s", Support.truncImageString(pi.imageUrl), pi.name)
                     : pi.name;
             tvName.setText(name);
 

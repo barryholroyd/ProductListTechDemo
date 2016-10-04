@@ -1,10 +1,11 @@
 package com.barryholroyd.productsdemo;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
+import static com.barryholroyd.productsdemo.Configure.DiskCache.CACHE_DIR;
+import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
 
 /*
  * TODO: Code unit tests.
@@ -41,7 +42,7 @@ public class ActivityProductList extends ActivityPrintStates
 	 */
 	static final String PIAL = "PIAL";
 
-	/**
+    /**
 	 * Sandard onCreate method.
 	 *
 	 * @param savedInstanceState used to transfer the backing array for the products
@@ -54,14 +55,22 @@ public class ActivityProductList extends ActivityPrintStates
 		setContentView(R.layout.productlist);
 
 		initRecyclerView();
+
+		/*
+		 * If savedInstance is null, then we are either starting the app for the first time
+		 * or are restarting the app after (for example), the "Back" button has been used.
+		 * In the latter case, we have to make sure that the GetProducts singleton is
+		 * re-initialized to match the rest of the app (by essentially resetting it to be
+		 * uninitialized).
+		 */
 		if (savedInstanceState == null) {
-			// Display the product list for the first time.
-            Support.logd("OSI: ON CREATE: savedInstanceState is NULL");
-            GetProducts.instance.getNextPage(this);
+            trace("onCreate: savedInstanceState is NULL"); // DEL:
+			GetProducts.reset();
+			GetProducts.instance.getNextPage(this);
 		}
 		else {
 			// Display the product list on device reconfiguration.
-            Support.logd("OSI: ON CREATE: savedInstanceState is NOT NULL");
+            trace("onCreate: savedInstanceState is NOT NULL"); // DEL:
             refreshListDisplay(savedInstanceState);
 		}
 	}
@@ -147,16 +156,21 @@ public class ActivityProductList extends ActivityPrintStates
 		ProductInfoArrayList pial =
 			((ProductListRecyclerAdapter) recyclerView.getAdapter()).getProductInfoArrayList();
 
-        // TBD:
-        outState.putString("TEST", "TEST");
 		outState.putParcelableArrayList(PIAL, pial);
 
-        String s = outState.getString("TEST");
+        // DEL:
         ProductInfoArrayList pial2 =
                 (ProductInfoArrayList) outState.<ProductInfo>getParcelableArrayList(PIAL);
-
-        Support.logd(String.format("OSI: s=[%s]\n", s == null ? "<null>" : s));
-        Support.logd(String.format("OSI: pial2=[%s]\n", s == null ? "<null>" : pial2.toString()));
-
+        if (pial2 == null) trace("onSaveInstanceState: pial2 = null");
+        else               trace(String.format("onSaveInstanceState: pial2 size=%d", pial2.size()));
 	}
+
+    /**
+     * Tracing method for app overall.
+     *
+     * @param msg message to be logged.
+     */
+    static void trace(String msg) {
+        Support.trc(Configure.App.TRACE, "App", msg);
+    }
 }
