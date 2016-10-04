@@ -200,15 +200,7 @@ public class GetProducts
 			plra.updateData(pial);
             totalDownloaded += pial.size();
 
-			// TBD: I actually hit this -- fix it! I had put it in the background (perhaps
-			// it was still scrolling?); when I tried to bring it to the foreground (I think
-			// that is what I was doing), it crashed here.
-
-			// TWO POSSIBLE ISSUES:
-			//   1. Synchronization issue -- this got hit immediately *after* onSaveInstanceState was called.
-			//   2. onSaveInstanceState not always getting called (print out Activity lifecycle transitions).
-
-            // Sanity check. -1 because of the header added locally.
+            // Sanity check. Subtract 1 because of the header added locally.
 			int itemCount = plra.getItemCount() - 1;
             if (totalDownloaded != itemCount) {
 				String msg = String.format(

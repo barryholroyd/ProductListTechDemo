@@ -10,9 +10,7 @@ import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
 /*
  * TODO: Code unit tests.
  * TODO: GUI unit tests.
- * BUG: Back button (push into background onto Overview screen), bring foreground: crashes with:
- * Total downloaded count corrupted (totalDownloaded=75 itemCount=25.
- * TODO: Code cleanup.
+ * TODO: Finish comments.
  * TODO: check for remaining TBDs, etc.
  */
 

@@ -22,8 +22,6 @@ public class ProductInfo implements Parcelable
 
 	ProductInfo() {}
 
-	// TBD: display image.
-
 	private ProductInfo(Parcel in) {
 		id = in.readString();
 		name = in.readString();
