@@ -24,7 +24,7 @@ import static com.barryholroyd.productsdemo.Support.truncImageString;
 final class CacheDiskImage
 {
     /**
-     * Singleton.
+     * Singleton for caching images on disk.
      * <p>
      * A singleton is used (as opposed to a set of static methods) because an Activity instance
      * is needed to obtain the cache directory and that isn't available at static initialization
@@ -36,16 +36,28 @@ final class CacheDiskImage
      * initialization at class loading time). The double check lock problem is addressed by
      * making the instance "volatile" -- that ensure that the instance is fully initialized
      * before becoming visible to any other threads.
+     * <p>
+     * Synchronization occurs at a high level, via the get() and add() methods. As a result,
+     * accesses of lower level entities (such as getEntity(), icdHm and icdLl) do not have
+     * to be separately synchronized.
      */
     static volatile private CacheDiskImage instance;
 
     /** Base name for image files. */
     static final private String FILENAME_BASE = "image";
 
-    /** Internal key/value mapping for cache storage. */
+    /**
+     * Internal key/value mapping for cache storage.
+     * This does not have to be synchronized since all accesses of it
+     * come from within synchronized methods (get() and add()).
+     */
     final HashMap<String,Entry> icdHm  = new HashMap<>();
 
-    /** First in / first out tracking for deleting cache entries. */
+    /**
+     * First in / first out tracking for deleting cache entries.
+     * This does not have to be synchronized since all accesses of it
+     * come from within add(), which is already synchronized.
+     */
     final LinkedList<String> icdLl = new LinkedList<>();
 
     /** Full file name for the cache subdirectory. */
@@ -64,7 +76,8 @@ final class CacheDiskImage
      * Constructor.
      * <p>
      * We pass in the subdirectory name so that different apps can provide different
-     * cache subdirectories.
+     * cache subdirectories. Synchronization isn't necessary since this is only called
+     * from a synchronized block within getInstance().
      *
      * @param a   standard Activity instance.
      * @param cacheSubdirName  subdirectory name for the cache -- unique to this app/usage.
@@ -114,6 +127,7 @@ final class CacheDiskImage
      * Standard singleton getInstance() method.
      * <p>
      * We avoid the double check lock issue by making the "instance" field "volatile".
+     *
      * @param a   standard Activity instance.
      * @param cacheDirName  subdirectory name for the cache -- unique to this app/usage.
      * @return  singleton instance.
@@ -136,7 +150,7 @@ final class CacheDiskImage
      * @param url url for the bitmap.
      * @return bitmap obtained from the URL.
      */
-    Bitmap get(String url) {
+    synchronized Bitmap get(String url) {
         if (!Configure.DiskCache.ON)
             return null;
 
@@ -158,7 +172,7 @@ final class CacheDiskImage
         return bitmap;
     }
 
-    void add(Activity a, String url, Bitmap bitmap) {
+    synchronized void add(Activity a, String url, Bitmap bitmap) {
         if (!Configure.DiskCache.ON)
             return;
 
@@ -167,7 +181,7 @@ final class CacheDiskImage
             throw new CacheDiskImageException("null url");
         }
 
-        Entry entry = getEntry(url);
+        Entry entry = getEntry(url);   // this always returns a valid entry.
         String filename = entry.longName;
         trace(String.format("Adding [file=%s]: %s", entry.shortName, url));
 
@@ -202,7 +216,7 @@ final class CacheDiskImage
                  * This should only happen if the first bitmap size is larger
                  * than the entire cache.
                  */
-                throw new CacheDiskImageException("cache is empty."); // TBD: hitting this on scrolling
+                throw new CacheDiskImageException("cache is empty.");
             }
 
             // Remove entry from internal data structures.
@@ -277,7 +291,7 @@ final class CacheDiskImage
         return cachePath + File.separator + cacheSubdirName;
     }
 
-    void fileCheck(File f, String url) {
+    private void fileCheck(File f, String url) {
         if (!f.exists()) {
             throw new CacheDiskImageException(
                     String.format("Missing [file=%s]: %s", f.getName(), url));
@@ -304,12 +318,13 @@ final class CacheDiskImage
     /**
      * Get the Entry for the specified URL.
      * Create the Entry, if necessary.
+     * This does not have to be synchronized since all calls to it
+     * come from synchronized methods (get() and add()).
      *
      * @param url   url of the image to be loaded.
      * @return  Entry representing the image to be loaded.
      */
-    // TBD: double check issue (synchronizing)???
-    private Entry getEntry(String url) {
+    private synchronized Entry getEntry(String url) {
         Entry entry = icdHm.get(url);
         if (entry == null) {
             entry = new Entry(url);

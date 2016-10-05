@@ -11,7 +11,7 @@ import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
  * TODO: Code unit tests.
  * TODO: GUI unit tests.
  * TODO: Finish comments.
- * TODO: check for remaining TBDs, etc.
+ * TODO: Run code check tools.
  */
 
 /**

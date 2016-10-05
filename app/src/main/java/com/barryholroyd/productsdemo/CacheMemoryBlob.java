@@ -6,6 +6,16 @@ import java.util.LinkedList;
 /**
  * Cache objects in memory.
  * <p>
+ * By default, size is specified as the number of maximum number of bytes.
+ * This is configurable using {@link com.barryholroyd.productsdemo.Configure.MemoryCache#PERCENT}.
+ * <p>
+ * The class is instantiable (as opposed to being a singleton or having only
+ * static methods) so that:
+ * <ol>
+ *     <li>it can be extended and sizeOf() overridden.
+ *     <li>multiple caches can be used in the same app.
+ * </ol>
+ * <p>
  * I used ideas from LruCache for this implementation. I wrote my own cache
  * implementation just for the practice.
  * <p>
@@ -14,23 +24,14 @@ import java.util.LinkedList;
  * for a single put request (i.e., for those situations where the item to
  * be inserted in the list is larger than the item to be removed from the
  * list and the list is currently at its absolute maximum, in terms of bytes).
- * <p>
- * By default, size is specified as the number of maximum number of bytes.
- * <p>
- * The class is instantiable (as opposed to being a singleton or having only
- * static methods) so that:
- * <ol>
- *     <li>it can be extended and sizeOf() overridden.
- *     <li>multiple caches can be used in the same app.
- * </ol>
  */
 public class CacheMemoryBlob<K,V>
 {
     /** Internal key/value mapping for cache storage. */
-    final HashMap<K,V> bcmHm  = new HashMap<>();
+    final private HashMap<K,V> bcmHm  = new HashMap<>();
 
     /** First in / first out tracking for deleting cache entries. */
-    final LinkedList<K> bcmLl = new LinkedList<>();
+    final private LinkedList<K> bcmLl = new LinkedList<>();
 
     /** Maximum size of the cache in bytes. */
     protected long maxCacheSize = 0;
@@ -63,11 +64,8 @@ public class CacheMemoryBlob<K,V>
     public V get(K key) {
         if (!Configure.MemoryCache.ON)
             return null;
-
         trace(String.format("Getting [%s]: %s",
-                bcmHm.containsKey(key) ? "found" : "not found",
-                key));
-
+                bcmHm.containsKey(key) ? "found" : "not found", key));
         return bcmHm.get(key);
     }
 
@@ -76,8 +74,7 @@ public class CacheMemoryBlob<K,V>
      * <p>
      * Ignore the request if the key is already present.
      */
-    // TBD: ensure everything get synchronized correctly!
-    public void add(K key, V val) {
+    public synchronized void add(K key, V val) {
         if (!Configure.MemoryCache.ON)
             return;
 

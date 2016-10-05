@@ -118,12 +118,11 @@ class ImageLoader {
 
         @Override
         public void run() {
-                /*
-                 * We have already tried pulling the bitmap from the memory
-                 * cache (that happens in the foreground), but didn't find it
-                 * there.
-                 */
-
+            /*
+             * We have already tried pulling the bitmap from the memory
+             * cache (that happens in the foreground), but didn't find it
+             * there.
+             */
             Bitmap bitmap;
 
             // Check for a null url.
@@ -235,7 +234,7 @@ class ImageLoader {
                  * later thread handling the newer image request get it loaded. In rare
                  * cases, the default image may stayed displayed. I believe this happens if
                  * this thread ends up executing after the "other" thread. Pragmatically,
-                 * this isn't a problem with the memory and disk caches in place.
+                 * that isn't a problem with the memory and disk caches in place.
                  * NTH: display the proper image if the other thread has already run.
                  */
             String newUrl = Support.truncImageString(currentUrl);
