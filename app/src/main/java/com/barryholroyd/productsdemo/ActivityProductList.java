@@ -8,7 +8,11 @@ import static com.barryholroyd.productsdemo.Configure.DiskCache.CACHE_DIR;
 import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
 
 /*
+ * TODO: Rearrange code as MVC or MVP?
  * TODO: Code unit tests.
+ *   o Android-based
+ *     o DownloadJsonTask.doInBackground(): check results.
+ *       When_DownloadJson_Expect_ValidJason
  * TODO: GUI unit tests.
  * TODO: Finish comments.
  * TODO: Run code check tools.

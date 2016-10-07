@@ -145,8 +145,8 @@ public class GetProducts
      * @param count the number of items in the batch to be downloaded.
      */
 	private void getProducts(Activity a, int batch, int count) {
-		String urlString = String.format(
-			"%s%s/%d/%d", API_PREFIX, API_KEY, batch, count);
+		String urlString = makeUrl(batch, count);
+
 		if (!checkNetworkConnectivity(a)) {
             Support.loge("No network connection.");
 		}
@@ -160,6 +160,20 @@ public class GetProducts
 			a.getSystemService(a.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 		return networkInfo != null && networkInfo.isConnected();
+	}
+
+	/**
+	 * Make a URL to get the next batch of products. They will be returned in JSON format.
+	 * <p>
+	 *     This is public so that unit tests can access it.
+	 *
+	 * @param batch	The number of the batch to load.
+	 * @param count The number of products requested in the batch.
+     * @return The url that can be used to make the request.
+     */
+	static public String makeUrl(int batch, int count) {
+		return String.format(
+				"%s%s/%d/%d", API_PREFIX, API_KEY, batch, count);
 	}
 
 	private class DownloadJsonTask extends AsyncTask<String, Void, ProductInfoArrayList>
@@ -232,7 +246,7 @@ public class GetProducts
 		ProductInfoArrayList parse() {
 			if (is == null)
 				return null;
-			JsonReader jr = null;
+			JsonReader jr;
 			try {
 				jr = new JsonReader(new InputStreamReader(is, "UTF-8"));
 				return readProductsInfo(jr);
