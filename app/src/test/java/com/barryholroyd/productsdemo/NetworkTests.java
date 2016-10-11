@@ -16,7 +16,7 @@ public class NetworkTests {
      * Ensure that we can set up a valid connection to the product demo web site.
      */
     @Test
-    public void When_GetInputStream_Expect_NonNull() {
+    public void when_GetInputStream_Expect_NonNull() {
         String url = makeUrl(1, 2);
         InputStream is = null;
         try {
@@ -29,7 +29,7 @@ public class NetworkTests {
     }
 
     @Test
-    public void When_BadUrl_Expect_Exception() {
+    public void when_BadUrl_Expect_Exception() {
         InputStream is = null;
         try {
             is = NetworkSupport.getInputStreamFromUrl("badurl");

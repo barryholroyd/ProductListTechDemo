@@ -9,6 +9,6 @@ import org.junit.Test;
 
 public class JsonTests {
     @Test
-    public void When_DownloadJson_Expect_ValidJson() {
+    public void when_DownloadJson_Expect_ValidJson() {
     }
 }

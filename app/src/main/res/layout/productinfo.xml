@@ -76,6 +76,7 @@
                 style="@style/Button"
                 android:text="All Products"
                 android:onClick="displayProductList"
+                android:id="@+id/button_display_productlist"
                 />
         </LinearLayout>
     </ScrollView>

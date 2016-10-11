@@ -27,7 +27,7 @@ public class MiscTests {
      * TBD: delete this if you can come up with a better Mockito example.
      */
     @Test
-    public void When_RequestProductInfoKey_Expect_ProductInfoKey() {
+    public void when_RequestProductInfoKey_Expect_ProductInfoKey() {
         // DEL: create the mock context
         when(mMockContext.getPackageName()).thenReturn(FAKE_PACKAGE);
 

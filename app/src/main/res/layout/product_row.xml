@@ -11,6 +11,7 @@ height increase (and so needs to be wrap_content) but the other must then be mat
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/blueDeep"
+    android:tag="LL"
     android:id="@+id/row"
     >
     <TextView
