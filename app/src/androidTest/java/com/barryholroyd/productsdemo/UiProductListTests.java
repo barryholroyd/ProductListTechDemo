@@ -39,6 +39,16 @@ public class UiProductListTests {
     public IntentsTestRule<ActivityProductList> intentsTestRule =
             new IntentsTestRule<>(ActivityProductList.class);
 
+    /**
+     * Click on row 0 and verify that it starts the ActivityProductInfo
+     * activity. TBD: verify.
+     * <p>
+     * Espresso's onData() does not work with RecyclerView, so we have to
+     * use onView() and RecyclerViewActions.
+     *
+     * @see <a href="https://developer.android.com/reference/android/support/test/espresso/contrib/RecyclerViewActions.html">
+     *     RecyclerViewActions</a>
+     */
     @Test
     public void When_ClickOnRow_Expect_DisplayProductInfoPage() {
 
@@ -49,6 +59,9 @@ public class UiProductListTests {
         View v = a.findViewById(R.id.list);
         boolean b = m.matches(v);
         Support.logd(String.format("MATCH RETURNED: %b", b));
+
+        di.atPosition(1);
+        di.perform(click());
 
 
 //        MyViewAssertion mva = new MyViewAssertion();
