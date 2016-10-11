@@ -2,6 +2,9 @@ apply plugin: 'com.android.application'
 
 configurations.all {
     resolutionStrategy.force 'com.android.support:support-annotations:24.2.1'
+//    resolutionStrategy.force 'com.android.support:appcompat-v7:24.2.1'
+    //resolutionStrategy.force 'com.android.support:recyclerview-v7:24.2.1'
+    //resolutionStrategy.force 'com.android.support:support-v4:24.2.1'
 }
 
 android {
@@ -34,9 +37,31 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
 
     androidTestCompile 'com.android.support.test:runner:0.5'
+//    androidTestCompile('com.android.support.test:runner:0.5') {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    }
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
     androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2.2'
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+//    androidTestCompile'com.android.support.test.espresso:espresso-contrib:2.2.2'
+//    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2.2') {
+        // Necessary to avoid version conflicts.
+//        exclude module: 'appcompat-v7'
+//        exclude group: 'com.android.support', module: 'appcompat-v7'
+//        exclude group: 'com.android.support', module: 'support-v4'
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//        exclude module: 'recyclerview-v7'
+//    }
+}
+
+task listJars << {
+  println "-------------------------"
+  println "compile:"
+  println "-------------------------"
+  configurations.compile.each { File file -> println file.name }
+  println "-------------------------"
+  println "androidTestCompile:"
+  println "-------------------------"
+  configurations.androidTestCompile.each { File file -> println file.name }
+  println "-------------------------"
 }

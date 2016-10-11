@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.test.espresso.DataInteraction;
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewAssertion;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import static android.support.test.espresso.intent.Intents.intended;
 import android.support.test.filters.MediumTest;
@@ -52,24 +53,16 @@ public class UiProductListTests {
     @Test
     public void When_ClickOnRow_Expect_DisplayProductInfoPage() {
 
-        DataInteraction di = onData(withId(R.id.list)); // get the RecyclerView.
-        Matcher m = withId(R.id.list);
+        ViewInteraction vi = onView(withId(R.id.list));
+        vi.perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
 
-        Activity a = intentsTestRule.getActivity();
-        View v = a.findViewById(R.id.list);
-        boolean b = m.matches(v);
-        Support.logd(String.format("MATCH RETURNED: %b", b));
+// DEL:
+//        Matcher m = withId(R.id.list);
+//        Activity a = intentsTestRule.getActivity();
+//        View v = a.findViewById(R.id.list);
+//        boolean b = m.matches(v);
+//        Support.logd(String.format("MATCH RETURNED: %b", b));
 
-        di.atPosition(1);
-        di.perform(click());
-
-
-//        MyViewAssertion mva = new MyViewAssertion();
-//        di.check(mva);
-//        di.atPosition(1);
-//        di.check(mva);
-//        di.perform(click());
-//        di.check(mva);
 //        intended(allOf(
 //                toPackage("com.barryholroyd.productsdemo"),
 //                hasComponent(hasShortClassName(".ActivityProductInfo"))
