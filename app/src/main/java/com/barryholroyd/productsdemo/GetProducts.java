@@ -301,7 +301,7 @@ public class GetProducts
 					case "status":	to.status = reader.nextInt();	break;
 					case "kind":	to.kind = reader.nextString();	break;
 					case "etag":	to.etag = reader.nextString();	break;
-					default:	badToken(reader);
+					default:	badToken(reader, name);
 				}
 			}
 			reader.endObject();
@@ -344,7 +344,7 @@ public class GetProducts
 					case "reviewRating":	 pi.reviewRating	= reader.nextDouble();		break;
 					case "reviewCount":		 pi.reviewCount	= reader.nextInt();				break;
 					case "inStock":			 pi.inStock	= reader.nextBoolean();				break;
-					default:				 badToken(reader);
+					default:				 badToken(reader, name);
 				}
 			}
 			reader.endObject();
@@ -352,8 +352,8 @@ public class GetProducts
 			return pi;
 		}
 
-		private void badToken(JsonReader reader) throws IOException {
-            Support.loge("Error: bad token in JSON stream.");
+		private void badToken(JsonReader reader, String name) throws IOException {
+            Support.loge("Error: bad token in JSON stream: " + name);
 			reader.skipValue();
 		}
 	}
