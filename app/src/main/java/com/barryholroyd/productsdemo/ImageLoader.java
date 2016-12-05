@@ -1,10 +1,13 @@
 package com.barryholroyd.productsdemo;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
 
 import static com.barryholroyd.productsdemo.Configure.App.USE_THREADS;
 import static com.barryholroyd.productsdemo.Configure.DiskCache.CACHE_DIR;
@@ -42,6 +45,12 @@ class ImageLoader {
     /** Standard Activity instance. */
     Activity a;
 
+    /** Weak Reference for using the Activity in background threads. */
+    WeakReference<Activity> wrActivity = null;
+
+    /** Resources hook. */
+    Resources resources = null;
+
     /**
      * This stores the most current requested url for the ViewHolder instance.
      *
@@ -51,6 +60,8 @@ class ImageLoader {
 
     ImageLoader(Activity _a) {
         a = _a;
+        wrActivity = new WeakReference<>(a);
+        resources = a.getResources();
         if (cacheMemory == null) {
             cacheMemory = PERCENT
                     ? CacheMemoryImage.createWithPercent(SIZE_PERCENT)
@@ -128,7 +139,7 @@ class ImageLoader {
             // Check for a null url.
             bitmap = setImageNullCheck(url);
             if (bitmap != null) {
-                setImageView(iv, getNoImageBitmap(a));
+                setImageView(iv, getNoImageBitmap(resources));
                 return;
             }
 
@@ -148,9 +159,15 @@ class ImageLoader {
 
         /** Set the ImageView on the main thread. */
         private void setImageView(final ImageView iv, final Bitmap bitmap) {
-            a.runOnUiThread(new Runnable() {
-                public void run() { iv.setImageBitmap(bitmap); }
-            });
+            Activity a = Support.getActivity(wrActivity,
+                    "Activity gone: could not set ImageView");
+            if (a != null) {
+                a.runOnUiThread(new Runnable() {
+                    public void run() {
+                        iv.setImageBitmap(bitmap);
+                    }
+                });
+            }
         }
     }
 
@@ -194,14 +211,14 @@ class ImageLoader {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            iv.setImageBitmap(bitmap);
+                iv.setImageBitmap(bitmap);
         }
     }
 
     private Bitmap setImageNullCheck(String url) {
         if (url == null) {
             trace(String.format("No image provided -- loading default image."));
-            return getNoImageBitmap(a);
+            return getNoImageBitmap(resources);
         }
         return null;
     }
@@ -223,8 +240,8 @@ class ImageLoader {
             String msg = String.format(String.format(
                     "NetworkSupportException: %s", nse.getMessage()));
             Support.loge(msg);
-            Toaster.display(a, msg);
-            return getNoImageBitmap(a);
+            Toaster.display(wrActivity, msg);
+            return getNoImageBitmap(resources);
         }
 
         // We may have obtained a bitmap, but has the url changed since we requested it?
@@ -239,15 +256,15 @@ class ImageLoader {
                  */
             String newUrl = Support.truncImageString(currentUrl);
             trace(String.format("Loading default image instead of %s.", newUrl));
-            return getNoImageBitmap(a);
+            return getNoImageBitmap(resources);
         }
 
         if (bitmap != null) {
             cacheMemory.add(url, bitmap);
-            cacheDiskImage.add(a, url, bitmap);
+            cacheDiskImage.add(wrActivity, url, bitmap);
         }
         else {
-            bitmap = getNoImageBitmap(a);
+            bitmap = getNoImageBitmap(resources);
         }
 
         return bitmap;
@@ -286,8 +303,8 @@ class ImageLoader {
     }
 
     /** Get the default "no image" image. */
-    static Bitmap getNoImageBitmap(Activity a) {
-        return BitmapFactory.decodeResource(a.getResources(), R.drawable.noimage);
+    static Bitmap getNoImageBitmap(Resources resources) {
+            return BitmapFactory.decodeResource(resources, R.drawable.noimage);
     }
 
     /** Create a blank image. */

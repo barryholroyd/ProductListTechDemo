@@ -16,6 +16,44 @@ import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
  */
 
 /**
+ * TBD: Where should this go?
+ *
+ * High performance demo for listing products from Walmart.
+ * <p>
+ * This app demos how a list of items containing images (e.g., a list of products with
+ * associated thumbnail images) can be downloaded from the web with minimal delay. It specifically
+ * is <i>not</i> intended to be a full, user-facing app. It's functionality is limited to
+ * displaying all of the products in Walmart's top-level <i>Electronics</i> category. It could
+ * be easily expanded to provide full listings from any/all of Walmart's approximately
+ * 2500 categories and/or an extensive list of additional capabilities.
+ * <p>
+ * The primary challenge is ensuring that the delayed loading of images doesn't not cause
+ * inconsistencies (wrong image) when RecyclerView has reallocated the ViewHolder to another
+ * row by the time the requested image arrives and is available.
+ * <p>
+ * In addition to that, several mechanisms are included to provide the smoothest experience
+ * for the user.
+ *     <ul>
+ *         <li> Images downloaded in the background. Two implementations are provided:
+ *              AsnycTask-based and threads-based.
+ *         <li> Initial image url retained as a field and compared to the (potentially updated)
+ *              URL of the ViewHolder upon image arrival.
+ *         <li> Configurable look-ahead pre-loading.
+ *         <li> Configurable memory cache.
+ *         <li> Configurable disk cache.
+ *     </ul>
+ * <p>
+ * The <a href="Walmart Open API">https://developer.walmartlabs.com/</a> is used.
+ * This app accesses the paginated products portion of that API. 100 products are
+ * returned in each batch and each batch contains the URL for the next batch.
+ *
+ * @author Barry Holroyd
+ * @see    <a href="https://developer.walmartlabs.com/">Walmart Open API</a>
+ * @see    <a href="https://developer.walmartlabs.com/docs/read/Paginated_Products_API">
+ *            Paginated Products</a>
+ */
+
+/**
  * This is the main activity -- it lists the products.
  * <p>
  * Clicking on a product will call ActivityProductInfo to display product-specific information.
@@ -64,7 +102,7 @@ public class ActivityProductList extends ActivityPrintStates
 		 */
 		if (savedInstanceState == null) {
 			GetProducts.reset();
-			GetProducts.instance.getNextPage(this);
+			GetProducts.instance.getProductBatch(this);
 		}
 		else {
 			// Display the product list on device reconfiguration.

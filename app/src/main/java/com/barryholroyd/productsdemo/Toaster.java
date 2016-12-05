@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
+
 import static android.widget.Toast.LENGTH_LONG;
 
 /**
@@ -26,19 +28,28 @@ class Toaster {
     /**
      * Display a pop-up message to the user.
      * <p>
-     * This can be called from either the foreground or the background.
+     *     This can be called from either the foreground or the background. A
+     *     weak reference is used for the Activity parameter so that we can avoid
+     *     using an Activity which has gone away.
+     * <p>
+     *     TBD: address the very tiny race condition between the check for 'a'
+     *     being null and a.runOnUiThread().
      *
-     * @param a standard Activity.
+     * @param wrActivity weak reference for the calling activity.
      * @param msg message to be displayed.
      */
-    static void display(final Activity a, final String msg) {
+    static void display(WeakReference<Activity> wrActivity, final String msg) {
         offset = (offset > YMAX) ? 0 : offset + YINC;
-        a.runOnUiThread(new Runnable() {
-            public void run() {
-                final Toast toast = Toast.makeText(a, msg, LENGTH_LONG);
-                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, offset);
-                toast.show();
-            }
-        });
+        final Activity a = Support.getActivity(wrActivity,
+                "Activity is gone so could not create toast. Msg: " + msg);
+        if (a != null) {
+            a.runOnUiThread(new Runnable() {
+                public void run() {
+                    final Toast toast = Toast.makeText(a, msg, LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, offset);
+                    toast.show();
+                }
+            });
+        }
     }
 }

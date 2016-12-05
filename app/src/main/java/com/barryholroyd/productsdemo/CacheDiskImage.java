@@ -8,6 +8,7 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -172,7 +173,7 @@ final class CacheDiskImage
         return bitmap;
     }
 
-    synchronized void add(Activity a, String url, Bitmap bitmap) {
+    synchronized void add(WeakReference<Activity> wrActivity, String url, Bitmap bitmap) {
         if (!Configure.DiskCache.ON)
             return;
 
@@ -253,13 +254,13 @@ final class CacheDiskImage
             else {
                 String msg = String.format(
                         "CacheDiskImage - file could not be written out: %s", filename);
-                Toaster.display(a, msg);
+                Toaster.display(wrActivity, msg);
                 Support.loge(msg);
             }
         }
         catch (IOException ioe) {
             String msg = String.format("CacheDiskImage - IO Exception: %s", filename);
-            Toaster.display(a, msg);
+            Toaster.display(wrActivity, msg);
             Support.loge(msg);
         }
     }

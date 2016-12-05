@@ -116,7 +116,7 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		 */
 		if (!loading && (lastVisibleRow + TRIGGER_DISTANCE > totalLoadedRows)) {
 			loading = true;
-			GetProducts.instance.getNextPage(a);
+			GetProducts.instance.getProductBatch(a);
 		}
 	}
 }

@@ -8,6 +8,8 @@ import android.os.Build;
 import android.text.Html;
 import android.util.Log;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Common support that can be provided with static methods.
  *
@@ -20,25 +22,28 @@ class Support
 	 *
 	 * @param msg the message to be logged.
 	 */
+	static void logw(String msg) { Log.w(ActivityProductList.LOGTAG, msg); }
+
+	/**
+	 * Logs an error.
+	 *
+	 * @param msg the message to be logged.
+	 */
 	static void loge(String msg) { Log.e(ActivityProductList.LOGTAG, msg); }
 
-    /**
+	/**
      * Logs a debug message.
      *
      * @param msg the message to be logged.
      */
-    static void logd(String msg) {
-        Log.d(ActivityProductList.LOGTAG, msg);
-    }
+    static void logd(String msg) { Log.d(ActivityProductList.LOGTAG, msg); }
 
     /**
      * Logs an information message.
      *
      * @param msg the message to be logged.
      */
-    static void logi(String msg) {
-        Log.i(ActivityProductList.LOGTAG, msg);
-    }
+    static void logi(String msg) { Log.i(ActivityProductList.LOGTAG, msg); }
 
     /**
 	 * Workhorse trc method -- toggle-controlled logging.
@@ -59,7 +64,27 @@ class Support
 		}
 	}
 
-	/**
+    /**
+     * Wrapper used by background methods which want to use the Activity passed to them
+     * as a WeakReference.
+     * <p>
+     *     If the Activity has gone away (e.g., due to a device rotation), then
+     *     the get() method should return null and an error message is printed to
+     *     the log file. The caller of this method needs to check to see if the
+     *     returned value is null or not.
+     *
+     * @param wrActivity    WeakReference for the Activity.
+     * @param msg   error message to print out if the Activity has gone away.
+     * @return  the Activity, if still valid; else null.
+     */
+    static Activity getActivity(WeakReference<Activity> wrActivity, String msg) {
+        Activity a = wrActivity.get();
+        if (a == null)
+            Support.logw(msg);
+        return a;
+    }
+
+    /**
 	 * Truncate a Url or filename for an image to just the final component.
 	 *
 	 * @param name name to be truncated. Must have "images" just before the last component.

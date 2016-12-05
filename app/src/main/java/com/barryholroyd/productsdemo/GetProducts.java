@@ -12,15 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 
 import static com.barryholroyd.productsdemo.ActivityProductList.trace;
 
 /**
- * Get a list of products.
- *
- * @author Barry Holroyd
- * @see    <a href="https://walmartlabs-test.appspot.com">Walmart Products API (mock)</a>
- * @see    <a href="https://walmartlabs-test.appspot.com/_ah/api/walmart/v1">Documentation</a>
+ * TBD:
  */
 public class GetProducts
 {
@@ -28,7 +25,8 @@ public class GetProducts
 	 * Singleton.
 	 * <p>
 	 *     This was made a singleton because we only need a single instance of it
-	 *     and it makes it easier to access from anywhere in the app.
+	 *     and it makes it easier to access from anywhere in the app. This singleton
+     *     exists independently of any particular Activity instance.
 	 */
 	static public final GetProducts instance = new GetProducts();
 
@@ -43,41 +41,43 @@ public class GetProducts
 			throw new IllegalStateException("Only a single instance of GetProducts is allowed");
 	}
 
-	/**
-	 * Number of products to request in a single pageNumber. Maximum is 30.
-	 */
-	static final private int PAGE_SIZE = 25;
+	/** API key. */
+	static final private String API_KEY = "vwvv4uds6hqr3q8vr6qgrn8v";
 
-	/**
-	 * API key.
-	 * This was sent to me by Walmart for the test taken in August, 2016.
-	 */
-	static final private String API_KEY = "cec8e676-d56f-49b9-987a-989a9d23a724";
+    /** API Base Url */
+    static final private String API_BASE_URL = "http://api.walmartlabs.com";
 
-	/**
-	 * URL Prefix.
-	 * Full URL is: API_PREFIX + API_KEY + "/&lt;pageNumber&gt;/&lt;batchSize&gt;"
-	 */
-	static final private String API_PREFIX =
-		"https://walmartlabs-test.appspot.com/_ah/api/walmart/v1/walmartproducts/";
+    /** API Version */
+    static final private String API_VERSION = "v1";
 
-	/**
-	 * The "pageNumber" of the next set of "batchSize" products to get.
-	 */
-	private int pageNumber = 1;
+    /** API Paginated Items */
+    static final private String API_PAGINATED_ITEMS = "paginated/items";
 
-	/**
-	 * The total number of products available.
-	 * This is included in the response to each request.
-	 */
-	private int maxProducts = 0;
+    /** API Format */
+    static final private String API_FORMAT = "json";
 
-	/**
-	 * The total number of products downloaded so far.
-	 */
-	private int totalDownloaded = 0;
+    /**
+     * Category to use.
+     * This is a hardcoded category to use to drive the demo.
+     * The full set of available categories can be found at
+     * <a href="http://api.walmartlabs.com/v1/taxonomy?apiKey={apiKey}">categories</a>.
+     */
+    static final private int API_CATEGORY_ELECTRONICS = 3944;
 
-	int getMaxProducts() { return maxProducts; }
+//	/**
+//	 * The total number of products available.
+//	 * This is included in the response to each request.
+//	 */
+//	private int maxProducts = 0; // DEL:
+//
+//	/**
+//	 * The total number of products downloaded so far.
+//	 */
+//	private int totalDownloaded = 0; // DEL:
+//
+//	int getMaxProducts() { return maxProducts; } // DEL:
+
+    private String url_next_batch = null;
 
 	/**
 	 * Reset the instance data for this (static) singleton.
@@ -97,61 +97,34 @@ public class GetProducts
 	 */
 	static void reset() {
 		if (instance != null) {
-			instance.pageNumber = 1;
-			instance.maxProducts = 0;
-			instance.totalDownloaded = 0;
+            instance.url_next_batch = createUrl(API_CATEGORY_ELECTRONICS);
+//			instance.pageNumber = 1; DEL:
+//			instance.maxProducts = 0; DEL:
+//			instance.totalDownloaded = 0; DEL:
 		}
 	}
 
+    static private String createUrl(int category) {
+        return String.format("%s/%s/%s?category=%d&apiKey=%s&format=%s",
+                API_BASE_URL, API_VERSION, API_PAGINATED_ITEMS,
+                category, API_KEY, API_FORMAT);
+    }
+
 	/**
-	 * Get the next batch of products to be displayed.
+	 * Get the next batch of products and display them.
 	 * <p>
-	 *    This method is synchronized so that any previous calls to getNextPage()
+	 *    This method is synchronized so that any previous calls to it
 	 *    complete first. This will the run smoothly, based on information updated
 	 *    from the previous run(s).
-	 * <p>
-	 *     There appears to be a bug in the server. If you request a full page of products
-	 *     that extends beyond the end of the list, it will actually return a full page.
-	 *     Interestingly, that doesn't seem to be the case if you use a page size of 1.
-	 *     In any case, when we get to the end of the list we only ask for the number of
-	 *     remaining products if there aren't enough left to fill a full page.
-     * <p>
-     *     NTH: Ideally, we should provide a method for checking to see if the total
-     *     number of available products has changed.
-	 */
-	public synchronized void getNextPage(Activity a) {
-        // If all products have already been downloaded, just return without doing anything.
-        if ((maxProducts != 0) && (totalDownloaded == maxProducts)) {
-            return;
-        }
-
-        /*
-         * Set the page size. Handle the case where only a part of a page (at the end of
-         * the product set) needs to be downloaded). Note that we already know that there
-         * is are one or more products that have not yet been downloaded.
-         */
-		int pageSize = PAGE_SIZE;
-		if ((maxProducts != 0) && (pageNumber * PAGE_SIZE > maxProducts)) {
-			pageSize = maxProducts - ((pageNumber-1) * PAGE_SIZE);
-		}
-		getProducts(a, pageNumber++, pageSize);
-	}
-
-	/**
-	 * Get the next batch of products.
 	 *
      * @param a
-     * @param batch The batch to be downloaded.
-     * @param count the number of items in the batch to be downloaded.
      */
-	private void getProducts(Activity a, int batch, int count) {
-		String urlString = makeUrl(batch, count);
-
+    public synchronized void getProductBatch(Activity a) {
 		if (!checkNetworkConnectivity(a)) {
             Support.loge("No network connection.");
 		}
 		else {
-			new DownloadJsonTask(a).execute(urlString);
+			new DownloadJsonTask(a).execute(url_next_batch);
 		}
 	}
 
@@ -162,27 +135,25 @@ public class GetProducts
 		return networkInfo != null && networkInfo.isConnected();
 	}
 
-	/**
-	 * Make a URL to get the next batch of products. They will be returned in JSON format.
-	 * <p>
-	 *     This is public so that unit tests can access it.
-	 *
-	 * @param batch	The number of the batch to load.
-	 * @param count The number of products requested in the batch.
-     * @return The url that can be used to make the request.
+    /**
+     * Download the JSON, update the list of products and display it.
      */
-	static public String makeUrl(int batch, int count) {
-		return String.format(
-				"%s%s/%d/%d", API_PREFIX, API_KEY, batch, count);
-	}
-
 	private class DownloadJsonTask extends AsyncTask<String, Void, ProductInfoArrayList>
 	{
+        /**
+         * A WeakReference to the main activity.
+         * <p>
+         *     This is only used for Toaster.display(), but it is necessary so that
+         *     Toaster.display() doesn't crash if the Activity is gone.
+         */
+        private WeakReference<Activity> wrActivity;
+
+        /** Retain Activity on a hook only for the toaster display. */
         Activity a;
 
-        DownloadJsonTask(Activity _a) {
+        DownloadJsonTask(Activity a) {
             super();
-			a = _a;
+			wrActivity = new WeakReference<>(a);
         }
 		@Override
 		protected ProductInfoArrayList doInBackground(String urls[]) {
@@ -194,7 +165,7 @@ public class GetProducts
 			catch (NetworkSupportException | IOException e) {
 				String msg = String.format(String.format("GetProducts: %s", e.getMessage()));
 				Support.loge(msg);
-                Toaster.display(a, msg);
+                Toaster.display(wrActivity, msg); // TBD: can crash if Activity is gone.
                 return null;
 			}
 		}
