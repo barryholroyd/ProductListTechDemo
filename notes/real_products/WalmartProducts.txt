@@ -1,0 +1,49 @@
+-------------------------------------------------------------------------------
+Taxonomy of categories:
+-------------------------------------------------------------------------------
+  http://api.walmartlabs.com/v1/taxonomy?apiKey=vwvv4uds6hqr3q8vr6qgrn8v
+
+-------------------------------------------------------------------------------
+Paginated Products:
+-------------------------------------------------------------------------------
+  Returned JSON includes 100 items plus URL for the next page.
+
+  Example:
+    http://api.walmartlabs.com/v1/paginated/items
+      ?category=3944&apiKey=vwvv4uds6hqr3q8vr6qgrn8v&format=json
+
+    http://api.walmartlabs.com/v1/paginated/items
+      ? category=3944
+      & apiKey=vwvv4uds6hqr3q8vr6qgrn8v
+      & format=json
+
+-------------------------------------------------------------------------------
+Product Information: JSON fields
+-------------------------------------------------------------------------------
+  Paginated Products provides the "full response".
+    See: https://developer.walmartlabs.com/docs/read/Item_Field_Description.
+
+  Base Response
+    * itemId
+    * name
+    x shortDescription
+    * longDescription
+    * msrp
+    * thumbnailImage
+    x <largeImage>? or <mediumImage>? ]
+    x stock [Available, Limited Supply, Last few items, Not available]
+    x customerRating ([1?-5]
+    x numReviews
+
+-------------------------------------------------------------------------------
+Product mappings (old -> new)
+-------------------------------------------------------------------------------
+  productId		-> itemId
+  productName		-> name
+  shortDescription	-> shortDescription
+  longDescription	-> longDescription
+  price			-> msrp
+  productImage		-> thumbnailImage
+  reviewRating		-> customerRating (1-5)
+  reviewCount		-> numReviews
+  inStock		-> stock [enum]

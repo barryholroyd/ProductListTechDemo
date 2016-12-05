@@ -289,6 +289,9 @@ public class GetProducts
                         case "items":
                             to.pial = readProducts(reader);
                             break;
+						default:
+							reader.skipValue();
+							break;
                     }
                 }
                 else {
@@ -300,18 +303,6 @@ public class GetProducts
 
 			return to;
 		}
-
-        private String getNextName(JsonReader reader) throws IOException {
-            String name = reader.nextName();
-            if (!JSON_PAGINATED_PRODUCTS.contains(name)) {
-                Support.loge("Error: bad token in JSON stream: " + name);
-                reader.skipValue();
-                return null;
-            }
-            else {
-                return name;
-            }
-        }
 
 		private ProductInfoArrayList readProducts(JsonReader reader) throws IOException {
 			if (reader.peek() == JsonToken.NULL)
@@ -363,8 +354,15 @@ public class GetProducts
                         case "numReviews":
                             pi.reviewCount = reader.nextInt();
                             break;
-                    }
-                }
+						default:
+							reader.skipValue();
+							break;
+					}
+				}
+				else {
+					Support.loge("Error: bad token in JSON stream: " + name);
+					reader.skipValue();
+				}
 			}
 			reader.endObject();
 

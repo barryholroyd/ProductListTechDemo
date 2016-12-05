@@ -62,7 +62,7 @@ public class ProductListRecyclerAdapter
 	/**
 	 * Mapping table of ProductId to ProductInfo, for quick lookup.
 	 */
-	private HashMap<String,ProductInfo> pihm = new HashMap<>();
+	private HashMap<Integer,ProductInfo> pihm = new HashMap<>();
 
 	/**
 	 * Getter for the backing array list. Needed for bundling/unbundling across

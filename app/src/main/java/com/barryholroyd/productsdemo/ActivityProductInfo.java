@@ -43,7 +43,7 @@ public class ActivityProductInfo extends ActivityPrintStates
 		tvPrice.setText(pi.price);
 		tvRating.setText(Double.toString(pi.reviewRating));
 		tvReviewCount.setText(Integer.toString(pi.reviewCount));
-		tvInStock.setText(Boolean.toString(pi.inStock));
+		tvInStock.setText(pi.inStock);
 		imageLoader.load(tvProductImage, pi.imageUrl);
 		tvProductDescription.setText(pi.longDescription);
 	}
