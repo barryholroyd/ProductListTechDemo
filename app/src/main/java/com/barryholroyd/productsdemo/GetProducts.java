@@ -83,15 +83,21 @@ public class GetProducts
      *     Item Response Groups</a>
      */
     static private List<String> JSON_ITEM_INFO = Arrays.asList(
-            "itemId", "parentItemId", "name", "msrp", "salePrice",
-            "upc", "categoryPath", "shortDescription", "longDescription",
-            "brandName", "thumbnailImage", "mediumImage", "largeImage",
-            "productTrackingUrl", "standardShipRate", "color",
-            "marketplace", "modelNumber", "sellerInfo", "productUrl",
-            "categoryNode", "bundle", "clearance", "preOrder", "stock",
-            "addToCartUrl", "affiliateAddToCartUrl",
-            "freeShippingOver50Dollars", "availableOnline"
-    );
+			"addToCartUrl", "affiliateAddToCartUrl", "age",
+			"attributes", "availableOnline", "bestMarketplacePrice",
+			"brandName", "bundle", "categoryNode", "categoryPath",
+			"clearance", "color", "customerRating", "customerRatingImage",
+			"freeShippingOver50Dollars", "freeShipToStore", "gender",
+			"isbn", "itemId", "largeImage", "longDescription",
+			"marketplace", "maxItemsInOrder", "mediumImage", "modelNumber",
+			"msrp", "name", "ninetySevenCentShipping", "numReviews",
+			"offerType", "overnightShippingRate", "parentItemId", "preOrder",
+			"preOrderShipsOn", "productTrackingUrl", "productUrl", "rollBack",
+			"salePrice", "sellerInfo", "shipToStore", "shippingPassEligible",
+			"shortDescription", "size", "specialBuy", "standardShipRate",
+			"stock", "thumbnailImage", "twoThreeDayShippingRate", "upc",
+			"variants"
+	);
 
 	/**
 	 * The total number of products downloaded so far.
@@ -118,16 +124,22 @@ public class GetProducts
 	 */
 	static void reset() {
 		if (instance != null) {
-            instance.url_next_batch = createUrl(API_CATEGORY_ELECTRONICS);
+            instance.url_next_batch = createUrlInitial(API_CATEGORY_ELECTRONICS);
 //			instance.totalDownloaded = 0; DEL:
 		}
 	}
 
-    static private String createUrl(int category) {
+	/** Create initial paginated products list request. */
+    static private String createUrlInitial(int category) {
         return String.format("%s/%s/%s?category=%d&apiKey=%s&format=%s",
                 API_BASE_URL, API_VERSION, API_PAGINATED_ITEMS,
                 category, API_KEY, API_FORMAT);
     }
+
+	/** Create "new page" paginated products list request. */
+	static private String createUrlNextPage(String nextPage) {
+		return String.format("%s%s", API_BASE_URL, nextPage);
+	}
 
 	/**
 	 * Get the next batch of products and display them.
@@ -284,7 +296,12 @@ public class GetProducts
                 if (JSON_PAGINATED_PRODUCTS.contains(name)) {
                     switch (name) {
                         case "nextPage":
-                            to.urlNextPage = reader.nextString();
+							String nextPage = reader.nextString();
+							if (nextPage == null) {
+								Support.logd("DONE"); // TBD:
+								System.exit(9); // TBD:
+							}
+                            to.urlNextPage = createUrlNextPage(nextPage);
                             break;
                         case "items":
                             to.pial = readProducts(reader);
@@ -335,7 +352,7 @@ public class GetProducts
                             pi.name = Support.htmlToText(reader.nextString());
                             break;
                         case "msrp":
-                            pi.price = reader.nextString();
+                            pi.price = reader.nextDouble();
                             break;
                         case "shortDescription": Support.htmlToText(reader.nextString());
                             break;
@@ -349,7 +366,7 @@ public class GetProducts
                             pi.inStock = reader.nextString();
                             break;
                         case "customerRating":
-                            pi.reviewRating = reader.nextDouble();
+                            pi.reviewRating = reader.nextString();
                             break;
                         case "numReviews":
                             pi.reviewCount = reader.nextInt();

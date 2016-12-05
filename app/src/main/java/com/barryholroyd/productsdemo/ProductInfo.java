@@ -14,9 +14,9 @@ public class ProductInfo implements Parcelable
 	String  name;
 	String  shortDescription;
 	String  longDescription;
-	String  price;
+	double  price;
 	String	imageUrl;
-	double  reviewRating;
+	String  reviewRating;
 	int     reviewCount;
 	String	inStock;
 
@@ -27,9 +27,9 @@ public class ProductInfo implements Parcelable
 		name = in.readString();
 		shortDescription = in.readString();
 		longDescription = in.readString();
-		price = in.readString();
+		price = in.readDouble();
 		imageUrl = in.readString();
-		reviewRating = in.readDouble();
+		reviewRating = in.readString();
 		reviewCount = in.readInt();
 		inStock = in.readString();
 	}
@@ -43,9 +43,9 @@ public class ProductInfo implements Parcelable
 		out.writeString(name);
 		out.writeString(shortDescription);
 		out.writeString(longDescription);
-		out.writeString(price);
+		out.writeDouble(price);
 		out.writeString(imageUrl);
-		out.writeDouble(reviewRating);
+		out.writeString(reviewRating);
 		out.writeInt(reviewCount);
 		out.writeString(inStock);
 	}

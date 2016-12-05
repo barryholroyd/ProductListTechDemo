@@ -236,7 +236,7 @@ public class ProductListRecyclerAdapter
 		 *                 read in as JSON from the cloud.
 		 */
 		protected void bindData(ProductInfo pi) {
-			tvId.setText(pi.id);
+			tvId.setText(Integer.toString(pi.id));
 
             // Optionally display image url, for debugging purposes.
             String name = App.DISPLAY_URL
