@@ -74,14 +74,11 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 
 		// Total number of items currently in the adapter.
 		int totalLoadedRows = llm.getItemCount();
-		if (totalLoadedRows == GetProducts.instance.getMaxProducts()) {
-			return;
-		}
 
-        // -1 to account for the locally-added header
-		if (totalLoadedRows - 1 > GetProducts.instance.getMaxProducts()) {
-			throw new IllegalStateException("Unhandled: reduction in number of products available");
-		}
+		// TBD: Optimize -- in the new version, use a flag to indicate no more rows available.
+//		if (totalLoadedRows == GetProducts.instance.getMaxProducts()) {
+//			return;
+//		}
 
 		// If the adapter somehow has *fewer* rows than previously, adjust accordingly.
 		if (totalLoadedRows < totalLoadedRowsPrevious) {

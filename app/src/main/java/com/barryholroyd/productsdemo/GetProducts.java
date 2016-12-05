@@ -13,6 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.barryholroyd.productsdemo.ActivityProductList.trace;
 
@@ -63,19 +66,37 @@ public class GetProducts
      * <a href="http://api.walmartlabs.com/v1/taxonomy?apiKey={apiKey}">categories</a>.
      */
     static final private int API_CATEGORY_ELECTRONICS = 3944;
+    /**
+     * Valid JSON tokens for paginated products.
+     *
+     * @see <a href="https://developer.walmartlabs.com/docs/read/Paginated_Products_API">
+     *     Paginated Products API</a>
+     */
+    static private List<String> JSON_PAGINATED_PRODUCTS = Arrays.asList(
+            "category", "format", "nextPage", "items"
+    );
 
-//	/**
-//	 * The total number of products available.
-//	 * This is included in the response to each request.
-//	 */
-//	private int maxProducts = 0; // DEL:
-//
-//	/**
-//	 * The total number of products downloaded so far.
-//	 */
-//	private int totalDownloaded = 0; // DEL:
-//
-//	int getMaxProducts() { return maxProducts; } // DEL:
+    /**
+     * Valid JSON tokens for product information.
+     *
+     * @see <a href="https://developer.walmartlabs.com/docs/read/Item_Field_Description">
+     *     Item Response Groups</a>
+     */
+    static private List<String> JSON_ITEM_INFO = Arrays.asList(
+            "itemId", "parentItemId", "name", "msrp", "salePrice",
+            "upc", "categoryPath", "shortDescription", "longDescription",
+            "brandName", "thumbnailImage", "mediumImage", "largeImage",
+            "productTrackingUrl", "standardShipRate", "color",
+            "marketplace", "modelNumber", "sellerInfo", "productUrl",
+            "categoryNode", "bundle", "clearance", "preOrder", "stock",
+            "addToCartUrl", "affiliateAddToCartUrl",
+            "freeShippingOver50Dollars", "availableOnline"
+    );
+
+	/**
+	 * The total number of products downloaded so far.
+	 */
+	private int totalDownloaded = 0; // DEL:
 
     private String url_next_batch = null;
 
@@ -98,8 +119,6 @@ public class GetProducts
 	static void reset() {
 		if (instance != null) {
             instance.url_next_batch = createUrl(API_CATEGORY_ELECTRONICS);
-//			instance.pageNumber = 1; DEL:
-//			instance.maxProducts = 0; DEL:
 //			instance.totalDownloaded = 0; DEL:
 		}
 	}
@@ -244,7 +263,6 @@ public class GetProducts
 		ProductInfoArrayList readProductsInfo(JsonReader reader) throws IOException
 		{
 			TopObject to = readTopObject(reader);
-			maxProducts = to.totalProducts;
 			return to.pial;
 		}
 
@@ -262,23 +280,38 @@ public class GetProducts
 
 			reader.beginObject();
 			while (reader.hasNext()) {
-				String name = reader.nextName();
-				switch (name) {
-					case "id":	to.id = reader.nextString();	break;
-					case "products":	to.pial = readProducts(reader);	break;
-					case "totalProducts":	to.totalProducts = reader.nextInt();	break;
-					case "pageNumber":	to.pageNumber = reader.nextInt();	break;
-					case "pageSize":	to.pageSize = reader.nextInt();	break;
-					case "status":	to.status = reader.nextInt();	break;
-					case "kind":	to.kind = reader.nextString();	break;
-					case "etag":	to.etag = reader.nextString();	break;
-					default:	badToken(reader, name);
-				}
+                String name = reader.nextName();
+                if (JSON_PAGINATED_PRODUCTS.contains(name)) {
+                    switch (name) {
+                        case "nextPage":
+                            to.urlNextPage = reader.nextString();
+                            break;
+                        case "items":
+                            to.pial = readProducts(reader);
+                            break;
+                    }
+                }
+                else {
+                    Support.loge("Error: bad token in JSON stream: " + name);
+                    reader.skipValue();
+                }
 			}
 			reader.endObject();
 
 			return to;
 		}
+
+        private String getNextName(JsonReader reader) throws IOException {
+            String name = reader.nextName();
+            if (!JSON_PAGINATED_PRODUCTS.contains(name)) {
+                Support.loge("Error: bad token in JSON stream: " + name);
+                reader.skipValue();
+                return null;
+            }
+            else {
+                return name;
+            }
+        }
 
 		private ProductInfoArrayList readProducts(JsonReader reader) throws IOException {
 			if (reader.peek() == JsonToken.NULL)
@@ -302,28 +335,44 @@ public class GetProducts
 			reader.beginObject();
 			while (reader.hasNext()) {
 				String name = reader.nextName();
-				switch (name) {
-					case "productId":		 pi.id	= reader.nextString();					break;
-					case "productName":		 pi.name	=
-                            Support.htmlToText(reader.nextString());	break;
-					case "shortDescription": pi.shortDescription	=
-                            Support.htmlToText(reader.nextString());	break;
-					case "longDescription":	 pi.longDescription	=
-                            Support.htmlToText(reader.nextString());	break;
-					case "price":			 pi.price	= reader.nextString();				break;
-					case "productImage":	 pi.imageUrl	= reader.nextString();			break;
-					case "reviewRating":	 pi.reviewRating	= reader.nextDouble();		break;
-					case "reviewCount":		 pi.reviewCount	= reader.nextInt();				break;
-					case "inStock":			 pi.inStock	= reader.nextBoolean();				break;
-					default:				 badToken(reader, name);
-				}
+                if (JSON_ITEM_INFO.contains(name)) {
+                    switch (name) {
+                        case "itemId":
+                            pi.id = reader.nextInt();
+                            break;
+                        case "name":
+                            pi.name = Support.htmlToText(reader.nextString());
+                            break;
+                        case "msrp":
+                            pi.price = reader.nextString();
+                            break;
+                        case "shortDescription": Support.htmlToText(reader.nextString());
+                            break;
+                        case "longDescription":
+                            pi.longDescription = Support.htmlToText(reader.nextString());
+                            break;
+                        case "thumbnailImage":
+                            pi.imageUrl = reader.nextString();
+                            break;
+                        case "stock":
+                            pi.inStock = reader.nextString();
+                            break;
+                        case "customerRating":
+                            pi.reviewRating = reader.nextDouble();
+                            break;
+                        case "numReviews":
+                            pi.reviewCount = reader.nextInt();
+                            break;
+                    }
+                }
 			}
 			reader.endObject();
 
 			return pi;
 		}
 
-		private void badToken(JsonReader reader, String name) throws IOException {
+        // DEL:
+		private void otherToken(JsonReader reader, String name) throws IOException {
             Support.loge("Error: bad token in JSON stream: " + name);
 			reader.skipValue();
 		}
@@ -331,13 +380,7 @@ public class GetProducts
 
 	private class TopObject
 	{
-		String id;
+		String urlNextPage;
 		ProductInfoArrayList pial;
-		int totalProducts;
-		int pageNumber;
-		int pageSize;
-		int status;
-		String kind;
-		String etag;
 	}
 }

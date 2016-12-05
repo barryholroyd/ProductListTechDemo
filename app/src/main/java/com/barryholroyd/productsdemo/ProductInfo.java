@@ -10,20 +10,20 @@ import android.os.Parcelable;
  */
 public class ProductInfo implements Parcelable
 {
-	String  id;
+	int		id;
 	String  name;
 	String  shortDescription;
 	String  longDescription;
 	String  price;
-	String  imageUrl;
+	String	imageUrl;
 	double  reviewRating;
 	int     reviewCount;
-	boolean inStock;
+	String	inStock;
 
 	ProductInfo() {}
 
 	private ProductInfo(Parcel in) {
-		id = in.readString();
+		id = in.readInt();
 		name = in.readString();
 		shortDescription = in.readString();
 		longDescription = in.readString();
@@ -31,7 +31,7 @@ public class ProductInfo implements Parcelable
 		imageUrl = in.readString();
 		reviewRating = in.readDouble();
 		reviewCount = in.readInt();
-		inStock = (in.readInt() == 1);
+		inStock = in.readString();
 	}
 
 	public int describeContents() {
@@ -39,7 +39,7 @@ public class ProductInfo implements Parcelable
 	}
 
 	public void writeToParcel(Parcel out, int flags) {
-		out.writeString(id);
+		out.writeInt(id);
 		out.writeString(name);
 		out.writeString(shortDescription);
 		out.writeString(longDescription);
@@ -47,7 +47,7 @@ public class ProductInfo implements Parcelable
 		out.writeString(imageUrl);
 		out.writeDouble(reviewRating);
 		out.writeInt(reviewCount);
-		out.writeInt(inStock ? 1 : 0);
+		out.writeString(inStock);
 	}
 
 	/**

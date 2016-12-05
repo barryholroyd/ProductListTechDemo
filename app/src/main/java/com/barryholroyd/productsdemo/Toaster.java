@@ -31,9 +31,6 @@ class Toaster {
      *     This can be called from either the foreground or the background. A
      *     weak reference is used for the Activity parameter so that we can avoid
      *     using an Activity which has gone away.
-     * <p>
-     *     TBD: address the very tiny race condition between the check for 'a'
-     *     being null and a.runOnUiThread().
      *
      * @param wrActivity weak reference for the calling activity.
      * @param msg message to be displayed.
