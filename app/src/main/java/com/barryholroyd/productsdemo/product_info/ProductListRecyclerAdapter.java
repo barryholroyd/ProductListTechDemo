@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.product_info;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,9 +12,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.barryholroyd.productsdemo.ActivityProductInfo;
+import com.barryholroyd.productsdemo.ActivityProductList;
+import com.barryholroyd.productsdemo.R;
+import com.barryholroyd.productsdemo.support.Support;
+
 import java.util.HashMap;
 
-import static com.barryholroyd.productsdemo.Configure.*;
+import static com.barryholroyd.productsdemo.support.Configure.*;
 
 /**
  * Recycler adapter to display the list of products.
@@ -33,7 +38,7 @@ public class ProductListRecyclerAdapter
 	/** Standard Activity instance. */
 	private Activity a;
 
-    ProductListRecyclerAdapter(Activity _a) {
+    public ProductListRecyclerAdapter(Activity _a) {
         a = _a;
         ActivityProductList.trace(String.format("Approach for loading images in the background: %s.",
                 App.USE_THREADS ? "Threads" : "AsyncTask"));
@@ -70,7 +75,7 @@ public class ProductListRecyclerAdapter
 	 *
 	 * @return ArrayList backing storage for the adapter.
 	 */
-	ProductInfoArrayList getProductInfoArrayList() { return pial; }
+	public ProductInfoArrayList getProductInfoArrayList() { return pial; }
 
 	/**
 	 * Create a ViewHolder to contain a View for each row, inflated from an XML layout file.
@@ -139,10 +144,10 @@ public class ProductListRecyclerAdapter
 	 *
 	 * @param pialNew the array of new products to add to the data set.
 	 */
-	void updateData(ProductInfoArrayList pialNew) {
+	public void updateData(ProductInfoArrayList pialNew) {
 		pial.addAll(pialNew);
 		for (ProductInfo pi : pialNew) {
-			pihm.put(pi.id, pi);
+			pihm.put(pi.getId(), pi);
 		}
 		notifyDataSetChanged();
 	}
@@ -236,16 +241,17 @@ public class ProductListRecyclerAdapter
 		 *                 read in as JSON from the cloud.
 		 */
 		protected void bindData(ProductInfo pi) {
-			tvId.setText(Integer.toString(pi.id));
+			tvId.setText(Integer.toString(pi.getId()));
 
             // Optionally display image url, for debugging purposes.
             String name = App.DISPLAY_URL
-                    ? String.format("[%s]\n%s", Support.truncImageString(pi.imageUrl), pi.name)
-                    : pi.name;
+                    ? String.format("[%s]\n%s",
+									Support.truncImageString(pi.getImageUrl()), pi.getName())
+                    : pi.getName();
             tvName.setText(name);
 
-			tvShortDescription.setText(pi.shortDescription);
-			imageLoader.load(ivProductImage, pi.imageUrl);
+			tvShortDescription.setText(pi.getShortDescription());
+			imageLoader.load(ivProductImage, pi.getImageUrl());
 		}
 
 		/**

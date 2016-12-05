@@ -45,5 +45,5 @@ Product mappings (old -> new)
   price			-> msrp
   productImage		-> thumbnailImage
   reviewRating		-> customerRating (1-5)
-  reviewCount		-> numReviews
+  numReviews		-> numReviews
   inStock		-> stock [enum]

@@ -1,9 +1,13 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.cache_disk;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+
+import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.support.Support;
+import com.barryholroyd.productsdemo.support.Toaster;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,7 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import static com.barryholroyd.productsdemo.Support.truncImageString;
+import static com.barryholroyd.productsdemo.support.Support.truncImageString;
 
 /**
  * Disk cache implementation.
@@ -22,7 +26,7 @@ import static com.barryholroyd.productsdemo.Support.truncImageString;
  * @see <a href="https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/DiskLruCache.java">
  *      DiskLruCache Implementation</a>
  */
-final class CacheDiskImage
+public final class CacheDiskImage
 {
     /**
      * Singleton for caching images on disk.
@@ -133,7 +137,7 @@ final class CacheDiskImage
      * @param cacheDirName  subdirectory name for the cache -- unique to this app/usage.
      * @return  singleton instance.
      */
-    static CacheDiskImage getInstance(Activity a, String cacheDirName, long maxCacheSize) {
+    static public CacheDiskImage getInstance(Activity a, String cacheDirName, long maxCacheSize) {
         if (instance != null)
             return instance;
 
@@ -151,7 +155,7 @@ final class CacheDiskImage
      * @param url url for the bitmap.
      * @return bitmap obtained from the URL.
      */
-    synchronized Bitmap get(String url) {
+    public synchronized Bitmap get(String url) {
         if (!Configure.DiskCache.ON)
             return null;
 
@@ -173,7 +177,7 @@ final class CacheDiskImage
         return bitmap;
     }
 
-    synchronized void add(WeakReference<Activity> wrActivity, String url, Bitmap bitmap) {
+    public synchronized void add(WeakReference<Activity> wrActivity, String url, Bitmap bitmap) {
         if (!Configure.DiskCache.ON)
             return;
 

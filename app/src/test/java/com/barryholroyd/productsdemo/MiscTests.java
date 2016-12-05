@@ -2,6 +2,8 @@ package com.barryholroyd.productsdemo;
 
 import android.content.Context;
 
+import com.barryholroyd.productsdemo.support.Support;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

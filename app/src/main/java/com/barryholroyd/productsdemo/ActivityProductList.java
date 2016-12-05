@@ -4,8 +4,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import static com.barryholroyd.productsdemo.Configure.DiskCache.CACHE_DIR;
-import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
+import com.barryholroyd.productsdemo.product_info.GetProducts;
+import com.barryholroyd.productsdemo.product_info.ProductInfo;
+import com.barryholroyd.productsdemo.product_info.ProductInfoArrayList;
+import com.barryholroyd.productsdemo.product_info.ProductListOnScrollListener;
+import com.barryholroyd.productsdemo.product_info.ProductListRecyclerAdapter;
+import com.barryholroyd.productsdemo.support.ActivityPrintStates;
+import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.support.Support;
 
 /*
  * TODO: Rearrange code as MVC or MVP?
@@ -79,8 +85,11 @@ public class ActivityProductList extends ActivityPrintStates
 	 */
 	static final String PIAL = "PIAL";
 
+	/** Getter for recyclerView. */
+	static final public RecyclerView getRecyclerView() { return recyclerView; }
+
     /**
-	 * Sandard onCreate method.
+	 * Standard onCreate method.
 	 *
 	 * @param savedInstanceState used to transfer the backing array for the products
 	 *                           across device rotations.
@@ -199,7 +208,7 @@ public class ActivityProductList extends ActivityPrintStates
      *
      * @param msg message to be logged.
      */
-    static void trace(String msg) {
+    static public void trace(String msg) {
         Support.trc(Configure.App.TRACE, "App", msg);
     }
 }

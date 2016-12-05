@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.product_info;
 
 import android.app.Activity;
 import android.net.ConnectivityManager;
@@ -8,16 +8,19 @@ import android.support.v7.widget.RecyclerView;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
+import com.barryholroyd.productsdemo.ActivityProductList;
+import com.barryholroyd.productsdemo.network.NetworkSupport;
+import com.barryholroyd.productsdemo.network.NetworkSupportException;
+import com.barryholroyd.productsdemo.support.Support;
+import com.barryholroyd.productsdemo.support.Toaster;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.barryholroyd.productsdemo.ActivityProductList.trace;
 
 /**
  * TBD:
@@ -122,7 +125,7 @@ public class GetProducts
 	 * When that happens, the app needs to understand whether or not its static data has
 	 * already been initialized and, if necessary, reset it.
 	 */
-	static void reset() {
+	static public void reset() {
 		if (instance != null) {
             instance.url_next_batch = createUrlInitial(API_CATEGORY_ELECTRONICS);
 //			instance.totalDownloaded = 0; DEL:
@@ -210,7 +213,7 @@ public class GetProducts
 		protected void onPostExecute(ProductInfoArrayList pial) {
 			if (pial == null)
 				return;
-			RecyclerView rv = ActivityProductList.recyclerView;
+			RecyclerView rv = ActivityProductList.getRecyclerView();
 			ProductListRecyclerAdapter plra =
 				(ProductListRecyclerAdapter) rv.getAdapter();
 			plra.updateData(pial);
@@ -346,31 +349,31 @@ public class GetProducts
                 if (JSON_ITEM_INFO.contains(name)) {
                     switch (name) {
                         case "itemId":
-                            pi.id = reader.nextInt();
+                            pi.setId(reader.nextInt());
                             break;
                         case "name":
-                            pi.name = Support.htmlToText(reader.nextString());
+                            pi.setName(Support.htmlToText(reader.nextString()));
                             break;
                         case "msrp":
-                            pi.price = reader.nextDouble();
+                            pi.setPrice(reader.nextDouble());
                             break;
                         case "shortDescription":
-                            pi.shortDescription = Support.htmlToText(reader.nextString());
+                            pi.setShortDescription(Support.htmlToText(reader.nextString()));
                             break;
                         case "longDescription":
-                            pi.longDescription = Support.htmlToText(reader.nextString());
+                            pi.setLongDescription(Support.htmlToText(reader.nextString()));
                             break;
                         case "thumbnailImage":
-                            pi.imageUrl = reader.nextString();
+                            pi.setImageUrl(reader.nextString());
                             break;
                         case "stock":
-                            pi.inStock = reader.nextString();
+                            pi.setInStock(reader.nextString());
                             break;
                         case "customerRating":
-                            pi.reviewRating = reader.nextString();
+                            pi.setReviewRating(reader.nextString());
                             break;
                         case "numReviews":
-                            pi.reviewCount = reader.nextInt();
+                            pi.setNumReviews(reader.nextInt());
                             break;
 						default:
 							reader.skipValue();

@@ -1,4 +1,7 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.cache_memory;
+
+import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.support.Support;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,7 +10,8 @@ import java.util.LinkedList;
  * Cache objects in memory.
  * <p>
  * By default, size is specified as the number of maximum number of bytes.
- * This is configurable using {@link com.barryholroyd.productsdemo.Configure.MemoryCache#PERCENT}.
+ * This is configurable using
+ *   {@link com.barryholroyd.productsdemo.support.Configure.MemoryCache#PERCENT}.
  * <p>
  * The class is instantiable (as opposed to being a singleton or having only
  * static methods) so that:

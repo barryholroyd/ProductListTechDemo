@@ -2,10 +2,14 @@ package com.barryholroyd.productsdemo;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.barryholroyd.productsdemo.product_info.ImageLoader;
+import com.barryholroyd.productsdemo.product_info.ProductInfo;
+import com.barryholroyd.productsdemo.support.ActivityPrintStates;
+import com.barryholroyd.productsdemo.support.Support;
 
 /*
  * Display the information about a specific product.
@@ -39,13 +43,13 @@ public class ActivityProductInfo extends ActivityPrintStates
 		ImageView tvProductImage       = (ImageView) findViewById(R.id.product_image);
 		TextView  tvProductDescription = (TextView)  findViewById(R.id.product_description);
 
-		tvName.setText(pi.name);
-		tvPrice.setText(Double.toString(pi.price));
-		tvRating.setText(pi.reviewRating);
-		tvReviewCount.setText(Integer.toString(pi.reviewCount));
-		tvInStock.setText(pi.inStock);
-		imageLoader.load(tvProductImage, pi.imageUrl);
-		tvProductDescription.setText(pi.longDescription);
+		tvName.setText(pi.getName());
+		tvPrice.setText(Double.toString(pi.getPrice()));
+		tvRating.setText(pi.getReviewRating());
+		tvReviewCount.setText(Integer.toString(pi.getNumReviews()));
+		tvInStock.setText(pi.getInStock());
+		imageLoader.load(tvProductImage, pi.getImageUrl());
+		tvProductDescription.setText(pi.getLongDescription());
 	}
 
 	/**

@@ -1,8 +1,10 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.support;
 
 import android.app.Activity;
 import android.view.Gravity;
 import android.widget.Toast;
+
+import com.barryholroyd.productsdemo.support.Support;
 
 import java.lang.ref.WeakReference;
 
@@ -15,7 +17,7 @@ import static android.widget.Toast.LENGTH_LONG;
  * toasts, it starts from the top again.
  * </p>
  */
-class Toaster {
+public class Toaster {
     /** Distance in pixels between top edge of successive toasts. */
     static private final int YINC = 100;
 
@@ -35,7 +37,7 @@ class Toaster {
      * @param wrActivity weak reference for the calling activity.
      * @param msg message to be displayed.
      */
-    static void display(WeakReference<Activity> wrActivity, final String msg) {
+    static public void display(WeakReference<Activity> wrActivity, final String msg) {
         offset = (offset > YMAX) ? 0 : offset + YINC;
         final Activity a = Support.getActivity(wrActivity,
                 "Activity is gone so could not create toast. Msg: " + msg);

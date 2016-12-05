@@ -1,12 +1,12 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.support;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.Html;
 import android.util.Log;
+
+import com.barryholroyd.productsdemo.ActivityProductList;
 
 import java.lang.ref.WeakReference;
 
@@ -15,35 +15,35 @@ import java.lang.ref.WeakReference;
  *
  * @author Barry Holroyd
  */
-class Support
+public class Support
 {
 	/**
 	 * Logs an error.
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static void logw(String msg) { Log.w(ActivityProductList.LOGTAG, msg); }
+	static public void logw(String msg) { Log.w(ActivityProductList.LOGTAG, msg); }
 
 	/**
 	 * Logs an error.
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static void loge(String msg) { Log.e(ActivityProductList.LOGTAG, msg); }
+	static public void loge(String msg) { Log.e(ActivityProductList.LOGTAG, msg); }
 
 	/**
      * Logs a debug message.
      *
      * @param msg the message to be logged.
      */
-    static void logd(String msg) { Log.d(ActivityProductList.LOGTAG, msg); }
+    static public void logd(String msg) { Log.d(ActivityProductList.LOGTAG, msg); }
 
     /**
      * Logs an information message.
      *
      * @param msg the message to be logged.
      */
-    static void logi(String msg) { Log.i(ActivityProductList.LOGTAG, msg); }
+    static public void logi(String msg) { Log.i(ActivityProductList.LOGTAG, msg); }
 
     /**
 	 * Workhorse trc method -- toggle-controlled logging.
@@ -57,7 +57,7 @@ class Support
 	 * @param component the component being traced.
 	 * @param msg the message to be logged.
 	 */
-	static void trc(boolean flag, String component, String msg) {
+	static public void trc(boolean flag, String component, String msg) {
 		if (flag) {
 			Log.v(ActivityProductList.LOGTAG,
 					String.format("TRACE [%-12s]: %s", component, msg));
@@ -77,7 +77,7 @@ class Support
      * @param msg   error message to print out if the Activity has gone away.
      * @return  the Activity, if still valid; else null.
      */
-    static Activity getActivity(WeakReference<Activity> wrActivity, String msg) {
+    static public Activity getActivity(WeakReference<Activity> wrActivity, String msg) {
         Activity a = wrActivity.get();
         if (a == null)
             Support.logw(msg);
@@ -103,7 +103,7 @@ class Support
 	 * @return      output text (without HTML tags).
 	 */
 	@SuppressWarnings("deprecation")
-	static String htmlToText(String in) {
+	static public String htmlToText(String in) {
 		if (in == null)
 			return "";
 
@@ -132,5 +132,5 @@ class Support
     /**
      * "Intent extra" key: identifies product info data when starting ActivityProductInfo activity.
      */
-    static String getKeyProductInfo(Context c) { return c.getPackageName() + "_PRODUCTINFO"; }
+    static public String getKeyProductInfo(Context c) { return c.getPackageName() + "_PRODUCTINFO"; }
 }

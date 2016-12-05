@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.cache_memory;
 
 import android.graphics.Bitmap;
 
@@ -13,7 +13,7 @@ import android.graphics.Bitmap;
  * the total available memory (if implemented using constructors, the
  * constructors would have the same signature and hence be indistinguishable).
  */
-class CacheMemoryImage extends CacheMemoryBlob<String, Bitmap> {
+public class CacheMemoryImage extends CacheMemoryBlob<String, Bitmap> {
     /** Private constructor. */
     private CacheMemoryImage(long bytes) {
         super(bytes);

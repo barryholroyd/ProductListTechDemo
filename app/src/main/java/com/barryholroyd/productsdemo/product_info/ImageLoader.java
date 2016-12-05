@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.product_info;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -7,20 +7,29 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
+import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.R;
+import com.barryholroyd.productsdemo.cache_disk.CacheDiskImage;
+import com.barryholroyd.productsdemo.cache_memory.CacheMemoryImage;
+import com.barryholroyd.productsdemo.network.NetworkSupport;
+import com.barryholroyd.productsdemo.network.NetworkSupportException;
+import com.barryholroyd.productsdemo.support.Support;
+import com.barryholroyd.productsdemo.support.Toaster;
+
 import java.lang.ref.WeakReference;
 
-import static com.barryholroyd.productsdemo.Configure.App.USE_THREADS;
-import static com.barryholroyd.productsdemo.Configure.DiskCache.CACHE_DIR;
-import static com.barryholroyd.productsdemo.Configure.DiskCache.DC_SIZE_BYTES;
-import static com.barryholroyd.productsdemo.Configure.MemoryCache.PERCENT;
-import static com.barryholroyd.productsdemo.Configure.MemoryCache.SIZE_PERCENT;
-import static com.barryholroyd.productsdemo.Configure.MemoryCache.MC_SIZE_BYTES;
+import static com.barryholroyd.productsdemo.support.Configure.App.USE_THREADS;
+import static com.barryholroyd.productsdemo.support.Configure.DiskCache.CACHE_DIR;
+import static com.barryholroyd.productsdemo.support.Configure.DiskCache.DC_SIZE_BYTES;
+import static com.barryholroyd.productsdemo.support.Configure.MemoryCache.PERCENT;
+import static com.barryholroyd.productsdemo.support.Configure.MemoryCache.SIZE_PERCENT;
+import static com.barryholroyd.productsdemo.support.Configure.MemoryCache.MC_SIZE_BYTES;
 
 /**
  * Load
  */
 
-class ImageLoader {
+public class ImageLoader {
     /*
      * Assuming the the BitmapFactory default image format of ARGB_8888 (4 bytes):
      * Image (bitmap) size: 100 * 100 * 4 = 40,000 bytes.
@@ -58,7 +67,7 @@ class ImageLoader {
      */
     private String currentUrl;
 
-    ImageLoader(Activity _a) {
+    public ImageLoader(Activity _a) {
         a = _a;
         wrActivity = new WeakReference<>(a);
         resources = a.getResources();
@@ -92,7 +101,7 @@ class ImageLoader {
      *     </ol>
      * </ol>
      */
-    void load(ImageView iv, String url) {
+    public void load(ImageView iv, String url) {
         /*
          * Foreground: load from memory cache, if present.
          */

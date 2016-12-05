@@ -1,9 +1,9 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.network;
 
 /**
  * Runtime exception for the NetworkSupport module.
  */
-class NetworkSupportException extends Exception {
+public class NetworkSupportException extends Exception {
     NetworkSupportException(String s) {
         super(s);
     }

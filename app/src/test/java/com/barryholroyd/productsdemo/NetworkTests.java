@@ -1,11 +1,14 @@
 package com.barryholroyd.productsdemo;
 
+import com.barryholroyd.productsdemo.network.NetworkSupport;
+import com.barryholroyd.productsdemo.network.NetworkSupportException;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
 
-import static com.barryholroyd.productsdemo.GetProducts.makeUrl;
+import static com.barryholroyd.productsdemo.product_info.GetProducts.makeUrl;
 
 /**
  * Unit tests for network access.

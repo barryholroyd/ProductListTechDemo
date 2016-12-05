@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.product_info;
 
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,7 +52,7 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	/** Context for GetProducts method calls. */
 	Activity a;
 
-	ProductListOnScrollListener(Activity _a) {
+	public ProductListOnScrollListener(Activity _a) {
 		super();
 		a = _a;
 	}

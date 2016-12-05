@@ -1,14 +1,19 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.productsdemo.network;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.network.NetworkSupportException;
+import com.barryholroyd.productsdemo.support.Support;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.barryholroyd.productsdemo.Support.truncImageString;
+import static com.barryholroyd.productsdemo.support.Support.truncImageString;
 
 /**
  * General network support.
@@ -20,7 +25,7 @@ public class NetworkSupport {
      * @param urlStr the URL (in String form) to get the JSON product info. from.
      * @return the input stream created to read data from the specified URL.
      */
-    static InputStream getInputStreamFromUrl(String urlStr)
+    static public InputStream getInputStreamFromUrl(String urlStr)
         throws NetworkSupportException {
         try {
             int response;
@@ -69,7 +74,7 @@ public class NetworkSupport {
      * @param requestedWidth  maximum width of the image (in pixels)
      * @return  the bitmap obtained from the network.
      */
-    static Bitmap getImageFromNetwork(String urlStr, int requestedHeight, int requestedWidth)
+    static public Bitmap getImageFromNetwork(String urlStr, int requestedHeight, int requestedWidth)
         throws NetworkSupportException {
         trace(String.format("Getting: %s", urlStr));
 
