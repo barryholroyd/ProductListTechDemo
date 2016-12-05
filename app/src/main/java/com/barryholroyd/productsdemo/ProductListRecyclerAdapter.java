@@ -263,10 +263,10 @@ public class ProductListRecyclerAdapter
 			public void onClick(View v) {
 				// Create parcel of the current ProductInfo and pass that to the activity.
 				TextView tvId = (TextView) v.findViewById(R.id.id);
-				String productId = (String) tvId.getText();
+				Integer itemId = Integer.valueOf((String) tvId.getText());
 
 				Intent intent = new Intent(a, ActivityProductInfo.class);
-				intent.putExtra(Support.getKeyProductInfo(a), pihm.get(productId));
+				intent.putExtra(Support.getKeyProductInfo(a), pihm.get(itemId));
 				a.startActivity(intent);
 			}
 		}

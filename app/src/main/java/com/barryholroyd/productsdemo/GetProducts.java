@@ -354,7 +354,8 @@ public class GetProducts
                         case "msrp":
                             pi.price = reader.nextDouble();
                             break;
-                        case "shortDescription": Support.htmlToText(reader.nextString());
+                        case "shortDescription":
+                            pi.shortDescription = Support.htmlToText(reader.nextString());
                             break;
                         case "longDescription":
                             pi.longDescription = Support.htmlToText(reader.nextString());
