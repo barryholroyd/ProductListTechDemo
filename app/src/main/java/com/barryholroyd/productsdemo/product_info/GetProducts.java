@@ -74,7 +74,7 @@ public class GetProducts
      */
      static final private String API_CATEGORY_ELECTRONICS = "3944"; // many items
      static final private String API_CATEGORY_AVENGERS_BOOKS = "1085632_1229464_1229469"; // 21 items
-     static final private String API_CATEGORY = API_CATEGORY_AVENGERS_BOOKS;
+     static final private String API_CATEGORY = API_CATEGORY_ELECTRONICS;
 
     /**
      * Valid JSON tokens for paginated products.
@@ -110,11 +110,6 @@ public class GetProducts
 	);
 
 	/**
-	 * The total number of products downloaded so far.
-	 */
-	private int totalDownloaded = 0; // DEL:
-
-	/**
 	 * Url of the next batch of items to get.
 	 * <p>
 	 *     When there are no more items to return, this will still be a valid URL
@@ -148,7 +143,6 @@ public class GetProducts
 		if (instance != null) {
 			instance.allItemsRead = false;
             instance.urlNextPage = createUrlInitial(API_CATEGORY);
-			instance.totalDownloaded = 0;
 		}
 	}
 
@@ -174,9 +168,11 @@ public class GetProducts
      * @param a
      */
     public synchronized void getProductBatch(Activity a) {
-		if (allItemsRead) {
+        Support.logd(String.format("allItemsRead: %b", allItemsRead)); // DEL:
+
+        if (allItemsRead) {
 			// DEL:
-			Support.logd("All items have been read.");
+			Support.logd("######################## All items have been read.");
 			return;
 		}
 		if (!checkNetworkConnectivity(a)) {
@@ -243,16 +239,6 @@ public class GetProducts
 			ProductListRecyclerAdapter plra =
 				(ProductListRecyclerAdapter) rv.getAdapter();
 			plra.updateData(pial);
-            totalDownloaded += pial.size();
-
-            // Sanity check. Subtract 1 because of the header added locally.
-			int itemCount = plra.getItemCount() - 1;
-            if (totalDownloaded != itemCount) {
-				String msg = String.format(
-						"Total downloaded count corrupted (totalDownloaded=%d itemCount=%d",
-						totalDownloaded, itemCount);
-                throw new IllegalStateException(msg);
-            }
 		}
 	}
 

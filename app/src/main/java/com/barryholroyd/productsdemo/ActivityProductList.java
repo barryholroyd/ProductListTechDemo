@@ -16,10 +16,8 @@ import com.barryholroyd.productsdemo.support.Support;
 /*
  * TODO: TBDs, DELs.
  * TODO: Rotate device.
- * TODO: Are images every *dropped*, such that they have to be reloaded? Verify.
- * TODO: Rearrange code as MVC or MVP?
- * TODO: Code unit tests.
- * TODO: GUI unit tests.
+ * TODO: Add Preferences.
+ * TODO: Are images ever *dropped*, such that they have to be reloaded? Verify.
  * TODO: Finish comments.
  * TODO: Run code check tools.
  */

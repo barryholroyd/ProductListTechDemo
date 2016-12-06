@@ -44,7 +44,7 @@ public class ActivityProductInfo extends ActivityPrintStates
 		TextView  tvProductDescription = (TextView)  findViewById(R.id.product_description);
 
 		tvName.setText(pi.getName());
-		tvPrice.setText(Double.toString(pi.getPrice()));
+		tvPrice.setText("$"+Double.toString(pi.getPrice()));
 		tvRating.setText(pi.getReviewRating());
 		tvReviewCount.setText(Integer.toString(pi.getNumReviews()));
 		tvInStock.setText(pi.getInStock());

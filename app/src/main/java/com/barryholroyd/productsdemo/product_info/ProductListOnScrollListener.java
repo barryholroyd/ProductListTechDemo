@@ -45,8 +45,11 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	/** The look-ahead distance -- triggers preloading from cloud. */
 	private static final int TRIGGER_DISTANCE = 50;
 
-	/** Saved value of totalLoadedRows; used to determine when adapter array has been refreshed. */
-	private int totalLoadedRowsPrevious = 0;
+	/**
+     * Saved value of totalLoadedRows; used to determine when adapter array has been refreshed.
+     * It starts at 1 because a header row gets added manually to the adapter's set of rows.
+     */
+	private int totalLoadedRowsPrevious = 1;
 
 	/** True when the adapter is loading more data into the backing array from the cloud. */
 	private boolean loading = true;
@@ -60,9 +63,15 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	}
 
 	/**
-	 * Called multiple times when a user is scrolling the RecyclerView. Since this will be
-	 * called many times a second during the scrolling, we want to limit the amount of
-	 * processing here as much as possible.
+     * Standard onScrolled() callback for RecylerView.
+     * <p>
+	 *     Called multiple times when a user is scrolling the RecyclerView. Since this will be
+	 *     called many times a second during the scrolling, we want to limit the amount of
+	 *     processing here as much as possible. We also want to minimize the time we have
+     *     code here locked.
+     * <p>
+     *     Since we are interested in the visible rows, we include the manually added
+     *     header row in the row count.
 	 *
 	 * @param recyclerView the RecyclerView being scrolled.
 	 * @param dx the horizontal distance scrolled in pixels.
@@ -72,32 +81,53 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 		super.onScrolled(recyclerView, dx, dy);
 
-		LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+        Support.logd(String.format("xxx areAllItemsRead(): %b",
+                GetProducts.instance.areAllItemsRead())); // DEL:
 
-		// Total number of items currently in the adapter.
-		int totalLoadedRows = llm.getItemCount();
-
-		Support.logd(String.format("LOADED ROWS: %d", totalLoadedRows));
-
-		if (GetProducts.instance.areAllItemsRead()) {
+        if (GetProducts.instance.areAllItemsRead()) {
+			Support.logd(String.format("************* areAllItemsRead(): %b", true)); // DEL:
 			return;
 		}
 
+//        synchronized (this) {
+            LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+//        }
+
+		// Total number of items currently in the adapter plus the header row.
+		int totalLoadedRows = llm.getItemCount();
+
+		//DEL:
+		Support.logd(String.format("LOADED/PREV: %d/%d", totalLoadedRows, totalLoadedRowsPrevious));
+
 		// If the adapter somehow has *fewer* rows than previously, adjust accordingly.
-		if (totalLoadedRows < totalLoadedRowsPrevious) {
-			totalLoadedRowsPrevious = totalLoadedRows;
-			// If it has no rows at all, go ahead and start reloading them.
-			loading = true;
+		if (totalLoadedRows < totalLoadedRowsPrevious) { // DEL:
+            // This should never happen. TBD:
+            throw new IllegalStateException(String.format(
+                    "Too few rows: totalLoadedRows=%d totalLoadedRowsPresvious=%d",
+                    totalLoadedRows, totalLoadedRowsPrevious));
+//			Support.logd(String.format("@@@@@ ERROR ***** FEWER ROWS (?!)")); // DEL:
+//			totalLoadedRowsPrevious = totalLoadedRows;
+//			// If it has no rows at all, go ahead and start reloading them.
+//			loading = true;
 		}
 
 		// The adapter position of the first row fully displayed by RecyclerView.
 		int firstVisibleRow = llm.findFirstVisibleItemPosition();
 
 		// The total number of items being actively displayed by RecyclerView.
+        // This already includes the manually added header row.
 		int totalVisibleRows = recyclerView.getChildCount();
 		
 		// The adapter position of the last row fully displayed by RecyclerView.
 		int lastVisibleRow = firstVisibleRow + totalVisibleRows;
+
+		// DEL:
+		Support.logd(String.format(
+				"LOADED/PREV: %d/%d (loading=%b), vrFirst=%d  + vrTotal=%d => vrLast=%d",
+				totalLoadedRows, totalLoadedRowsPrevious, loading,
+				firstVisibleRow, totalVisibleRows, lastVisibleRow
+		));
 
 		/**
 		 * If a load is underway, check to see if it has completed and update the loading
@@ -106,6 +136,7 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		 * notifyDataSetChanged() has been called.
 		 */
 		if (loading && (totalLoadedRows > totalLoadedRowsPrevious)) {
+			Support.logd(String.format("@@@@@ Loading completed...")); // DEL:
 			totalLoadedRowsPrevious = totalLoadedRows;
 			loading = false;
 		}
@@ -115,6 +146,7 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		 * the next batch of rows.
 		 */
 		if (!loading && (lastVisibleRow + TRIGGER_DISTANCE > totalLoadedRows)) {
+			Support.logd(String.format("@@@@@ GET NEXT BATCH OF ROWS")); // DEL:
 			loading = true;
 			GetProducts.instance.getProductBatch(a);
 		}
