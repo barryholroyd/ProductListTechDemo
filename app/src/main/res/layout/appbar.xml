@@ -10,11 +10,10 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:id="@+id/bar_appbar"
-        android:title="XXX"
-        tools:ignore="UnusedAttribute"
+        android:id="@+id/appbar"
+        android:elevation="4dp"
         android:background="@color/purple"
-        android:tag="tag_bar_appbar"
+        android:tag="tag_appbar"
         >
     </android.support.v7.widget.Toolbar>
 </RelativeLayout>

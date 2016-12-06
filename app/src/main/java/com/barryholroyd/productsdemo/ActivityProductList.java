@@ -1,10 +1,16 @@
 package com.barryholroyd.productsdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import com.barryholroyd.productsdemo.preferences.SettingsActivity;
 import com.barryholroyd.productsdemo.product_info.GetProducts;
 import com.barryholroyd.productsdemo.product_info.ProductInfo;
 import com.barryholroyd.productsdemo.product_info.ProductInfoArrayList;
@@ -103,6 +109,9 @@ public class ActivityProductList extends ActivityPrintStates
 
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
+		Toolbar myToolbar =(Toolbar) findViewById(R.id.appbar);
+		setSupportActionBar(myToolbar);
+
 		initRecyclerView();
 
 		/*
@@ -121,6 +130,28 @@ public class ActivityProductList extends ActivityPrintStates
             refreshListDisplay(savedInstanceState);
 		}
 	}
+
+    /**
+     * Create the standard options menu for the app bar.
+     */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_appbar, menu);
+		return true;
+	}
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 	/**
 	 * Display the existing product list (e.g., after a device rotation).

@@ -2,6 +2,9 @@ package com.barryholroyd.productsdemo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,12 +29,25 @@ public class ActivityProductInfo extends ActivityPrintStates
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.productinfo);
 
+		Toolbar myToolbar =(Toolbar) findViewById(R.id.appbar);
+		setSupportActionBar(myToolbar);
+
 		imageLoader = new ImageLoader(this);
 
 		Intent intent = getIntent();
 		ProductInfo productInfo = intent.getParcelableExtra(Support.getKeyProductInfo(this));
 
 		setFields(productInfo);
+	}
+
+	/**
+	 * Create the standard options menu for the app bar.
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_appbar, menu);
+		return true;
 	}
 
 	private void setFields(ProductInfo pi) {
