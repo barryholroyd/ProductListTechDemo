@@ -83,11 +83,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 			return;
 		}
 
-		// TBD: Optimize -- in the new version, use a flag to indicate no more rows available.
-//		if (totalLoadedRows == GetProducts.instance.getMaxProducts()) {
-//			return;
-//		}
-
 		// If the adapter somehow has *fewer* rows than previously, adjust accordingly.
 		if (totalLoadedRows < totalLoadedRowsPrevious) {
 			totalLoadedRowsPrevious = totalLoadedRows;
