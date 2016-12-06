@@ -3,6 +3,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/yellow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 >
@@ -10,11 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:id="@+id/bar_appbar"
-        android:title="@string/app_name"
+        android:title="XXX"
         tools:ignore="UnusedAttribute"
-        android:elevation="4dp"
+        android:background="@color/purple"
         android:tag="tag_bar_appbar"
         >
-        <!--DEL: android:background="@color/AppBar"-->
     </android.support.v7.widget.Toolbar>
 </RelativeLayout>
