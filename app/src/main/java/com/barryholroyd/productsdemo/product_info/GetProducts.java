@@ -74,7 +74,7 @@ public class GetProducts
      */
      static final private String API_CATEGORY_ELECTRONICS = "3944"; // many items
      static final private String API_CATEGORY_AVENGERS_BOOKS = "1085632_1229464_1229469"; // 21 items
-     static final private String API_CATEGORY = API_CATEGORY_ELECTRONICS;
+     static final private String API_CATEGORY = API_CATEGORY_AVENGERS_BOOKS;
 
     /**
      * Valid JSON tokens for paginated products.
@@ -293,8 +293,10 @@ public class GetProducts
 		private TopObject parseJsonData(JsonReader reader) throws IOException {
 			TopObject to = new TopObject();
 
+            Support.logd("PARSING JSON DATA");
 			reader.beginObject();
 			if (!reader.hasNext()) {
+                Support.logd("$$$ SETTING ALL READ");
 				allItemsRead = true;
 				return null;
 			}
