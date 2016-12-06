@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Application">
+        <ListPreference
+            android:title="Image Loading Approach"
+            android:summary="Implementation approach used to load images."
+            android:key="APP_USE_THREADS"
+            android:entries="@array/image_loading_approach_options"
+            android:entryValues="@array/image_loading_approach_values"
+            android:dialogTitle="Select the implementation to use to load images."
+            android:defaultValue="Threads"
+	    />
+        <CheckBoxPreference
+            android:title="Trace"
+	    android:summary="Tracing flag for app-level logging."
+            android:key="APP_TRACE"
+            android:defaultValue="true"
+	    />
+        <CheckBoxPreference
+            android:title="Trace Application Lifecycle"
+	    android:summary="Tracing flag for activity lifecycle events."
+            android:key="APP_TRACE_ALC"
+            android:defaultValue="false"
+	    />
+        <CheckBoxPreference
+            android:title="Detailed Cache Logging"
+	    android:summary="Tracing flag for detailed cache logging."
+            android:key="APP_TRACE_DETAILS"
+            android:defaultValue="false"
+	    />
+        <CheckBoxPreference
+            android:title="Display Url"
+            android:summary="Toggle display of image url in name field."
+            android:key="APP_DISPLAY_URL"
+            android:defaultValue="false"
+	    />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Memory Cache">
+        <CheckBoxPreference
+            android:title="Memory Cache Toggle"
+            android:summary="Turn memory cache on/off."
+        android:key="MEMORY_CACHE_ON"
+        android:defaultValue="true"
+        />
+        <CheckBoxPreference
+            android:title="Memory Cache Trace Toggle"
+            android:summary="Turn memory cache tracing on/off."
+            android:key="MEMORY_CACHE_TRACE"
+            android:defaultValue="false"
+            />
+        <ListPreference
+            android:title="Memory Cache Size Approach"
+            android:summary="Select memory cache size in megabytes or percent of total memory?"
+            android:key="MEMORY_CACHE_SIZE_APPROACH"
+            android:entries="@array/memory_cache_size_approach_options"
+            android:entryValues="@array/memory_cache_size_approach_values"
+            android:dialogTitle="Memory Cache Size Approach Selection"
+            android:defaultValue="0"
+            />
+        <ListPreference
+            android:title="Memory Cache Size by Percentage"
+            android:summary="Size of memory cache by percent of total memory (see Memory Cache Size Approach)"
+            android:key="MEMORY_CACHE_SIZE_PERCENT"
+            android:entries="@array/memory_cache_percentage_options"
+            android:entryValues="@array/memory_cache_percentage_values"
+            android:dialogTitle="Select Memory Cache Size by Percent"
+            android:defaultValue="10"
+            />
+        <ListPreference
+            android:title="Memory Cache Size in Megabytes"
+            android:summary="Size of memory cache in megabytes (see Memory Cache Size Approach)"
+            android:key="MEMORY_CACHE_SIZE_MEGABYTES"
+            android:entries="@array/memory_cache_megabytes_options"
+            android:entryValues="@array/memory_cache_megabytes_values"
+            android:dialogTitle="Select Memory Cache Size in Megabytes"
+            android:defaultValue="2"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Disk Cache">
+        <CheckBoxPreference
+            android:title="Disk Cache Toggle"
+            android:summary="Turn disk cache on/off."
+            android:key="DISK_CACHE_ON"
+            android:defaultValue="true"
+            />
+        <CheckBoxPreference
+            android:title="Disk Cache Trace Toggle"
+            android:summary="Turn disk cache tracing on/off."
+            android:key="DISK_CACHE_TRACE"
+            android:defaultValue="false"
+            />
+        <ListPreference
+            android:title="Disk Cache Size in Kilobytes"
+            android:summary="Size of disk cache in kilobytes"
+            android:key="DISK_CACHE_DC_SIZE_KILOBYTES"
+            android:entries="@array/disk_cache_kilobytes_options"
+            android:entryValues="@array/disk_cache_kilobytes_values"
+            android:dialogTitle="Select Disk Cache Size in Kilobytes"
+            android:defaultValue="500"
+            />
+        <CheckBoxPreference
+            android:title="Disk Cache Clear"
+            android:summary="Clear the disk cache when the app starts up."
+            android:key="DISK_CACHE_CLEAR"
+            android:defaultValue="true"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Miscellaneous">
+        <CheckBoxPreference
+            android:title="Image Loader Tracing"
+            android:summary="Tracing flag for ImageLoader logging."
+            android:key="IMAGE_LOADER_TRACE"
+            android:defaultValue="false"
+            />
+        <CheckBoxPreference
+            android:title="Network Tracing"
+            android:summary="Tracing flag for the networking module."
+            android:key="NETWORK_TRACE"
+            android:defaultValue="false"
+            />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -67,7 +67,7 @@ public final class Configure {
         static public final String CACHE_DIR = "images";
     }
 
-    /** Memory cache configuration. */
+    /** Network configuration. */
     static public class Network {
         /** Tracing flag for the networking module. */
         static public final boolean TRACE = false;

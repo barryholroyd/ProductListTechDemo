@@ -1,6 +1,7 @@
 package com.barryholroyd.productsdemo;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -99,6 +100,8 @@ public class ActivityProductList extends ActivityPrintStates
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.productlist);
+
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
 		initRecyclerView();
 
