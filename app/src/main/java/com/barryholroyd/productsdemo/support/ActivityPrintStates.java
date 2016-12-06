@@ -3,10 +3,11 @@ package com.barryholroyd.productsdemo.support;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.barryholroyd.productsdemo.preferences.SharedActivities;
 import com.barryholroyd.productsdemo.support.Configure;
 import com.barryholroyd.productsdemo.support.Support;
 
-abstract public class ActivityPrintStates extends AppCompatActivity
+abstract public class ActivityPrintStates extends SharedActivities
 {
   // Called at the start of the full lifetime.
   @Override

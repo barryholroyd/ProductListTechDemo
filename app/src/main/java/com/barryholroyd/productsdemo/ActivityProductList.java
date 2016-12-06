@@ -131,28 +131,6 @@ public class ActivityProductList extends ActivityPrintStates
 		}
 	}
 
-    /**
-     * Create the standard options menu for the app bar.
-     */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu_appbar, menu);
-		return true;
-	}
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
 	/**
 	 * Display the existing product list (e.g., after a device rotation).
 	 * <p>

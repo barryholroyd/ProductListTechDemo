@@ -9,4 +9,5 @@
     <color name="purple">#9C27B0</color> <!-- DEL: -->
     <color name="red_pink_bright">#E91E63</color> <!-- DEL: -->
     <color name="yellow">#FFEB3B</color> <!-- DEL: -->
+    <color name="cyan">#FF00BCD4</color>
 </resources>

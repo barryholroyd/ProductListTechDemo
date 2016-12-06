@@ -12,7 +12,7 @@
         android:layout_height="?android:attr/actionBarSize"
         android:id="@+id/appbar"
         android:elevation="4dp"
-        android:background="@color/purple"
+        android:background="@color/cyan"
         android:tag="tag_appbar"
         >
     </android.support.v7.widget.Toolbar>

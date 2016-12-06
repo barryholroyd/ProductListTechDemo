@@ -56,7 +56,7 @@
             android:entries="@array/memory_cache_size_approach_options"
             android:entryValues="@array/memory_cache_size_approach_values"
             android:dialogTitle="Memory Cache Size Approach Selection"
-            android:defaultValue="0"
+            android:defaultValue="Bytes"
             />
         <ListPreference
             android:title="Memory Cache Size by Percentage"
