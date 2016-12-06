@@ -14,8 +14,7 @@ import com.barryholroyd.productsdemo.support.Configure;
 import com.barryholroyd.productsdemo.support.Support;
 
 /*
- * TODO: TBDs, DELs.
- * TODO: Rotate device.
+ * TODO: rename app to WalmartProducts
  * TODO: Add Preferences.
  * TODO: Are images ever *dropped*, such that they have to be reloaded? Verify.
  * TODO: Finish comments.

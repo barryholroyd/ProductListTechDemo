@@ -82,7 +82,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 		super.onScrolled(recyclerView, dx, dy);
 
         if (GetProducts.instance.areAllItemsRead()) {
-			Support.logd("*** ALL ITEMS HAVE BEEN READ ***"); // DEL:
 			return;
 		}
 
@@ -104,12 +103,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
               */
             int lastVisibleRow = llm.findFirstVisibleItemPosition() + recyclerView.getChildCount();
 
-            // DEL:
-            Support.logd(String.format(
-                    "LOADED/PREV: %d/%d (loading=%b), vrLast=%d",
-                    totalLoadedRows, totalLoadedRowsPrevious, loading, lastVisibleRow
-            ));
-
             /*
              * If a load is underway:
              *   1. Check to see if it has completed. If not, just return.
@@ -121,7 +114,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
             if (loading) {
                 if (totalLoadedRows == totalLoadedRowsPrevious)
                     return;
-                Support.logd(String.format("@@@@@ Loading completed...")); // DEL:
                 totalLoadedRowsPrevious = totalLoadedRows;
                 loading = false;
             }
@@ -135,7 +127,6 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
              * the highest row loaded so far.
              */
             if (lastVisibleRow + TRIGGER_DISTANCE > totalLoadedRows) {
-                Support.logd(String.format("@@@@@ GET NEXT BATCH OF ROWS")); // DEL:
                 loading = true;
                 GetProducts.instance.getProductBatch(a);
             }

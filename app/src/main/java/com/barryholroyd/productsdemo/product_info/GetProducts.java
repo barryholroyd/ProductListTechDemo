@@ -72,9 +72,9 @@ public class GetProducts
      *     When there are no more items, the nextPage JSON field will still have a
      *     URL in it, but the returned JSON will simply be an empty object: {}.
      */
-     static final private String API_CATEGORY_ELECTRONICS = "3944"; // many items
      static final private String API_CATEGORY_AVENGERS_BOOKS = "1085632_1229464_1229469"; // 21 items
-     static final private String API_CATEGORY = API_CATEGORY_AVENGERS_BOOKS;
+     static final private String API_CATEGORY_ELECTRONICS = "3944"; // many items
+     static final private String API_CATEGORY = API_CATEGORY_ELECTRONICS;
 
     /**
      * Valid JSON tokens for paginated products.
@@ -97,9 +97,9 @@ public class GetProducts
 			"attributes", "availableOnline", "bestMarketplacePrice",
 			"brandName", "bundle", "categoryNode", "categoryPath",
 			"clearance", "color", "customerRating", "customerRatingImage",
-			"freeShippingOver50Dollars", "freeShipToStore", "gender",
+			"freeShippingOver50Dollars", "freeShipToStore","freight", "gender",
 			"isbn", "itemId", "largeImage", "longDescription",
-			"marketplace", "maxItemsInOrder", "mediumImage", "modelNumber",
+			"marketplace", "maxId", "maxItemsInOrder", "mediumImage", "modelNumber",
 			"msrp", "name", "ninetySevenCentShipping", "numReviews",
 			"offerType", "overnightShippingRate", "parentItemId", "preOrder",
 			"preOrderShipsOn", "productTrackingUrl", "productUrl", "rollBack",
@@ -147,7 +147,7 @@ public class GetProducts
 	}
 
 	/** Create initial paginated products list request. */
-    static private String createUrlInitial(String category) {
+    static public String createUrlInitial(String category) {
         return String.format("%s/%s/%s?category=%s&apiKey=%s&format=%s",
                 API_BASE_URL, API_VERSION, API_PAGINATED_ITEMS,
                 category, API_KEY, API_FORMAT);
@@ -168,13 +168,6 @@ public class GetProducts
      * @param a
      */
     public synchronized void getProductBatch(Activity a) {
-        Support.logd(String.format("allItemsRead: %b", allItemsRead)); // DEL:
-
-        if (allItemsRead) {
-			// DEL:
-			Support.logd("######################## All items have been read.");
-			return;
-		}
 		if (!checkNetworkConnectivity(a)) {
             Support.loge("No network connection.");
 		}
@@ -213,7 +206,6 @@ public class GetProducts
 		@Override
 		protected ProductInfoArrayList doInBackground(String urls[]) {
             // Download the JSON string from the network.
-            Support.logd(String.format("Url: %s", urls[0]));
 			try (InputStream is = NetworkSupport.getInputStreamFromUrl(urls[0])) {
 				WmpJsonReader jr = new WmpJsonReader(is);
 				return jr.parse();
@@ -221,7 +213,7 @@ public class GetProducts
 			catch (NetworkSupportException | IOException e) {
 				String msg = String.format(String.format("GetProducts: %s", e.getMessage()));
 				Support.loge(msg);
-                Toaster.display(wrActivity, msg); // TBD: can crash if Activity is gone.
+                Toaster.display(wrActivity, msg);
                 return null;
 			}
 		}
@@ -293,10 +285,8 @@ public class GetProducts
 		private TopObject parseJsonData(JsonReader reader) throws IOException {
 			TopObject to = new TopObject();
 
-            Support.logd("PARSING JSON DATA");
 			reader.beginObject();
 			if (!reader.hasNext()) {
-                Support.logd("$$$ SETTING ALL READ");
 				allItemsRead = true;
 				return null;
 			}
