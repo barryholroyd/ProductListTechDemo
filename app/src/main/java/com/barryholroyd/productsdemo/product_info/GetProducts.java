@@ -64,9 +64,17 @@ public class GetProducts
 
     /**
      * Category to use.
+	 *
      * This is a hardcoded category to use to drive the demo.
      * The full set of available categories can be found at
      * <a href="http://api.walmartlabs.com/v1/taxonomy?apiKey={apiKey}">categories</a>.
+	 * <p>
+	 *     When there are no more items, the nextPage JSON field will still have a
+	 *     URL in it, but the returned JSON will simply be an empty object: {}.
+	 * <p>
+	 *     The "Avengers - Books" category id is: 1085632_1229464_1229469. It (currently)
+	 *     has only 21 items in it, so it can be used to more easily test the end-of-listing
+	 *     code.
      */
     static final private int API_CATEGORY_ELECTRONICS = 3944;
     /**
@@ -75,7 +83,7 @@ public class GetProducts
      * @see <a href="https://developer.walmartlabs.com/docs/read/Paginated_Products_API">
      *     Paginated Products API</a>
      */
-    static private List<String> JSON_PAGINATED_PRODUCTS = Arrays.asList(
+    static final private List<String> JSON_PAGINATED_PRODUCTS = Arrays.asList(
             "category", "format", "nextPage", "items"
     );
 
@@ -85,7 +93,7 @@ public class GetProducts
      * @see <a href="https://developer.walmartlabs.com/docs/read/Item_Field_Description">
      *     Item Response Groups</a>
      */
-    static private List<String> JSON_ITEM_INFO = Arrays.asList(
+    static final private List<String> JSON_ITEM_INFO = Arrays.asList(
 			"addToCartUrl", "affiliateAddToCartUrl", "age",
 			"attributes", "availableOnline", "bestMarketplacePrice",
 			"brandName", "bundle", "categoryNode", "categoryPath",
@@ -107,7 +115,16 @@ public class GetProducts
 	 */
 	private int totalDownloaded = 0; // DEL:
 
+	/**
+	 * Url of the next batch of items to get.
+	 * <p>
+	 *     When there are no more items to return, this will still be a valid URL
+	 *     but using it will return an empty JSON object: {}.
+	 */
     private String url_next_batch = null;
+
+	/** allItemsRead becomes "true" when all the items have been downloaded. */
+	private boolean allItemsRead = false;
 
 	/**
 	 * Reset the instance data for this (static) singleton.
@@ -127,8 +144,9 @@ public class GetProducts
 	 */
 	static public void reset() {
 		if (instance != null) {
+			instance.allItemsRead = false;
             instance.url_next_batch = createUrlInitial(API_CATEGORY_ELECTRONICS);
-//			instance.totalDownloaded = 0; DEL:
+			instance.totalDownloaded = 0;
 		}
 	}
 
@@ -154,6 +172,11 @@ public class GetProducts
      * @param a
      */
     public synchronized void getProductBatch(Activity a) {
+		if (allItemsRead) {
+			// DEL:
+			Support.logd("All items have been read.");
+			return;
+		}
 		if (!checkNetworkConnectivity(a)) {
             Support.loge("No network connection.");
 		}
@@ -254,7 +277,9 @@ public class GetProducts
 			JsonReader jr;
 			try {
 				jr = new JsonReader(new InputStreamReader(is, "UTF-8"));
-				return readProductsInfo(jr);
+				TopObject to = parseJsonData(jr);
+				if (to != null)	return to.pial;
+				else			return null;
 			}
 			catch (UnsupportedEncodingException e) {
                 Support.loge("Error: problem parsing network data - unsupported coding exception.");
@@ -267,43 +292,29 @@ public class GetProducts
 		}
 
 		/**
-		 * Process the product info returned from the cloud. Specially, break out any generic
-		 * information from the array of products.
-		 *
-		 * @param reader    JSON reader containing the JSON description of the products.
-		 * @return          returns the ArrayList of products, with each product represented
-		 *                  by a ProductInfo instance.
-		 * @throws IOException IOException can be thrown by the JsonReader instance.
-		 */
-		ProductInfoArrayList readProductsInfo(JsonReader reader) throws IOException
-		{
-			TopObject to = readTopObject(reader);
-			return to.pial;
-		}
-
-		/**
 		 * Decode the product info returned from the cloud. It contains some general information
 		 * as well as the set of products included in the next "batch".
 		 *
 		 * @param reader    JSON reader containing the JSON description of the products.
 		 * @return          returns the ArrayList of products, with each product represented
-		 *                  by a ProductInfo instance.
+		 *                  by a ProductInfo instance. If there are no more products to be
+		 *                  read, returns null.
 		 * @throws IOException IOException can be thrown by the JsonReader instance.
 		 */
-		private TopObject readTopObject(JsonReader reader) throws IOException {
+		private TopObject parseJsonData(JsonReader reader) throws IOException {
 			TopObject to = new TopObject();
 
 			reader.beginObject();
+			if (!reader.hasNext()) {
+				allItemsRead = true;
+				return null;
+			}
 			while (reader.hasNext()) {
                 String name = reader.nextName();
                 if (JSON_PAGINATED_PRODUCTS.contains(name)) {
                     switch (name) {
                         case "nextPage":
 							String nextPage = reader.nextString();
-							if (nextPage == null) {
-								Support.logd("DONE"); // TBD:
-								System.exit(9); // TBD:
-							}
                             to.urlNextPage = createUrlNextPage(nextPage);
                             break;
                         case "items":
@@ -388,12 +399,6 @@ public class GetProducts
 			reader.endObject();
 
 			return pi;
-		}
-
-        // DEL:
-		private void otherToken(JsonReader reader, String name) throws IOException {
-            Support.loge("Error: bad token in JSON stream: " + name);
-			reader.skipValue();
 		}
 	}
 

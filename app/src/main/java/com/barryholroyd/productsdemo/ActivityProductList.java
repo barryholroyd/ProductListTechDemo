@@ -14,6 +14,8 @@ import com.barryholroyd.productsdemo.support.Configure;
 import com.barryholroyd.productsdemo.support.Support;
 
 /*
+ * TODO: TBDs, DELs.
+ * TODO: Are images every *dropped*, such that they have to be reloaded? Verify.
  * TODO: Rearrange code as MVC or MVP?
  * TODO: Code unit tests.
  * TODO: GUI unit tests.

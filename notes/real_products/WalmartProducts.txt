@@ -4,6 +4,11 @@ Taxonomy of categories:
   http://api.walmartlabs.com/v1/taxonomy?apiKey=vwvv4uds6hqr3q8vr6qgrn8v
 
 -------------------------------------------------------------------------------
+My Key
+-------------------------------------------------------------------------------
+vwvv4uds6hqr3q8vr6qgrn8v
+
+-------------------------------------------------------------------------------
 Paginated Products:
 -------------------------------------------------------------------------------
   Returned JSON includes 100 items plus URL for the next page.
@@ -16,6 +21,31 @@ Paginated Products:
       ? category=3944
       & apiKey=vwvv4uds6hqr3q8vr6qgrn8v
       & format=json
+
+
+  Short Example (only 21 entries):
+    "children" : [ {
+      "id" : "1085632_1229464_1229469",
+      "name" : "Avengers - Books",
+      "path" : "Seasonal/Avengers/Avengers - Books"
+    } ... ]
+
+    ORIGINAL REQUEST:	http://api.walmartlabs.com/v1/paginated/items
+			? format=json&category=1085632_1229464_1229469
+			& apiKey=vwvv4uds6hqr3q8vr6qgrn8v
+
+    FIRST NEXT PAGE:	http://api.walmartlabs.com/v1/paginated/items
+    			? category=1085632_1229464_1229469
+			& maxId=43910872
+			& apiKey=vwvv4uds6hqr3q8vr6qgrn8v&format=json
+
+    Note that the "nextPage" field returned in the original request returns
+    a URL, but accessing that URL returns a JSON document with only an
+    empty object in it: {}.
+
+http://api.walmartlabs.com/v1/paginated/items?format=json&category=1085632_1229464_1229469&apiKey=vwvv4uds6hqr3q8vr6qgrn8v
+
+http://api.walmartlabs.com/v1/paginated/items?category=1085632_1229464_1229469&maxId=43910872&apiKey=vwvv4uds6hqr3q8vr6qgrn8v&format=json
 
 -------------------------------------------------------------------------------
 Product Information: JSON fields
