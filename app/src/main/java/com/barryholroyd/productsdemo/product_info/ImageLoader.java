@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.config.Settings;
 import com.barryholroyd.productsdemo.R;
 import com.barryholroyd.productsdemo.cache_disk.CacheDiskImage;
 import com.barryholroyd.productsdemo.cache_memory.CacheMemoryImage;
@@ -17,13 +17,6 @@ import com.barryholroyd.productsdemo.support.Support;
 import com.barryholroyd.productsdemo.support.Toaster;
 
 import java.lang.ref.WeakReference;
-
-import static com.barryholroyd.productsdemo.support.Configure.App.USE_THREADS;
-import static com.barryholroyd.productsdemo.support.Configure.DiskCache.CACHE_DIR;
-import static com.barryholroyd.productsdemo.support.Configure.DiskCache.DC_SIZE_BYTES;
-import static com.barryholroyd.productsdemo.support.Configure.MemoryCache.PERCENT;
-import static com.barryholroyd.productsdemo.support.Configure.MemoryCache.SIZE_PERCENT;
-import static com.barryholroyd.productsdemo.support.Configure.MemoryCache.MC_SIZE_BYTES;
 
 /**
  * Load
@@ -72,12 +65,13 @@ public class ImageLoader {
         wrActivity = new WeakReference<>(a);
         resources = a.getResources();
         if (cacheMemory == null) {
-            cacheMemory = PERCENT
-                    ? CacheMemoryImage.createWithPercent(SIZE_PERCENT)
-                    : CacheMemoryImage.createWithBytes(MC_SIZE_BYTES);
+            cacheMemory = Settings.isMemoryCacheBytes()
+                    ? CacheMemoryImage.createWithBytes(Settings.getMemoryCacheSizeBytes())
+                    : CacheMemoryImage.createWithPercent(Settings.getMemoryCacheSizePercent());
         }
         if (cacheDiskImage == null) {
-            cacheDiskImage = CacheDiskImage.getInstance(a, CACHE_DIR, DC_SIZE_BYTES);
+            cacheDiskImage = CacheDiskImage.getInstance(
+                    a, Settings.CACHE_DIR, Settings.getDiskCacheSizeBytes());
         }
     }
 
@@ -119,7 +113,7 @@ public class ImageLoader {
 			 * Both LiThread and LiAsyncTask have to be defined as nested classes so that
 			 * they can have access to "currentUrl".
 			 */
-        if (USE_THREADS) (new LiThread(iv, url)).start();
+        if (Settings.isAppUseThreads()) (new LiThread(iv, url)).start();
         else new LiAsyncTask(iv, url).execute();
     }
 
@@ -327,6 +321,6 @@ public class ImageLoader {
      * @param msg message to be logged.
      */
     static private void trace(String msg) {
-        Support.trc(Configure.ImageLoader.TRACE, "Image Loader", msg);
+        Support.trc(Settings.isImageLoaderTrace(), "Image Loader", msg);
     }
 }

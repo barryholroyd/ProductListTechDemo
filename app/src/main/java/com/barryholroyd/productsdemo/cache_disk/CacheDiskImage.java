@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
-import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.config.Settings;
 import com.barryholroyd.productsdemo.support.Support;
 import com.barryholroyd.productsdemo.support.Toaster;
 
@@ -92,7 +92,7 @@ public final class CacheDiskImage
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
-            if (Configure.DiskCache.CLEAR) {
+            if (Settings.isDiskCacheClear()) {
                 trace(String.format("deleting cache directory: %s", cacheDirName));
                 for (File f : cacheDir.listFiles()) {
                     trace(String.format("  Deleting: %s", f.getName()));
@@ -156,7 +156,7 @@ public final class CacheDiskImage
      * @return bitmap obtained from the URL.
      */
     public synchronized Bitmap get(String url) {
-        if (!Configure.DiskCache.ON)
+        if (!Settings.isDiskCacheOn())
             return null;
 
         Entry entry = getEntry(url);   // this always returns a valid entry.
@@ -178,7 +178,7 @@ public final class CacheDiskImage
     }
 
     public synchronized void add(WeakReference<Activity> wrActivity, String url, Bitmap bitmap) {
-        if (!Configure.DiskCache.ON)
+        if (!Settings.isDiskCacheOn())
             return;
 
         if (url == null) {
@@ -270,7 +270,7 @@ public final class CacheDiskImage
     }
 
     private void prSizes(String tag, Entry entry) {
-        if (Configure.App.TRACE_DETAILS) {
+        if (Settings.isAppTraceDetails()) {
             String msg = String.format(
                     "  DETAILS: %s: Cur:Max=%d:%d [File=%s  Url=%s] [File=%d, Bitmap=%d]",
                     tag, currentCacheSize, maxCacheSize,
@@ -343,7 +343,7 @@ public final class CacheDiskImage
      * @param msg message to be logged.
      */
     private void trace(String msg) {
-        Support.trc(Configure.DiskCache.TRACE, "Cache Disk", msg);
+        Support.trc(Settings.isDiskCacheTrace(), "Cache Disk", msg);
     }
 
     /**

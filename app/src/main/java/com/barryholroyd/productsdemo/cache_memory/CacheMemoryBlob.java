@@ -1,6 +1,6 @@
 package com.barryholroyd.productsdemo.cache_memory;
 
-import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.config.Settings;
 import com.barryholroyd.productsdemo.support.Support;
 
 import java.util.HashMap;
@@ -10,8 +10,7 @@ import java.util.LinkedList;
  * Cache objects in memory.
  * <p>
  * By default, size is specified as the number of maximum number of bytes.
- * This is configurable using
- *   {@link com.barryholroyd.productsdemo.support.Configure.MemoryCache#PERCENT}.
+ * This is configurable in the user settings as "Memory Cache Size Approach".
  * <p>
  * The class is instantiable (as opposed to being a singleton or having only
  * static methods) so that:
@@ -66,7 +65,7 @@ public class CacheMemoryBlob<K,V>
      * Get the item, if it exists.
      */
     public V get(K key) {
-        if (!Configure.MemoryCache.ON)
+        if (!Settings.isMemoryCacheOn())
             return null;
         trace(String.format("Getting [%s]: %s",
                 bcmHm.containsKey(key) ? "found" : "not found", key));
@@ -79,7 +78,7 @@ public class CacheMemoryBlob<K,V>
      * Ignore the request if the key is already present.
      */
     public synchronized void add(K key, V val) {
-        if (!Configure.MemoryCache.ON)
+        if (!Settings.isMemoryCacheOn())
             return;
 
         trace(String.format("Adding: %s", key));
@@ -137,6 +136,6 @@ public class CacheMemoryBlob<K,V>
      * @param msg message to be logged.
      */
     static protected void trace(String msg) {
-        Support.trc(Configure.MemoryCache.TRACE, "Cache Memory", msg);
+        Support.trc(Settings.isMemoryCacheTrace(), "Cache Memory", msg);
     }
 }

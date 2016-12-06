@@ -15,11 +15,12 @@ import android.widget.TextView;
 import com.barryholroyd.productsdemo.ActivityProductInfo;
 import com.barryholroyd.productsdemo.ActivityProductList;
 import com.barryholroyd.productsdemo.R;
+import com.barryholroyd.productsdemo.config.Settings;
 import com.barryholroyd.productsdemo.support.Support;
 
 import java.util.HashMap;
 
-import static com.barryholroyd.productsdemo.support.Configure.*;
+import static com.barryholroyd.productsdemo.config.Settings.*;
 
 /**
  * Recycler adapter to display the list of products.
@@ -41,9 +42,9 @@ public class ProductListRecyclerAdapter
     public ProductListRecyclerAdapter(Activity _a) {
         a = _a;
         ActivityProductList.trace(String.format("Approach for loading images in the background: %s.",
-                App.USE_THREADS ? "Threads" : "AsyncTask"));
-        ActivityProductList.trace(String.format("Memory caching: %s.", MemoryCache.ON ? "ON" : "OFF"));
-        ActivityProductList.trace(String.format("Disk caching: %s.",   DiskCache.ON ? "ON" : "OFF"));
+				Settings.isAppUseThreads() ? "Threads" : "AsyncTask"));
+        ActivityProductList.trace(String.format("Memory caching: %s.", Settings.isMemoryCacheOn() ? "ON" : "OFF"));
+        ActivityProductList.trace(String.format("Disk caching: %s.",   Settings.isDiskCacheOn() ? "ON" : "OFF"));
     }
 
 	/**
@@ -244,9 +245,9 @@ public class ProductListRecyclerAdapter
 			tvId.setText(Integer.toString(pi.getId()));
 
             // Optionally display image url, for debugging purposes.
-            String name = App.DISPLAY_URL
+            String name = Settings.isAppTrace()
                     ? String.format("[%s]\n%s",
-									Support.truncImageString(pi.getImageUrl()), pi.getName())
+					  Support.truncImageString(pi.getImageUrl()), pi.getName())
                     : pi.getName();
             tvName.setText(name);
 

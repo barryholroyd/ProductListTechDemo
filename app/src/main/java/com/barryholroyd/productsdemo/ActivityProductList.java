@@ -1,23 +1,18 @@
 package com.barryholroyd.productsdemo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
-import com.barryholroyd.productsdemo.preferences.SettingsActivity;
 import com.barryholroyd.productsdemo.product_info.GetProducts;
 import com.barryholroyd.productsdemo.product_info.ProductInfo;
 import com.barryholroyd.productsdemo.product_info.ProductInfoArrayList;
 import com.barryholroyd.productsdemo.product_info.ProductListOnScrollListener;
 import com.barryholroyd.productsdemo.product_info.ProductListRecyclerAdapter;
 import com.barryholroyd.productsdemo.support.ActivityPrintStates;
-import com.barryholroyd.productsdemo.support.Configure;
+import com.barryholroyd.productsdemo.config.Settings;
 import com.barryholroyd.productsdemo.support.Support;
 
 /*
@@ -108,6 +103,7 @@ public class ActivityProductList extends ActivityPrintStates
 		setContentView(R.layout.productlist);
 
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        Settings.init(this);
 
 		Toolbar myToolbar =(Toolbar) findViewById(R.id.appbar);
 		setSupportActionBar(myToolbar);
@@ -221,6 +217,6 @@ public class ActivityProductList extends ActivityPrintStates
      * @param msg message to be logged.
      */
     static public void trace(String msg) {
-        Support.trc(Configure.App.TRACE, "App", msg);
+        Support.trc(Settings.isAppTrace(), "App", msg);
     }
 }

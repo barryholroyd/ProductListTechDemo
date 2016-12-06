@@ -3,8 +3,7 @@ package com.barryholroyd.productsdemo.network;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.barryholroyd.productsdemo.support.Configure;
-import com.barryholroyd.productsdemo.network.NetworkSupportException;
+import com.barryholroyd.productsdemo.config.Settings;
 import com.barryholroyd.productsdemo.support.Support;
 
 import java.io.IOException;
@@ -182,7 +181,7 @@ public class NetworkSupport {
      * @param opts      the options used to create the bitmap.
      */
     static private void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
-        if (Configure.App.TRACE_DETAILS) {
+        if (Settings.isAppTraceDetails()) {
             trace(String.format(
                     "  DETAILS: Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
                     truncImageString(url), opts.outMimeType,
@@ -196,6 +195,6 @@ public class NetworkSupport {
      * @param msg message to be logged.
      */
     static private void trace(String msg) {
-        Support.trc(Configure.Network.TRACE, "Network", msg);
+        Support.trc(Settings.isNetworkTrace(), "Network", msg);
     }
 }

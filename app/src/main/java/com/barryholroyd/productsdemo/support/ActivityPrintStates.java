@@ -1,11 +1,9 @@
 package com.barryholroyd.productsdemo.support;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
+import com.barryholroyd.productsdemo.config.Settings;
 import com.barryholroyd.productsdemo.preferences.SharedActivities;
-import com.barryholroyd.productsdemo.support.Configure;
-import com.barryholroyd.productsdemo.support.Support;
 
 abstract public class ActivityPrintStates extends SharedActivities
 {
@@ -106,6 +104,6 @@ abstract public class ActivityPrintStates extends SharedActivities
     private void trace(String msg) {
       String className = this.getClass().getSimpleName();
       String msg2 = String.format("%s: %s", className, msg);
-        Support.trc(Configure.App.TRACE_ALC, "Alc", msg2);
+        Support.trc(Settings.isAppTrace(), "Alc", msg2);
     }
 }
