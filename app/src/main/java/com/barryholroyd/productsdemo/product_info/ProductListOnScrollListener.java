@@ -81,74 +81,64 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 		super.onScrolled(recyclerView, dx, dy);
 
-        Support.logd(String.format("xxx areAllItemsRead(): %b",
-                GetProducts.instance.areAllItemsRead())); // DEL:
-
         if (GetProducts.instance.areAllItemsRead()) {
-			Support.logd(String.format("************* areAllItemsRead(): %b", true)); // DEL:
+			Support.logd("*** ALL ITEMS HAVE BEEN READ ***"); // DEL:
 			return;
 		}
 
-//        synchronized (this) {
+        synchronized (this) {
+            /*
+             * Collect row information.
+             */
             LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-//        }
+            // Total number of items currently in the adapter, including the header row.
+            int totalLoadedRows = llm.getItemCount();
 
-		// Total number of items currently in the adapter plus the header row.
-		int totalLoadedRows = llm.getItemCount();
+            /*
+              * Get the adapter position of the last row fully displayed by RecyclerView.
+              * Add:
+              *   The adapter position of the first row fully displayed by RecyclerView.
+              *   The total number of items being actively displayed by RecyclerView.
+              * The latter includes the manually added header row.
+              */
+            int lastVisibleRow = llm.findFirstVisibleItemPosition() + recyclerView.getChildCount();
 
-		//DEL:
-		Support.logd(String.format("LOADED/PREV: %d/%d", totalLoadedRows, totalLoadedRowsPrevious));
+            // DEL:
+            Support.logd(String.format(
+                    "LOADED/PREV: %d/%d (loading=%b), vrLast=%d",
+                    totalLoadedRows, totalLoadedRowsPrevious, loading, lastVisibleRow
+            ));
 
-		// If the adapter somehow has *fewer* rows than previously, adjust accordingly.
-		if (totalLoadedRows < totalLoadedRowsPrevious) { // DEL:
-            // This should never happen. TBD:
-            throw new IllegalStateException(String.format(
-                    "Too few rows: totalLoadedRows=%d totalLoadedRowsPresvious=%d",
-                    totalLoadedRows, totalLoadedRowsPrevious));
-//			Support.logd(String.format("@@@@@ ERROR ***** FEWER ROWS (?!)")); // DEL:
-//			totalLoadedRowsPrevious = totalLoadedRows;
-//			// If it has no rows at all, go ahead and start reloading them.
-//			loading = true;
-		}
+            /*
+             * If a load is underway:
+             *   1. Check to see if it has completed. If not, just return.
+             *   2. Otherwise, updated the total loaded, set loading to false and continue.
+             * A load is completed when the adapter has had additional rows added to it.
+             * This will become apparent all at once, since it doesn't become visible until
+             * the adapter's notifyDataSetChanged() has been called.
+             */
+            if (loading) {
+                if (totalLoadedRows == totalLoadedRowsPrevious)
+                    return;
+                Support.logd(String.format("@@@@@ Loading completed...")); // DEL:
+                totalLoadedRowsPrevious = totalLoadedRows;
+                loading = false;
+            }
 
-		// The adapter position of the first row fully displayed by RecyclerView.
-		int firstVisibleRow = llm.findFirstVisibleItemPosition();
-
-		// The total number of items being actively displayed by RecyclerView.
-        // This already includes the manually added header row.
-		int totalVisibleRows = recyclerView.getChildCount();
-		
-		// The adapter position of the last row fully displayed by RecyclerView.
-		int lastVisibleRow = firstVisibleRow + totalVisibleRows;
-
-		// DEL:
-		Support.logd(String.format(
-				"LOADED/PREV: %d/%d (loading=%b), vrFirst=%d  + vrTotal=%d => vrLast=%d",
-				totalLoadedRows, totalLoadedRowsPrevious, loading,
-				firstVisibleRow, totalVisibleRows, lastVisibleRow
-		));
-
-		/**
-		 * If a load is underway, check to see if it has completed and update the loading
-		 * flag appropriately. A load has completed when the adapter has added additional rows
-		 * to its backing array. This will become apparent only after the adapter's
-		 * notifyDataSetChanged() has been called.
-		 */
-		if (loading && (totalLoadedRows > totalLoadedRowsPrevious)) {
-			Support.logd(String.format("@@@@@ Loading completed...")); // DEL:
-			totalLoadedRowsPrevious = totalLoadedRows;
-			loading = false;
-		}
-
-		/*
-		 * If we aren't already loading and we need to pre-load more data, get
-		 * the next batch of rows.
-		 */
-		if (!loading && (lastVisibleRow + TRIGGER_DISTANCE > totalLoadedRows)) {
-			Support.logd(String.format("@@@@@ GET NEXT BATCH OF ROWS")); // DEL:
-			loading = true;
-			GetProducts.instance.getProductBatch(a);
-		}
+            /*
+             * If get this far, there isn't a load in progress.
+             * Pre-load data if appropriate.
+             *
+             * Data should be pre-loaded when the last row that the user can see,
+             * plus an arbitrary look-ahead "trigger distance", is greater than
+             * the highest row loaded so far.
+             */
+            if (lastVisibleRow + TRIGGER_DISTANCE > totalLoadedRows) {
+                Support.logd(String.format("@@@@@ GET NEXT BATCH OF ROWS")); // DEL:
+                loading = true;
+                GetProducts.instance.getProductBatch(a);
+            }
+        }
 	}
 }
