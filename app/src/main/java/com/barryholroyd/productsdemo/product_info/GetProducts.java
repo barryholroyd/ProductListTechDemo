@@ -64,19 +64,18 @@ public class GetProducts
 
     /**
      * Category to use.
-	 *
+     *
      * This is a hardcoded category to use to drive the demo.
      * The full set of available categories can be found at
      * <a href="http://api.walmartlabs.com/v1/taxonomy?apiKey={apiKey}">categories</a>.
-	 * <p>
-	 *     When there are no more items, the nextPage JSON field will still have a
-	 *     URL in it, but the returned JSON will simply be an empty object: {}.
-	 * <p>
-	 *     The "Avengers - Books" category id is: 1085632_1229464_1229469. It (currently)
-	 *     has only 21 items in it, so it can be used to more easily test the end-of-listing
-	 *     code.
+     * <p>
+     *     When there are no more items, the nextPage JSON field will still have a
+     *     URL in it, but the returned JSON will simply be an empty object: {}.
      */
-    static final private int API_CATEGORY_ELECTRONICS = 3944;
+     static final private String API_CATEGORY_ELECTRONICS = "3944"; // many items
+     static final private String API_CATEGORY_AVENGERS_BOOKS = "1085632_1229464_1229469"; // 21 items
+     static final private String API_CATEGORY = API_CATEGORY_AVENGERS_BOOKS;
+
     /**
      * Valid JSON tokens for paginated products.
      *
@@ -145,14 +144,14 @@ public class GetProducts
 	static public void reset() {
 		if (instance != null) {
 			instance.allItemsRead = false;
-            instance.url_next_batch = createUrlInitial(API_CATEGORY_ELECTRONICS);
+            instance.url_next_batch = createUrlInitial(API_CATEGORY);
 			instance.totalDownloaded = 0;
 		}
 	}
 
 	/** Create initial paginated products list request. */
-    static private String createUrlInitial(int category) {
-        return String.format("%s/%s/%s?category=%d&apiKey=%s&format=%s",
+    static private String createUrlInitial(String category) {
+        return String.format("%s/%s/%s?category=%s&apiKey=%s&format=%s",
                 API_BASE_URL, API_VERSION, API_PAGINATED_ITEMS,
                 category, API_KEY, API_FORMAT);
     }
