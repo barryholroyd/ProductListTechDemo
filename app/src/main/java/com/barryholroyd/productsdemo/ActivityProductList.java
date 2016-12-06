@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
+import com.barryholroyd.productsdemo.config.SettingsManager;
 import com.barryholroyd.productsdemo.product_info.GetProducts;
 import com.barryholroyd.productsdemo.product_info.ProductInfo;
 import com.barryholroyd.productsdemo.product_info.ProductInfoArrayList;
@@ -104,6 +105,7 @@ public class ActivityProductList extends ActivityPrintStates
 
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         Settings.init(this);
+        SettingsManager.init(this);
 
 		Toolbar myToolbar =(Toolbar) findViewById(R.id.appbar);
 		setSupportActionBar(myToolbar);

@@ -3,31 +3,60 @@ package com.barryholroyd.productsdemo.config;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import static com.barryholroyd.productsdemo.config.Settings.Keys.*;
 
 /** Class with static constants to configure the app. */
 public final class Settings {
     /** Names for the cache directories. */
     static public final String CACHE_DIR = "images";
 
+    enum Keys {
+        APP_USE_THREADS, APP_TRACE, APP_TRACE_ALC, APP_TRACE_DETAILS, APP_DISPLAY_URL,
+        MEMORY_CACHE_ON, MEMORY_CACHE_TRACE, MEMORY_CACHE_SIZE_APPROACH, MEMORY_CACHE_SIZE_PERCENT,
+        MEMORY_CACHE_SIZE_MEGABYTES,
+        DISK_CACHE_ON, DISK_CACHE_TRACE, DISK_CACHE_DC_SIZE_KILOBYTES, DISK_CACHE_CLEAR,
+        IMAGE_LOADER_TRACE, NETWORK_TRACE
+    }
+
     static public void init(Activity a) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(a);
 
-        appUseThreads	        = sp.getString("APP_USE_THREADS", "Threads").equals("Threads");
-        appTrace		        = sp.getBoolean("APP_TRACE", true);
-        appTraceAlc		        = sp.getBoolean("APP_TRACE_ALC", false);
-        appTraceDetails		    = sp.getBoolean("APP_TRACE_DETAILS", false);
-        appDisplayUrl		    = sp.getBoolean("APP_DISPLAY_URL", false);
-        memoryCacheOn		    = sp.getBoolean("MEMORY_CACHE_ON", true);
-        memoryCacheTrace	    = sp.getBoolean("MEMORY_CACHE_TRACE", false);
-        memoryCacheBytes        = sp.getString("MEMORY_CACHE_SIZE_APPROACH", "Bytes").equals("Bytes");
-        memoryCacheSizePercent	= readPrefInt(sp, "MEMORY_CACHE_SIZE_PERCENT", 10);
-        memoryCacheSizeBytes    = readPrefInt(sp, "MEMORY_CACHE_SIZE_MEGABYTES", 2) * 1024 * 1024 ;
-        diskCacheOn		        = sp.getBoolean("DISK_CACHE_ON", true);
-        diskCacheTrace		    = sp.getBoolean("DISK_CACHE_TRACE", false);
-        diskCacheSizeBytes	    = readPrefInt(sp, "DISK_CACHE_DC_SIZE_KILOBYTES", 500) * 1024;
-        diskCacheClear		    = sp.getBoolean("DISK_CACHE_CLEAR", true);
-        imageLoaderTrace	    = sp.getBoolean("IMAGE_LOADER_TRACE", false);
-        networkTrace		    = sp.getBoolean("NETWORK_TRACE", false);
+        appUseThreads	        = getAppUseThreads(sp);
+        appTrace		        = sp.getBoolean(APP_TRACE.name(), true);
+        appTraceAlc		        = sp.getBoolean(APP_TRACE_ALC.name(), false);
+        appTraceDetails		    = sp.getBoolean(APP_TRACE_DETAILS.name(), false);
+        appDisplayUrl		    = sp.getBoolean(APP_DISPLAY_URL.name(), false);
+        memoryCacheOn		    = sp.getBoolean(MEMORY_CACHE_ON.name(), true);
+        memoryCacheTrace	    = sp.getBoolean(MEMORY_CACHE_TRACE.name(), false);
+        memoryCacheBytes        = getMemoryCacheBytes(sp);
+        memoryCacheSizePercent	= getMemoryCacheSizePercent(sp);
+        memoryCacheSizeBytes    = getMemoryCacheSizeBytes(sp);
+        diskCacheOn		        = sp.getBoolean(DISK_CACHE_ON.name(), true);
+        diskCacheTrace		    = sp.getBoolean(DISK_CACHE_TRACE.name(), false);
+        diskCacheSizeBytes	    = getDiskCacheSizeBytes(sp);
+        diskCacheClear		    = sp.getBoolean(DISK_CACHE_CLEAR.name(), true);
+        imageLoaderTrace	    = sp.getBoolean(IMAGE_LOADER_TRACE.name(), false);
+        networkTrace		    = sp.getBoolean(NETWORK_TRACE.name(), false);
+    }
+
+    static boolean getAppUseThreads(SharedPreferences sp) {
+        return sp.getString(APP_USE_THREADS.name(), "Threads").equals("Threads");
+    }
+
+    static boolean getMemoryCacheBytes(SharedPreferences sp) {
+        return sp.getString(MEMORY_CACHE_SIZE_APPROACH.name(), "Bytes").equals("Bytes");
+    }
+
+    static long getMemoryCacheSizeBytes(SharedPreferences sp) {
+        return readPrefInt(sp, MEMORY_CACHE_SIZE_MEGABYTES.name(), 2) * 1024 * 1024;
+    }
+
+    static int getDiskCacheSizeBytes(SharedPreferences sp) {
+        return readPrefInt(sp, DISK_CACHE_DC_SIZE_KILOBYTES.name(), 500) * 10244;
+    }
+
+    static int getMemoryCacheSizePercent(SharedPreferences sp) {
+        return readPrefInt(sp, MEMORY_CACHE_SIZE_PERCENT.name(), 10);
     }
 
     /*
@@ -45,67 +74,67 @@ public final class Settings {
      * App
      ******************/
     /** If true, use Thread for image loading, otherwise use AsyncTask. */
-    static private boolean appUseThreads = true;
+    static boolean appUseThreads = true;
 
     /** Tracing flag for app-level logging. */
-    static private boolean appTrace = true;
+    static boolean appTrace = true;
 
     /** Tracing flag for activity lifecycle events. */
-    static private boolean appTraceAlc = false;
+    static boolean appTraceAlc = false;
 
     /** Tracing flag for detailed cache logging. */
-    static private boolean appTraceDetails = false;
+    static boolean appTraceDetails = false;
 
     /** Toggle display of image url in name field (for debugging). */
-    static private boolean appDisplayUrl = false;
+    static boolean appDisplayUrl = false;
 
     /******************
      * Memory Cache
      ******************/
     /** Memory cache toggle */
-    static private boolean memoryCacheOn = true;
+    static boolean memoryCacheOn = true;
 
     /** Tracing flag for the image memory cache. */
-    static private boolean memoryCacheTrace = false;
+    static boolean memoryCacheTrace = false;
 
     /** Specify memory cache in percent of total memory or in bytes. */
-    static private boolean memoryCacheBytes = true;
+    static boolean memoryCacheBytes = true;
 
     /**
      * Percent of total memory to use for the memory cache.
      * Relevant iff memoryCacheBytes == true.
      */
-    static private int memoryCacheSizePercent = 10;
+    static int memoryCacheSizePercent = 10;
 
     /**
      * Memory (in bytes) to allocate for the memory cache.
      * Relevant iff memoryCacheBytes == false.
      */
-    static private long memoryCacheSizeBytes = 2*1024*1024;
+    static long memoryCacheSizeBytes = 2*1024*1024;
 
     /******************
      * Disk Cache
      ******************/
     /** Disk cache toggle. */
-    static private boolean diskCacheOn = true;
+    static boolean diskCacheOn = true;
 
     /** Tracing flag for the image disk cache. */
-    static private boolean diskCacheTrace = false;
+    static boolean diskCacheTrace = false;
 
     /** Disk space (in bytes) to allocate for the disk cache. */
-    static private long diskCacheSizeBytes = 500000;
+    static long diskCacheSizeBytes = 500000;
 
     /** Clear the disk cache when the app starts up. */
-    static private boolean diskCacheClear = true;
+    static boolean diskCacheClear = true;
 
     /******************
      * Miscellaneous
      ******************/
      /** Tracing flag for ImageLoader logging. */
-    static private boolean imageLoaderTrace = false;
+    static boolean imageLoaderTrace = false;
 
      /** Tracing flag for the networking module. */
-    static private boolean networkTrace = false;
+    static boolean networkTrace = false;
 
     /******************
      * Getters
