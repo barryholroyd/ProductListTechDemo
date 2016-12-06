@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.barryholroyd.productsdemo.support.Support;
+
 /**
  * Load additional data (more product information from the cloud) in advance
  * of actually needing to display it.
@@ -74,6 +76,12 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 
 		// Total number of items currently in the adapter.
 		int totalLoadedRows = llm.getItemCount();
+
+		Support.logd(String.format("LOADED ROWS: %d", totalLoadedRows));
+
+		if (GetProducts.instance.areAllItemsRead()) {
+			return;
+		}
 
 		// TBD: Optimize -- in the new version, use a flag to indicate no more rows available.
 //		if (totalLoadedRows == GetProducts.instance.getMaxProducts()) {

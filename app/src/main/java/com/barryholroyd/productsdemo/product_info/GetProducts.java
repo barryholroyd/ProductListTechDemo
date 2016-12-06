@@ -120,10 +120,13 @@ public class GetProducts
 	 *     When there are no more items to return, this will still be a valid URL
 	 *     but using it will return an empty JSON object: {}.
 	 */
-    private String url_next_batch = null;
+    private String urlNextPage = null;
 
 	/** allItemsRead becomes "true" when all the items have been downloaded. */
 	private boolean allItemsRead = false;
+
+    /** Getter for allItemsRead. */
+    public boolean areAllItemsRead() { return allItemsRead; }
 
 	/**
 	 * Reset the instance data for this (static) singleton.
@@ -144,7 +147,7 @@ public class GetProducts
 	static public void reset() {
 		if (instance != null) {
 			instance.allItemsRead = false;
-            instance.url_next_batch = createUrlInitial(API_CATEGORY);
+            instance.urlNextPage = createUrlInitial(API_CATEGORY);
 			instance.totalDownloaded = 0;
 		}
 	}
@@ -180,7 +183,7 @@ public class GetProducts
             Support.loge("No network connection.");
 		}
 		else {
-			new DownloadJsonTask(a).execute(url_next_batch);
+			new DownloadJsonTask(a).execute(urlNextPage);
 		}
 	}
 
@@ -214,6 +217,7 @@ public class GetProducts
 		@Override
 		protected ProductInfoArrayList doInBackground(String urls[]) {
             // Download the JSON string from the network.
+            Support.logd(String.format("Url: %s", urls[0]));
 			try (InputStream is = NetworkSupport.getInputStreamFromUrl(urls[0])) {
 				WmpJsonReader jr = new WmpJsonReader(is);
 				return jr.parse();
@@ -315,6 +319,7 @@ public class GetProducts
                         case "nextPage":
 							String nextPage = reader.nextString();
                             to.urlNextPage = createUrlNextPage(nextPage);
+                            urlNextPage = to.urlNextPage;
                             break;
                         case "items":
                             to.pial = readProducts(reader);
@@ -401,6 +406,12 @@ public class GetProducts
 		}
 	}
 
+    /**
+     * Object to contain the top-level parsed JSON. Currently, there isn't
+     * much need for this because we only use the ProductInfoArrayList, but
+     * it's structurally nice to have in place in case we want to do something
+     * with the non-list data in the future.
+     */
 	private class TopObject
 	{
 		String urlNextPage;
