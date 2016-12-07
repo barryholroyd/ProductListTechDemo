@@ -19,7 +19,7 @@ import com.barryholroyd.productsdemo.support.Support;
 /*
  * TODO: PUBLISH DOCS AND APP.
  *
- * BUG: doesn't always remove HTML tags from descriptions.
+ * BUG: doesn't always remove HTML tags from descriptions. (Support object)
  * TODO: rename app to WalmartProducts
  * TODO: Finish comments.
  * TODO: Run code check tools.
@@ -81,7 +81,7 @@ public class ActivityProductList extends ActivityPrintStates
 	/**
 	 * RecyclerView used to display the list of products pulled from the cloud.
 	 */
-	static RecyclerView recyclerView;
+	RecyclerView recyclerView;
 
 	/**
 	 * Key for storing an instance of the ProductInfoArrayList object. Get
@@ -90,7 +90,7 @@ public class ActivityProductList extends ActivityPrintStates
 	static final String PIAL = "PIAL";
 
 	/** Getter for recyclerView. */
-	static final public RecyclerView getRecyclerView() { return recyclerView; }
+	final public RecyclerView getRecyclerView() { return recyclerView; }
 
     /**
 	 * Standard onCreate method.

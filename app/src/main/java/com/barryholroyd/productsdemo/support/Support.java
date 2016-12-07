@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 
 import com.barryholroyd.productsdemo.ActivityProductList;
@@ -114,7 +115,15 @@ public class Support
 		else {
 			s = Html.fromHtml(in, 0).toString();
 		}
-        return cleanUp(s);
+		Spanned tmp = Html.fromHtml("<h2>Title</h2><br><p>Description here</p>");
+		String tmp2 = tmp.toString();
+		String new2 = Html.fromHtml(s).toString();
+		logd(String.format("TMP: %s", tmp2));
+		logd(String.format("OLD: %s", in));
+		logd(String.format("NEW: %s\n", s));
+		logd(String.format("NEW2: %s\n", new2));
+		return new2;
+//        return cleanUp(s);
 	}
 
     /**

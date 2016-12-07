@@ -1,6 +1,7 @@
 package com.barryholroyd.productsdemo.product_info;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -178,7 +179,7 @@ public class GetProducts
 
 	private boolean checkNetworkConnectivity(Activity a) {
 		ConnectivityManager cm = (ConnectivityManager)
-			a.getSystemService(a.CONNECTIVITY_SERVICE);
+			a.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 		return networkInfo != null && networkInfo.isConnected();
 	}
@@ -227,7 +228,9 @@ public class GetProducts
 		protected void onPostExecute(ProductInfoArrayList pial) {
 			if (pial == null)
 				return;
-			RecyclerView rv = ActivityProductList.getRecyclerView();
+			final ActivityProductList a = (ActivityProductList) Support.getActivity(wrActivity,
+					"Activity is gone -- could not create list");
+			RecyclerView rv = a.getRecyclerView();
 			ProductListRecyclerAdapter plra =
 				(ProductListRecyclerAdapter) rv.getAdapter();
 			plra.updateData(pial);

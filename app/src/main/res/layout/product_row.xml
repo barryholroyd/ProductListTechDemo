@@ -35,6 +35,7 @@ height increase (and so needs to be wrap_content) but the other must then be mat
             android:adjustViewBounds="true"
             android:maxHeight="@dimen/pl_image_height"
             android:maxWidth="@dimen/pl_image_width"
+            android:contentDescription="Thumbnail Product Image"
             android:id="@+id/pd_product_image"
             />
     </FrameLayout>

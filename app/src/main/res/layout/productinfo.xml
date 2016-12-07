@@ -21,6 +21,7 @@
         >
         <ImageView
             style="@style/PiImageView"
+            android:contentDescription="Thumbnail Product Image"
             android:id="@+id/product_image"
             />
         <TextView

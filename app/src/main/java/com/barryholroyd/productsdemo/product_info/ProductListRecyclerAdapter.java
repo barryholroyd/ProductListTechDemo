@@ -57,7 +57,7 @@ public class ProductListRecyclerAdapter
 		HEADER,
 		/** The row is a standard product row. */
 		ITEM
-	};
+	}
 
 	/**
 	 * Array of products. Each cell contains information about the specific product.
