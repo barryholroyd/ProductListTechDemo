@@ -21,70 +21,12 @@ android {
     }
 }
 
+apply from: 'c:/data/dev/java/gradle/includes/barryandroid.gradle'
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
 
     testCompile 'junit:junit:4.12'
-}
-
-task tmp {
-  doFirst {
-  def docsDir = 'C:/data/dev/git/github/barryholroyd.github.io/android/apps'
-  def appName = android.defaultConfig.applicationId.replaceFirst(".*\\.", "")
-  def docsPath = "$docsDir/$appName"
-  println "docsDir: $docsDir"
-  println "project name: $project.name"
-  println "name: " + android.defaultConfig.applicationId
-  println "name2: " + appName
-  println "docsPath: " + docsPath
-  println "main java: " + android.sourceSets.main.java
-  println "ft" + fileTree(android.sourceSets.main.java)
-  def f = file(docsPath)
-  }
-}
-
-task javadocs2github(type:Javadoc) {
-  def docsDir = 'C:/data/dev/git/github/barryholroyd.github.io/android/apps'
-  def appName = android.defaultConfig.applicationId.replaceFirst(".*\\.", "")
-  def docsPath = "$docsDir/$appName"
-  //mkdir(docsPath)	// TBD: don't need this?
-  source = 'src/main/java'
-  destinationDir = file(docsPath)
-
-def x = ""
- //x = "src\\main\\java\\com\\barryholroyd\\prodlisthpdemo\\overview.html"
- //x = "C:/data/dev/java/android/projects/AndroidStudio/apps/ProdlistHpDemo/app/src/main/java/com/barryholroyd/prodlisthpdemo/overview.html"
- //x = "app/src/main/java/com/barryholroyd/prodlisthpdemo/overview.html"
- //x = "src/main/java/com/barryholroyd/prodlisthpdemo/overview.html"
- //x = "overview.html"
- //x = "src/overview.html"
- //x = "src/main/java/overview.html" FAILED
- x = "src/main/overview.html"
-  options.addStringOption("overview", x)
-  group = "Barry"
-  description = 'Copy javadocs into my github area for uploading.'
-}
-
-task listJars << {
-  println "-------------------------"
-  println "compile:"
-  println "-------------------------"
-  configurations.compile.each { File file -> println file.name }
-  println "-------------------------"
-  println "androidTestCompile:"
-  println "-------------------------"
-  configurations.androidTestCompile.each { File file -> println file.name }
-  println "-------------------------"
-}
-
-task prProperties << {
-  println String.format("Location of gradle.properties: %s", propSettings);
-  println System.properties['system']
-}
-
-task prConfig << {
-    println compile.name
-    println compile.description
 }
