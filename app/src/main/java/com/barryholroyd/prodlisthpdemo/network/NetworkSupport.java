@@ -1,10 +1,10 @@
-package com.barryholroyd.productsdemo.network;
+package com.barryholroyd.prodlisthpdemo.network;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.barryholroyd.productsdemo.config.Settings;
-import com.barryholroyd.productsdemo.support.Support;
+import com.barryholroyd.prodlisthpdemo.config.Settings;
+import com.barryholroyd.prodlisthpdemo.support.Support;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.barryholroyd.productsdemo.support.Support.truncImageString;
+import static com.barryholroyd.prodlisthpdemo.support.Support.truncImageString;
 
 /**
  * General network support.

@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.product_info;
+package com.barryholroyd.prodlisthpdemo.product_info;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.product_info;
+package com.barryholroyd.prodlisthpdemo.product_info;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -7,14 +7,14 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import com.barryholroyd.productsdemo.config.Settings;
-import com.barryholroyd.productsdemo.R;
-import com.barryholroyd.productsdemo.cache_disk.CacheDiskImage;
-import com.barryholroyd.productsdemo.cache_memory.CacheMemoryImage;
-import com.barryholroyd.productsdemo.network.NetworkSupport;
-import com.barryholroyd.productsdemo.network.NetworkSupportException;
-import com.barryholroyd.productsdemo.support.Support;
-import com.barryholroyd.productsdemo.support.Toaster;
+import com.barryholroyd.prodlisthpdemo.config.Settings;
+import com.barryholroyd.prodlisthpdemo.R;
+import com.barryholroyd.prodlisthpdemo.cache_disk.CacheDiskImage;
+import com.barryholroyd.prodlisthpdemo.cache_memory.CacheMemoryImage;
+import com.barryholroyd.prodlisthpdemo.network.NetworkSupport;
+import com.barryholroyd.prodlisthpdemo.network.NetworkSupportException;
+import com.barryholroyd.prodlisthpdemo.support.Support;
+import com.barryholroyd.prodlisthpdemo.support.Toaster;
 
 import java.lang.ref.WeakReference;
 

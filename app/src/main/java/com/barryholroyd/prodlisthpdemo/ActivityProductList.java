@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.prodlisthpdemo;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -6,15 +6,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import com.barryholroyd.productsdemo.config.SettingsManager;
-import com.barryholroyd.productsdemo.product_info.GetProducts;
-import com.barryholroyd.productsdemo.product_info.ProductInfo;
-import com.barryholroyd.productsdemo.product_info.ProductInfoArrayList;
-import com.barryholroyd.productsdemo.product_info.ProductListOnScrollListener;
-import com.barryholroyd.productsdemo.product_info.ProductListRecyclerAdapter;
-import com.barryholroyd.productsdemo.support.ActivityPrintStates;
-import com.barryholroyd.productsdemo.config.Settings;
-import com.barryholroyd.productsdemo.support.Support;
+import com.barryholroyd.prodlisthpdemo.config.SettingsManager;
+import com.barryholroyd.prodlisthpdemo.product_info.GetProducts;
+import com.barryholroyd.prodlisthpdemo.product_info.ProductInfo;
+import com.barryholroyd.prodlisthpdemo.product_info.ProductInfoArrayList;
+import com.barryholroyd.prodlisthpdemo.product_info.ProductListOnScrollListener;
+import com.barryholroyd.prodlisthpdemo.product_info.ProductListRecyclerAdapter;
+import com.barryholroyd.prodlisthpdemo.support.ActivityPrintStates;
+import com.barryholroyd.prodlisthpdemo.config.Settings;
+import com.barryholroyd.prodlisthpdemo.support.Support;
 
 /*
  * TODO: PUBLISH DOCS AND APP.

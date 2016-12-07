@@ -1,9 +1,9 @@
-package com.barryholroyd.productsdemo.preferences;
+package com.barryholroyd.prodlisthpdemo.preferences;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-import com.barryholroyd.productsdemo.R;
+import com.barryholroyd.prodlisthpdemo.R;
 
 /**
  * Created by Barry on 12/6/2016.

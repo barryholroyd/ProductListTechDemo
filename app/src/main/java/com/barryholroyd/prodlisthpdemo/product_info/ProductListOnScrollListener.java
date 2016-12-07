@@ -1,10 +1,8 @@
-package com.barryholroyd.productsdemo.product_info;
+package com.barryholroyd.prodlisthpdemo.product_info;
 
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
-import com.barryholroyd.productsdemo.support.Support;
 
 /**
  * Load additional data (more product information from the cloud) in advance

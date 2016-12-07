@@ -1,9 +1,9 @@
-package com.barryholroyd.productsdemo.config;
+package com.barryholroyd.prodlisthpdemo.config;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import static com.barryholroyd.productsdemo.config.Settings.Keys.*;
+import static com.barryholroyd.prodlisthpdemo.config.Settings.Keys.*;
 
 /** Class with static constants to configure the app. */
 public final class Settings {

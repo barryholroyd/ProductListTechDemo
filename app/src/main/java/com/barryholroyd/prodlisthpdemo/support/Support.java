@@ -1,13 +1,12 @@
-package com.barryholroyd.productsdemo.support;
+package com.barryholroyd.prodlisthpdemo.support;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 
-import com.barryholroyd.productsdemo.ActivityProductList;
+import com.barryholroyd.prodlisthpdemo.ActivityProductList;
 
 import java.lang.ref.WeakReference;
 

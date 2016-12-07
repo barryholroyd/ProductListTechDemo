@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.network;
+package com.barryholroyd.prodlisthpdemo.network;
 
 /**
  * Runtime exception for the NetworkSupport module.

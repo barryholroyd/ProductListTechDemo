@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.product_info;
+package com.barryholroyd.prodlisthpdemo.product_info;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,15 +12,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.barryholroyd.productsdemo.ActivityProductInfo;
-import com.barryholroyd.productsdemo.ActivityProductList;
-import com.barryholroyd.productsdemo.R;
-import com.barryholroyd.productsdemo.config.Settings;
-import com.barryholroyd.productsdemo.support.Support;
+import com.barryholroyd.prodlisthpdemo.ActivityProductInfo;
+import com.barryholroyd.prodlisthpdemo.ActivityProductList;
+import com.barryholroyd.prodlisthpdemo.R;
+import com.barryholroyd.prodlisthpdemo.config.Settings;
+import com.barryholroyd.prodlisthpdemo.support.Support;
 
 import java.util.HashMap;
-
-import static com.barryholroyd.productsdemo.config.Settings.*;
 
 /**
  * Recycler adapter to display the list of products.

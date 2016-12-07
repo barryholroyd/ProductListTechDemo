@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.preferences;
+package com.barryholroyd.prodlisthpdemo.preferences;
 
 import android.app.Activity;
 import android.os.Bundle;

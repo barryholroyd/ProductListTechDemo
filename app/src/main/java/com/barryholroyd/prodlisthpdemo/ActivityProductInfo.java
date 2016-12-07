@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo;
+package com.barryholroyd.prodlisthpdemo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +9,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.barryholroyd.productsdemo.product_info.ImageLoader;
-import com.barryholroyd.productsdemo.product_info.ProductInfo;
-import com.barryholroyd.productsdemo.support.ActivityPrintStates;
-import com.barryholroyd.productsdemo.support.Support;
+import com.barryholroyd.prodlisthpdemo.product_info.ImageLoader;
+import com.barryholroyd.prodlisthpdemo.product_info.ProductInfo;
+import com.barryholroyd.prodlisthpdemo.support.ActivityPrintStates;
+import com.barryholroyd.prodlisthpdemo.support.Support;
 
 /*
  * Display the information about a specific product.

@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.product_info;
+package com.barryholroyd.prodlisthpdemo.product_info;
 
 import java.util.ArrayList;
 

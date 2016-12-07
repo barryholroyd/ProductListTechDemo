@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.preferences;
+package com.barryholroyd.prodlisthpdemo.preferences;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.barryholroyd.productsdemo.R;
+import com.barryholroyd.prodlisthpdemo.R;
 
 /**
  * Activity that provides common appbar menu preferences.

@@ -1,13 +1,13 @@
-package com.barryholroyd.productsdemo.cache_disk;
+package com.barryholroyd.prodlisthpdemo.cache_disk;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
-import com.barryholroyd.productsdemo.config.Settings;
-import com.barryholroyd.productsdemo.support.Support;
-import com.barryholroyd.productsdemo.support.Toaster;
+import com.barryholroyd.prodlisthpdemo.config.Settings;
+import com.barryholroyd.prodlisthpdemo.support.Support;
+import com.barryholroyd.prodlisthpdemo.support.Toaster;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import static com.barryholroyd.productsdemo.support.Support.truncImageString;
+import static com.barryholroyd.prodlisthpdemo.support.Support.truncImageString;
 
 /**
  * Disk cache implementation.

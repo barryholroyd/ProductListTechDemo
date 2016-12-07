@@ -1,10 +1,8 @@
-package com.barryholroyd.productsdemo.support;
+package com.barryholroyd.prodlisthpdemo.support;
 
 import android.app.Activity;
 import android.view.Gravity;
 import android.widget.Toast;
-
-import com.barryholroyd.productsdemo.support.Support;
 
 import java.lang.ref.WeakReference;
 

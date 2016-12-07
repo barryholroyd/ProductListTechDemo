@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.cache_memory;
+package com.barryholroyd.prodlisthpdemo.cache_memory;
 
 import android.graphics.Bitmap;
 

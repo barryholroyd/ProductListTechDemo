@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.product_info;
+package com.barryholroyd.prodlisthpdemo.product_info;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,11 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.util.JsonReader;
 import android.util.JsonToken;
 
-import com.barryholroyd.productsdemo.ActivityProductList;
-import com.barryholroyd.productsdemo.network.NetworkSupport;
-import com.barryholroyd.productsdemo.network.NetworkSupportException;
-import com.barryholroyd.productsdemo.support.Support;
-import com.barryholroyd.productsdemo.support.Toaster;
+import com.barryholroyd.prodlisthpdemo.ActivityProductList;
+import com.barryholroyd.prodlisthpdemo.network.NetworkSupport;
+import com.barryholroyd.prodlisthpdemo.network.NetworkSupportException;
+import com.barryholroyd.prodlisthpdemo.support.Support;
+import com.barryholroyd.prodlisthpdemo.support.Toaster;
 
 import java.io.IOException;
 import java.io.InputStream;

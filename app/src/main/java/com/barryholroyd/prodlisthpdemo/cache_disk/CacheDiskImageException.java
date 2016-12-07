@@ -1,4 +1,4 @@
-package com.barryholroyd.productsdemo.cache_disk;
+package com.barryholroyd.prodlisthpdemo.cache_disk;
 
 /**
  * Runtime exception for the CacheMemoryBlob module.

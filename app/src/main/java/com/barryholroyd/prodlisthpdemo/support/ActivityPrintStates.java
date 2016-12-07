@@ -1,9 +1,9 @@
-package com.barryholroyd.productsdemo.support;
+package com.barryholroyd.prodlisthpdemo.support;
 
 import android.os.Bundle;
 
-import com.barryholroyd.productsdemo.config.Settings;
-import com.barryholroyd.productsdemo.preferences.SharedActivities;
+import com.barryholroyd.prodlisthpdemo.config.Settings;
+import com.barryholroyd.prodlisthpdemo.preferences.SharedActivities;
 
 abstract public class ActivityPrintStates extends SharedActivities
 {

@@ -1,14 +1,14 @@
-package com.barryholroyd.productsdemo.config;
+package com.barryholroyd.prodlisthpdemo.config;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.barryholroyd.productsdemo.cache_disk.CacheDiskImage;
-import com.barryholroyd.productsdemo.cache_memory.CacheMemoryImage;
-import com.barryholroyd.productsdemo.product_info.ImageLoader;
+import com.barryholroyd.prodlisthpdemo.cache_disk.CacheDiskImage;
+import com.barryholroyd.prodlisthpdemo.cache_memory.CacheMemoryImage;
+import com.barryholroyd.prodlisthpdemo.product_info.ImageLoader;
 
-import static com.barryholroyd.productsdemo.config.Settings.*;
+import static com.barryholroyd.prodlisthpdemo.config.Settings.*;
 
 /**
  * SettingsManager catches changes the user makes to the preferences in the App Bar's
