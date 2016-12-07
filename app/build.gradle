@@ -29,6 +29,28 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+task tmp {
+  def docsDir = 'C:/data/dev/git/github/barryholroyd.github.io/android/apps'
+  def appName = android.defaultConfig.applicationId.replaceFirst(".*\\.", "")
+  def docsPath = "$docsDir/$appName"
+  println "docsDir: $docsDir"
+  println "project name: $project.name"
+  println "name: " + android.defaultConfig.applicationId
+  println "name2: " + appName
+  println "docsPath: " + docsPath
+  mkdir(docsPath)
+}
+
+/*
+task copyDocs(type:Copy) {
+  def docsDir = 'C:/data/dev/git/github/barryholroyd.github.io/android/apps'
+  from doc
+  into docsDir
+  group = "Barry"
+  description = 'Copy javadocs into my github area for uploading.'
+}
+*/
+
 task listJars << {
   println "-------------------------"
   println "compile:"
