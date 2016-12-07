@@ -30,6 +30,7 @@ dependencies {
 }
 
 task tmp {
+  doFirst {
   def docsDir = 'C:/data/dev/git/github/barryholroyd.github.io/android/apps'
   def appName = android.defaultConfig.applicationId.replaceFirst(".*\\.", "")
   def docsPath = "$docsDir/$appName"
@@ -38,18 +39,33 @@ task tmp {
   println "name: " + android.defaultConfig.applicationId
   println "name2: " + appName
   println "docsPath: " + docsPath
-  mkdir(docsPath)
+  println "main java: " + android.sourceSets.main.java
+  println "ft" + fileTree(android.sourceSets.main.java)
+  def f = file(docsPath)
+  }
 }
 
-/*
-task copyDocs(type:Copy) {
+task javadocs2github(type:Javadoc) {
   def docsDir = 'C:/data/dev/git/github/barryholroyd.github.io/android/apps'
-  from doc
-  into docsDir
+  def appName = android.defaultConfig.applicationId.replaceFirst(".*\\.", "")
+  def docsPath = "$docsDir/$appName"
+  //mkdir(docsPath)	// TBD: don't need this?
+  source = 'src/main/java'
+  destinationDir = file(docsPath)
+
+def x = ""
+ //x = "src\\main\\java\\com\\barryholroyd\\prodlisthpdemo\\overview.html"
+ //x = "C:/data/dev/java/android/projects/AndroidStudio/apps/ProdlistHpDemo/app/src/main/java/com/barryholroyd/prodlisthpdemo/overview.html"
+ //x = "app/src/main/java/com/barryholroyd/prodlisthpdemo/overview.html"
+ //x = "src/main/java/com/barryholroyd/prodlisthpdemo/overview.html"
+ //x = "overview.html"
+ //x = "src/overview.html"
+ //x = "src/main/java/overview.html" FAILED
+ x = "src/main/overview.html"
+  options.addStringOption("overview", x)
   group = "Barry"
   description = 'Copy javadocs into my github area for uploading.'
 }
-*/
 
 task listJars << {
   println "-------------------------"
