@@ -78,17 +78,24 @@ public final class CacheDiskImage
     private long currentCacheSize = 0;
 
     /**
+     * When we need to make room in the cache, we'll make enough for at least this many
+     * additional images the size of the one being added.
+     */
+    static final int IMAGE_SIZE_MULTIPLIER = 10;
+
+    /**
      * Constructor.
      * <p>
      * We pass in the subdirectory name so that different apps can provide different
      * cache subdirectories. Synchronization isn't necessary since this is only called
-     * from a synchronized block within getInstance().
+     * from a synchronized block within makeInstance().
      *
      * @param a   standard Activity instance.
      * @param cacheSubdirName  subdirectory name for the cache -- unique to this app/usage.
      */
     private CacheDiskImage(Activity a, String cacheSubdirName, long _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
+        trace(String.format("Setting maximum disk cache size: %d", maxCacheSize));
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
@@ -129,7 +136,7 @@ public final class CacheDiskImage
     }
 
     /**
-     * Standard singleton getInstance() method.
+     * Standard singleton makeInstance() method.
      * <p>
      * We avoid the double check lock issue by making the "instance" field "volatile".
      *
@@ -137,7 +144,7 @@ public final class CacheDiskImage
      * @param cacheDirName  subdirectory name for the cache -- unique to this app/usage.
      * @return  singleton instance.
      */
-    static public CacheDiskImage getInstance(Activity a, String cacheDirName, long maxCacheSize) {
+    static public CacheDiskImage makeInstance(Activity a, String cacheDirName, long maxCacheSize) {
         if (instance != null)
             return instance;
 
@@ -146,6 +153,16 @@ public final class CacheDiskImage
                 instance = new CacheDiskImage(a, cacheDirName, maxCacheSize);
         }
         return instance;
+    }
+
+    /**
+     * Change the maximum disk cache size.
+     */
+    static public void setMaxCacheSize(long _maxCacheSize) {
+        if (instance == null)
+            throw new CacheDiskImageException("null instance");
+        instance.maxCacheSize = _maxCacheSize;
+        trace(String.format("Setting maximum disk cache size: %d", instance.maxCacheSize));
     }
 
     /**
@@ -215,31 +232,37 @@ public final class CacheDiskImage
          * Doing that intelligently, however, would take some thought.
          */
         prSizes("Initial", entry);
-        while ((currentCacheSize + entry.getSizeBitmap()) > maxCacheSize) {
-            if (icdLl.isEmpty()) {
+        if (currentCacheSize + entry.getSizeBitmap() > maxCacheSize) {
+            while ((currentCacheSize + (entry.getSizeBitmap() * IMAGE_SIZE_MULTIPLIER)) > maxCacheSize) {
+                if (icdLl.isEmpty()) {
                 /*
                  * This should only happen if the first bitmap size is larger
                  * than the entire cache.
                  */
-                throw new CacheDiskImageException("cache is empty.");
-            }
+                    throw new CacheDiskImageException("cache is empty.");
+                }
 
-            // Remove entry from internal data structures.
-            String lastImage = icdLl.removeLast();
-            if (lastImage == null) {
-                throw new CacheDiskImageException("null key when removing entries.");
-            }
-            Entry lastEntry = icdHm.get(lastImage);
+                // Remove entry from internal data structures.
+                String lastImage = icdLl.removeLast();
+                if (lastImage == null) {
+                    throw new CacheDiskImageException("null key when removing entries.");
+                }
+                Entry lastEntry = icdHm.get(lastImage);
 
-            // Delete the bitmap file.
-            File le = new File(lastEntry.longName);
-            long lastFileSize = le.length();
-            prSizes("Removing", lastEntry);
-            fileCheck(le, lastEntry.url);
-            deleteFile(le);
-            lastEntry.setStored(false);
-            currentCacheSize -= lastFileSize;
-            prSizes("Removed", lastEntry);
+                // Delete the bitmap file.
+                String msg = String.format("Removing: File=%s Url=%s",
+                        lastEntry.shortName, truncImageString(lastEntry.url));
+                trace(msg);
+
+                File le = new File(lastEntry.longName);
+                long lastFileSize = le.length();
+                prSizes("Pre-removal", lastEntry);
+                fileCheck(le, lastEntry.url);
+                deleteFile(le);
+                lastEntry.setStored(false);
+                currentCacheSize -= lastFileSize;
+                prSizes("Post-removal", lastEntry);
+            }
         }
 
         try (FileOutputStream fos = new FileOutputStream(filename)) {
@@ -344,7 +367,7 @@ public final class CacheDiskImage
      *
      * @param msg message to be logged.
      */
-    private void trace(String msg) {
+    static private void trace(String msg) {
         Support.trc(Settings.isDiskCacheTrace(), "Cache Disk", msg);
     }
 

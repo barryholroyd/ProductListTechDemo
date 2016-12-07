@@ -28,7 +28,7 @@ public final class Settings {
         appDisplayUrl		    = sp.getBoolean(APP_DISPLAY_URL.name(), false);
         memoryCacheOn		    = sp.getBoolean(MEMORY_CACHE_ON.name(), true);
         memoryCacheTrace	    = sp.getBoolean(MEMORY_CACHE_TRACE.name(), false);
-        memoryCacheBytes        = calcMemoryCacheBytes(sp);
+        memoryCacheByBytes = calcMemoryCacheByBytes(sp);
         memoryCacheSizePercent	= calcMemoryCacheSizePercent(sp);
         memoryCacheSizeBytes    = calcMemoryCacheSizeBytes(sp);
         diskCacheOn		        = sp.getBoolean(DISK_CACHE_ON.name(), true);
@@ -43,8 +43,12 @@ public final class Settings {
         return sp.getString(APP_USE_THREADS.name(), "Threads").equals("Threads");
     }
 
-    static boolean calcMemoryCacheBytes(SharedPreferences sp) {
+    static boolean calcMemoryCacheByBytes(SharedPreferences sp) {
         return sp.getString(MEMORY_CACHE_SIZE_APPROACH.name(), "Bytes").equals("Bytes");
+    }
+
+    static int calcMemoryCacheSizePercent(SharedPreferences sp) {
+        return readPrefInt(sp, MEMORY_CACHE_SIZE_PERCENT.name(), 10);
     }
 
     static long calcMemoryCacheSizeBytes(SharedPreferences sp) {
@@ -53,10 +57,6 @@ public final class Settings {
 
     static int calcDiskCacheSizeBytes(SharedPreferences sp) {
         return readPrefInt(sp, DISK_CACHE_DC_SIZE_KILOBYTES.name(), 500) * 10244;
-    }
-
-    static int calcMemoryCacheSizePercent(SharedPreferences sp) {
-        return readPrefInt(sp, MEMORY_CACHE_SIZE_PERCENT.name(), 10);
     }
 
     /*
@@ -98,17 +98,17 @@ public final class Settings {
     static boolean memoryCacheTrace = false;
 
     /** Specify memory cache in percent of total memory or in bytes. */
-    static boolean memoryCacheBytes = true;
+    static boolean memoryCacheByBytes = true;
 
     /**
      * Percent of total memory to use for the memory cache.
-     * Relevant iff memoryCacheBytes == true.
+     * Relevant iff memoryCacheByBytes == true.
      */
     static int memoryCacheSizePercent = 10;
 
     /**
      * Memory (in bytes) to allocate for the memory cache.
-     * Relevant iff memoryCacheBytes == false.
+     * Relevant iff memoryCacheByBytes == false.
      */
     static long memoryCacheSizeBytes = 2*1024*1024;
 
@@ -183,8 +183,8 @@ public final class Settings {
         return memoryCacheOn;
     }
 
-    public static boolean isMemoryCacheBytes() {
-        return memoryCacheBytes;
+    public static boolean isMemoryCacheByBytes() {
+        return memoryCacheByBytes;
     }
 
     public static long getMemoryCacheSizeBytes() {

@@ -38,7 +38,7 @@ public class ImageLoader {
     public static CacheMemoryImage cacheMemory = null;
 
     /** Disk caching instance (singleton). */
-    private static CacheDiskImage cacheDiskImage = null;
+    public static CacheDiskImage cacheDiskImage = null;
 
     /** Blank image bitmap used to fill the header "image" slot. */
     private static Bitmap blankImageBitmap =
@@ -65,12 +65,12 @@ public class ImageLoader {
         wrActivity = new WeakReference<>(a);
         resources = a.getResources();
         if (cacheMemory == null) {
-            cacheMemory = Settings.isMemoryCacheBytes()
+            cacheMemory = Settings.isMemoryCacheByBytes()
                     ? CacheMemoryImage.createWithBytes(Settings.getMemoryCacheSizeBytes())
                     : CacheMemoryImage.createWithPercent(Settings.getMemoryCacheSizePercent());
         }
         if (cacheDiskImage == null) {
-            cacheDiskImage = CacheDiskImage.getInstance(
+            cacheDiskImage = CacheDiskImage.makeInstance(
                     a, Settings.CACHE_DIR, Settings.getDiskCacheSizeBytes());
         }
     }
