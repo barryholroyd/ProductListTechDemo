@@ -93,7 +93,7 @@ public final class CacheDiskImage
         cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
             if (Settings.isDiskCacheClear()) {
-                trace(String.format("deleting cache directory: %s", cacheDirName));
+                trace(String.format("Deleting cache directory: %s", cacheDirName));
                 for (File f : cacheDir.listFiles()) {
                     trace(String.format("  Deleting: %s", f.getName()));
                     deleteFile(f);
@@ -101,7 +101,7 @@ public final class CacheDiskImage
                 deleteFile(cacheDir);
             }
             else {
-                trace(String.format("retaining cache directory: %s", cacheDirName));
+                trace(String.format("Retaining cache directory: %s", cacheDirName));
                 if (!cacheDir.isDirectory()) {
                     throw new CacheDiskImageException(
                             String.format("Disk cache exists but is not a directory: %s",
@@ -110,7 +110,7 @@ public final class CacheDiskImage
                 return;
             }
         }
-        trace(String.format("creating cache directory: %s", cacheDirName));
+        trace(String.format("Creating cache directory: %s", cacheDirName));
         if (!cacheDir.mkdirs()) {
             throw new CacheDiskImageException("Could not create disk cache directory.");
         }
@@ -293,7 +293,9 @@ public final class CacheDiskImage
         String cachePath = externalStorageAvailable()
                 ? a.getExternalCacheDir().getPath()
                 : a.getCacheDir().getPath();
-        return cachePath + File.separator + cacheSubdirName;
+        String cacheDirName = cachePath + File.separator + cacheSubdirName;
+        trace("Cache directory name: " + cacheDirName);
+        return cacheDirName;
     }
 
     private void fileCheck(File f, String url) {

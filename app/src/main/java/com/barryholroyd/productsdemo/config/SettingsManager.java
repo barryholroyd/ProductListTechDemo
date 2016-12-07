@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.barryholroyd.productsdemo.cache_memory.CacheMemoryImage;
+import com.barryholroyd.productsdemo.product_info.ImageLoader;
+
 import static com.barryholroyd.productsdemo.config.Settings.*;
 
 /**
@@ -37,7 +40,7 @@ public class SettingsManager {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             switch (Settings.Keys.valueOf(key)) {
                 case APP_USE_THREADS:
-                    Settings.appUseThreads = getAppUseThreads(sp);
+                    Settings.appUseThreads = calcAppUseThreads(sp);
                     break;
                 case APP_TRACE:
                     Settings.appTrace = sp.getBoolean(key, true);
@@ -58,13 +61,18 @@ public class SettingsManager {
                     Settings.memoryCacheTrace = sp.getBoolean(key, false);
                     break;
                 case MEMORY_CACHE_SIZE_APPROACH:
-                    Settings.memoryCacheBytes = getMemoryCacheBytes(sp);
+                    Settings.memoryCacheBytes = calcMemoryCacheBytes(sp);
+                    ImageLoader.cacheMemory = Settings.isMemoryCacheBytes()
+                            ? CacheMemoryImage.createWithBytes(Settings.getMemoryCacheSizeBytes())
+                            : CacheMemoryImage.createWithPercent(Settings.getMemoryCacheSizePercent());
                     break;
                 case MEMORY_CACHE_SIZE_PERCENT:
-                    Settings.getMemoryCacheSizePercent(sp);
+                    Settings.calcMemoryCacheSizePercent(sp);
+                    ImageLoader.cacheMemory = CacheMemoryImage.createWithPercent(Settings.calcMemoryCacheSizePercent(sp));
                     break;
                 case MEMORY_CACHE_SIZE_MEGABYTES:
-                    Settings.getMemoryCacheSizeBytes(sp);
+                    Settings.calcMemoryCacheSizeBytes(sp);
+                    ImageLoader.cacheMemory = CacheMemoryImage.createWithBytes(Settings.calcMemoryCacheSizeBytes(sp));
                     break;
                 case DISK_CACHE_ON:
                     Settings.diskCacheOn = sp.getBoolean(key, true);
@@ -73,7 +81,7 @@ public class SettingsManager {
                     Settings.diskCacheTrace = sp.getBoolean(key, false);
                     break;
                 case DISK_CACHE_DC_SIZE_KILOBYTES:
-                    Settings.getDiskCacheSizeBytes(sp);
+                    Settings.calcDiskCacheSizeBytes(sp);
                     break;
                 case DISK_CACHE_CLEAR:
                     Settings.diskCacheClear = sp.getBoolean(key, true);

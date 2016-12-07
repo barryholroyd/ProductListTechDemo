@@ -17,9 +17,9 @@ import com.barryholroyd.productsdemo.config.Settings;
 import com.barryholroyd.productsdemo.support.Support;
 
 /*
+ * BUG: doesn't always remove HTML tags from descriptions.
+ * TODO: demo slow (or wrong) loading of images.
  * TODO: rename app to WalmartProducts
- * TODO: Add Preferences.
- * TODO: Are images ever *dropped*, such that they have to be reloaded? Verify.
  * TODO: Finish comments.
  * TODO: Run code check tools.
  */

@@ -36,6 +36,12 @@ public class CacheMemoryBlob<K,V>
     /** First in / first out tracking for deleting cache entries. */
     final private LinkedList<K> bcmLl = new LinkedList<>();
 
+    /**
+     * When we need to make room in the cache, we'll make enough for at least this many
+     * additional images the size of the one being added.
+     */
+    static final int IMAGE_SIZE_MULTIPLIER = 10;
+
     /** Maximum size of the cache in bytes. */
     protected long maxCacheSize = 0;
 
@@ -45,7 +51,7 @@ public class CacheMemoryBlob<K,V>
     /** Create new instances using factory methods. */
     CacheMemoryBlob(long _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
-        trace(String.format("Maximum Cache Size: %d", maxCacheSize));
+        trace(String.format("Setting maximum memory cache size: %d", maxCacheSize));
     }
 
     /**
@@ -101,26 +107,28 @@ public class CacheMemoryBlob<K,V>
         long valSize = sizeOf(key, val);
 
         // Clear cache entries, if necessary.
-        while ((currentCacheSize + valSize) > maxCacheSize) {
-            if (bcmLl.isEmpty()) {
+        if ((currentCacheSize + valSize) > maxCacheSize) {
+            while ((currentCacheSize + (valSize * IMAGE_SIZE_MULTIPLIER)) > maxCacheSize) {
+                if (bcmLl.isEmpty()) {
                 /*
                  * This should only happen if the first object is larger
                  * than the entire cache.
                  */
-                throw new CacheMemoryBlobException("cache is empty.");
-            }
+                    throw new CacheMemoryBlobException("cache is empty.");
+                }
 
-            K lastKey = bcmLl.removeLast();
-            if (lastKey == null) {
-              throw new CacheMemoryBlobException("null key when removing entries.");
+                K lastKey = bcmLl.removeLast();
+                if (lastKey == null) {
+                    throw new CacheMemoryBlobException("null key when removing entries.");
+                }
+                V lastVal = bcmHm.remove(lastKey);
+                long lastValSize = sizeOf(lastKey, lastVal);
+                trace(String.format("Removing: %s (oldCacheSize-imageSize=newCacheSize: %d-%d=%d).",
+                        lastKey,
+                        currentCacheSize, lastValSize,
+                        currentCacheSize - lastValSize));
+                currentCacheSize -= lastValSize;
             }
-            V lastVal = bcmHm.remove(lastKey);
-            long lastValSize = sizeOf(lastKey, lastVal);
-            trace(String.format("Removing: %s (oldCacheSize-imageSize=newCacheSize: %d-%d=%d).",
-                    lastKey,
-                    currentCacheSize, lastValSize,
-                    currentCacheSize - lastValSize));
-            currentCacheSize -= lastValSize;
         }
 
         currentCacheSize += valSize;

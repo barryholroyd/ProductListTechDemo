@@ -35,7 +35,7 @@ public class ImageLoader {
     static final int IMAGE_WSIZE = 100;
 
     /** In-memory caching instance. */
-    private static CacheMemoryImage cacheMemory = null;
+    public static CacheMemoryImage cacheMemory = null;
 
     /** Disk caching instance (singleton). */
     private static CacheDiskImage cacheDiskImage = null;

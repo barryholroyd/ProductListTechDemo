@@ -21,41 +21,41 @@ public final class Settings {
     static public void init(Activity a) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(a);
 
-        appUseThreads	        = getAppUseThreads(sp);
+        appUseThreads	        = calcAppUseThreads(sp);
         appTrace		        = sp.getBoolean(APP_TRACE.name(), true);
         appTraceAlc		        = sp.getBoolean(APP_TRACE_ALC.name(), false);
         appTraceDetails		    = sp.getBoolean(APP_TRACE_DETAILS.name(), false);
         appDisplayUrl		    = sp.getBoolean(APP_DISPLAY_URL.name(), false);
         memoryCacheOn		    = sp.getBoolean(MEMORY_CACHE_ON.name(), true);
         memoryCacheTrace	    = sp.getBoolean(MEMORY_CACHE_TRACE.name(), false);
-        memoryCacheBytes        = getMemoryCacheBytes(sp);
-        memoryCacheSizePercent	= getMemoryCacheSizePercent(sp);
-        memoryCacheSizeBytes    = getMemoryCacheSizeBytes(sp);
+        memoryCacheBytes        = calcMemoryCacheBytes(sp);
+        memoryCacheSizePercent	= calcMemoryCacheSizePercent(sp);
+        memoryCacheSizeBytes    = calcMemoryCacheSizeBytes(sp);
         diskCacheOn		        = sp.getBoolean(DISK_CACHE_ON.name(), true);
         diskCacheTrace		    = sp.getBoolean(DISK_CACHE_TRACE.name(), false);
-        diskCacheSizeBytes	    = getDiskCacheSizeBytes(sp);
+        diskCacheSizeBytes	    = calcDiskCacheSizeBytes(sp);
         diskCacheClear		    = sp.getBoolean(DISK_CACHE_CLEAR.name(), true);
         imageLoaderTrace	    = sp.getBoolean(IMAGE_LOADER_TRACE.name(), false);
         networkTrace		    = sp.getBoolean(NETWORK_TRACE.name(), false);
     }
 
-    static boolean getAppUseThreads(SharedPreferences sp) {
+    static boolean calcAppUseThreads(SharedPreferences sp) {
         return sp.getString(APP_USE_THREADS.name(), "Threads").equals("Threads");
     }
 
-    static boolean getMemoryCacheBytes(SharedPreferences sp) {
+    static boolean calcMemoryCacheBytes(SharedPreferences sp) {
         return sp.getString(MEMORY_CACHE_SIZE_APPROACH.name(), "Bytes").equals("Bytes");
     }
 
-    static long getMemoryCacheSizeBytes(SharedPreferences sp) {
+    static long calcMemoryCacheSizeBytes(SharedPreferences sp) {
         return readPrefInt(sp, MEMORY_CACHE_SIZE_MEGABYTES.name(), 2) * 1024 * 1024;
     }
 
-    static int getDiskCacheSizeBytes(SharedPreferences sp) {
+    static int calcDiskCacheSizeBytes(SharedPreferences sp) {
         return readPrefInt(sp, DISK_CACHE_DC_SIZE_KILOBYTES.name(), 500) * 10244;
     }
 
-    static int getMemoryCacheSizePercent(SharedPreferences sp) {
+    static int calcMemoryCacheSizePercent(SharedPreferences sp) {
         return readPrefInt(sp, MEMORY_CACHE_SIZE_PERCENT.name(), 10);
     }
 
@@ -82,7 +82,7 @@ public final class Settings {
     /** Tracing flag for activity lifecycle events. */
     static boolean appTraceAlc = false;
 
-    /** Tracing flag for detailed cache logging. */
+    /** Tracing flag for detailed disk and network cache logging (flagged with "DETAILS"). */
     static boolean appTraceDetails = false;
 
     /** Toggle display of image url in name field (for debugging). */

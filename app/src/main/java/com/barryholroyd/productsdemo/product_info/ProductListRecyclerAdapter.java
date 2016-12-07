@@ -245,7 +245,7 @@ public class ProductListRecyclerAdapter
 			tvId.setText(Integer.toString(pi.getId()));
 
             // Optionally display image url, for debugging purposes.
-            String name = Settings.isAppTrace()
+            String name = Settings.isAppDisplayUrl()
                     ? String.format("[%s]\n%s",
 					  Support.truncImageString(pi.getImageUrl()), pi.getName())
                     : pi.getName();

@@ -83,7 +83,7 @@ public class GetProducts
      *     Paginated Products API</a>
      */
     static final private List<String> JSON_PAGINATED_PRODUCTS = Arrays.asList(
-            "category", "format", "nextPage", "items"
+            "category", "format", "maxId", "nextPage", "items"
     );
 
     /**
@@ -99,7 +99,7 @@ public class GetProducts
 			"clearance", "color", "customerRating", "customerRatingImage",
 			"freeShippingOver50Dollars", "freeShipToStore","freight", "gender",
 			"isbn", "itemId", "largeImage", "longDescription",
-			"marketplace", "maxId", "maxItemsInOrder", "mediumImage", "modelNumber",
+			"marketplace", "maxItemsInOrder", "mediumImage", "modelNumber",
 			"msrp", "name", "ninetySevenCentShipping", "numReviews",
 			"offerType", "overnightShippingRate", "parentItemId", "preOrder",
 			"preOrderShipsOn", "productTrackingUrl", "productUrl", "rollBack",
@@ -308,7 +308,7 @@ public class GetProducts
                     }
                 }
                 else {
-                    Support.loge("Error: bad token in JSON stream: " + name);
+                    Support.loge("Error -- parseJsonData(): bad token in JSON stream: " + name);
                     reader.skipValue();
                 }
 			}
@@ -374,7 +374,7 @@ public class GetProducts
 					}
 				}
 				else {
-					Support.loge("Error: bad token in JSON stream: " + name);
+					Support.loge("Error - readProductInfo(): bad token in JSON stream: " + name);
 					reader.skipValue();
 				}
 			}

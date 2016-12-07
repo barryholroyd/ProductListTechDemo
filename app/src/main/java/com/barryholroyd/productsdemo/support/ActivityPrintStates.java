@@ -104,6 +104,6 @@ abstract public class ActivityPrintStates extends SharedActivities
     private void trace(String msg) {
       String className = this.getClass().getSimpleName();
       String msg2 = String.format("%s: %s", className, msg);
-        Support.trc(Settings.isAppTrace(), "Alc", msg2);
+        Support.trc(Settings.isAppTraceAlc(), "Alc", msg2);
     }
 }

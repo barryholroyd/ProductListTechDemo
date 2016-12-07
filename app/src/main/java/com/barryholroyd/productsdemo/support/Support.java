@@ -91,7 +91,7 @@ public class Support
 	 * @return the trailing component (e.g., image.jpeg, image-5).
      */
 	static public String truncImageString(String name) {
-		return name.replaceFirst(".*images/", ".../");
+		return name.replaceFirst(".*/", ".../").replaceFirst("\\?.*", "");
 	}
 
 	/**
