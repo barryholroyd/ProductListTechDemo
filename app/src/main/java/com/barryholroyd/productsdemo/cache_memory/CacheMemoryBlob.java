@@ -110,11 +110,7 @@ public class CacheMemoryBlob<K,V>
         if ((currentCacheSize + valSize) > maxCacheSize) {
             while ((currentCacheSize + (valSize * IMAGE_SIZE_MULTIPLIER)) > maxCacheSize) {
                 if (bcmLl.isEmpty()) {
-                /*
-                 * This should only happen if the first object is larger
-                 * than the entire cache.
-                 */
-                    throw new CacheMemoryBlobException("cache is empty.");
+                    break;
                 }
 
                 K lastKey = bcmLl.removeLast();

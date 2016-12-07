@@ -56,7 +56,7 @@ public final class Settings {
     }
 
     static int calcDiskCacheSizeBytes(SharedPreferences sp) {
-        return readPrefInt(sp, DISK_CACHE_DC_SIZE_KILOBYTES.name(), 500) * 10244;
+        return readPrefInt(sp, DISK_CACHE_DC_SIZE_KILOBYTES.name(), 500) * 1024;
     }
 
     /*

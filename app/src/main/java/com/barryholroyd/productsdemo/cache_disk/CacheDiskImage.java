@@ -235,11 +235,7 @@ public final class CacheDiskImage
         if (currentCacheSize + entry.getSizeBitmap() > maxCacheSize) {
             while ((currentCacheSize + (entry.getSizeBitmap() * IMAGE_SIZE_MULTIPLIER)) > maxCacheSize) {
                 if (icdLl.isEmpty()) {
-                /*
-                 * This should only happen if the first bitmap size is larger
-                 * than the entire cache.
-                 */
-                    throw new CacheDiskImageException("cache is empty.");
+                    break;
                 }
 
                 // Remove entry from internal data structures.
