@@ -19,7 +19,6 @@ import com.barryholroyd.productsdemo.support.Support;
 /*
  * TODO: PUBLISH DOCS AND APP.
  *
- * BUG: doesn't always remove HTML tags from descriptions. (Support object)
  * TODO: rename app to WalmartProducts
  * TODO: Finish comments.
  * TODO: Run code check tools.

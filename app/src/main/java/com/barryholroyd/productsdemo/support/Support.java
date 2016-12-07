@@ -115,28 +115,15 @@ public class Support
 		else {
 			s = Html.fromHtml(in, 0).toString();
 		}
-		Spanned tmp = Html.fromHtml("<h2>Title</h2><br><p>Description here</p>");
-		String tmp2 = tmp.toString();
-		String new2 = Html.fromHtml(s).toString();
-		logd(String.format("TMP: %s", tmp2));
-		logd(String.format("OLD: %s", in));
-		logd(String.format("NEW: %s\n", s));
-		logd(String.format("NEW2: %s\n", new2));
-		return new2;
-//        return cleanUp(s);
-	}
 
-    /**
-     * The JSON code returned contains non-ASCII characters in the short and long
-     * product descriptions and the API doesn't describe what the encoding is, so
-     * we simply deplete them from the text.
-     *
-     * @param s text which potentially contains non-ASCII characters.
-     * @return  the same text, but with all non-ASCII characters sequences replaced with a space.
-     */
-    private static String cleanUp(String s) {
-        return s.replaceAll("[\\u0080-\\uffff]+", " ");
-    }
+		/*
+		 * The first pass decodes special HTML sequences (e.g., &lt;br&gt; -> <br>) but
+		 * then doesn't convert the tags to text. Running it through again handles that
+		 * situation.
+		 */
+		s = Html.fromHtml(s).toString();
+		return s;
+	}
 
     /**
      * "Intent extra" key: identifies product info data when starting ActivityProductInfo activity.
