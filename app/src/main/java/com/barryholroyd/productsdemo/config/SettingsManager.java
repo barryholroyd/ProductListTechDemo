@@ -67,12 +67,16 @@ public class SettingsManager {
                             : CacheMemoryImage.createWithPercent(Settings.getMemoryCacheSizePercent());
                     break;
                 case MEMORY_CACHE_SIZE_PERCENT:
-                    Settings.calcMemoryCacheSizePercent(sp);
-                    ImageLoader.cacheMemory = CacheMemoryImage.createWithPercent(Settings.calcMemoryCacheSizePercent(sp));
+                    if (!Settings.isMemoryCacheBytes()) {
+                        ImageLoader.cacheMemory = CacheMemoryImage.createWithPercent(
+                                Settings.calcMemoryCacheSizePercent(sp));
+                    }
                     break;
                 case MEMORY_CACHE_SIZE_MEGABYTES:
-                    Settings.calcMemoryCacheSizeBytes(sp);
-                    ImageLoader.cacheMemory = CacheMemoryImage.createWithBytes(Settings.calcMemoryCacheSizeBytes(sp));
+                    if (Settings.isMemoryCacheBytes()) {
+                        ImageLoader.cacheMemory =
+                                CacheMemoryImage.createWithBytes(Settings.calcMemoryCacheSizeBytes(sp));
+                    }
                     break;
                 case DISK_CACHE_ON:
                     Settings.diskCacheOn = sp.getBoolean(key, true);
