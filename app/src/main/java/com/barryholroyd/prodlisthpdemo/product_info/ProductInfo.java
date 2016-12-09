@@ -100,6 +100,7 @@ public class ProductInfo implements Parcelable
 
 	ProductInfo() {}
 
+	/** Parcelable constructor. */
 	private ProductInfo(Parcel in) {
 		id = in.readInt();
 		name = in.readString();
@@ -112,10 +113,12 @@ public class ProductInfo implements Parcelable
 		inStock = in.readString();
 	}
 
+	/** Parcelable describeContents(). */
 	public int describeContents() {
 		return 0;
 	}
 
+	/** Parcelable writeToParcel(). */
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeInt(id);
 		out.writeString(name);

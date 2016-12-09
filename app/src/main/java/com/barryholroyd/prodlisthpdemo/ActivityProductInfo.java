@@ -14,14 +14,12 @@ import com.barryholroyd.prodlisthpdemo.product_info.ProductInfo;
 import com.barryholroyd.prodlisthpdemo.support.ActivityPrintStates;
 import com.barryholroyd.prodlisthpdemo.support.Support;
 
-/*
- * Display the information about a specific product.
- *
- * NTH: Product Info screen's table should have the same border coloring
- * as the Product List screen.
-*/
+/**
+ * Display information about a specific product.
+ */
 public class ActivityProductInfo extends ActivityPrintStates
 {
+	/** Object to load and display a product image. */
 	ImageLoader imageLoader;
 
 	@Override
@@ -40,9 +38,7 @@ public class ActivityProductInfo extends ActivityPrintStates
 		setFields(productInfo);
 	}
 
-	/**
-	 * Create the standard options menu for the app bar.
-	 */
+	/** Create the standard options menu for the app bar. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -50,6 +46,11 @@ public class ActivityProductInfo extends ActivityPrintStates
 		return true;
 	}
 
+	/**
+	 * Display the fields for the Product Info page.
+	 *
+	 * @param pi object containing all the product-specific information.
+	 */
 	private void setFields(ProductInfo pi) {
 		TextView  tvName               = (TextView)  findViewById(R.id.name);
 		TextView  tvPrice              = (TextView)  findViewById(R.id.price);

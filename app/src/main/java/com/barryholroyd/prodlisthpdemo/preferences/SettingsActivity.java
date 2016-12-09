@@ -4,10 +4,17 @@ import android.app.Activity;
 import android.os.Bundle;
 
 /**
- * Created by Barry on 12/6/2016.
+ * Activity to handle Android Preferences.
  */
-
 public class SettingsActivity extends Activity {
+    /**
+     * Standard onCreate().
+     *
+     * Creates and registers a SettingsFragment instance with
+     * the FragmentManager.
+     *
+     * @param savedInstanceState    standard Bundle.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

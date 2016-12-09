@@ -171,8 +171,8 @@ public class ProductListRecyclerAdapter
 		/** Product image view. */
 		private final ImageView ivProductImage;
 
-        /** ImageLoader instance. */
-        private final ImageLoader imageLoader;
+		/** Object to load and display a product image. */
+		private final ImageLoader imageLoader;
 
 		/**
 		 * A single instance of OnClickListener that can be used for all rows

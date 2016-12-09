@@ -19,15 +19,26 @@ import com.barryholroyd.prodlisthpdemo.support.Toaster;
 import java.lang.ref.WeakReference;
 
 /**
- * Load
+ * Load and display an image.
+ *
+ * This class loads and displays the thumbnail image associated with each product.
+ * When the app downloads the JSON data representing a list of products, it uses
+ * this object to obtain the associated images.
+ * <p>
+ *     ImageLoader checks to see if the image is in the memory cache; if not, it uses
+ *     a worker thread to check the disk cache; if the image isn't there, then the
+ *     worker thread downloads it from the network.
+ * <p>
+ *     Regardless of how the image is obtained, it is displayed when it is available.
+ *     In the case of the Product List page, it is displayed in the correct row; if
+ *     that row is no longer being displayed, the image is cached but not displayed.
  */
 
 public class ImageLoader {
     /*
-     * Assuming the the BitmapFactory default image format of ARGB_8888 (4 bytes):
+     * We assume the BitmapFactory default image format of ARGB_8888 (4 bytes):
      * Image (bitmap) size: 100 * 100 * 4 = 40,000 bytes.
      */
-
     /** Max. number of height pixels in product image. */
     static final int IMAGE_HSIZE = 100;
 
@@ -60,6 +71,17 @@ public class ImageLoader {
      */
     private String currentUrl;
 
+    /**
+     * Standard constructor.
+     * <p>
+     * Initializes caches and stores a WeakReference to the current Activity.
+     * <p>
+     *     The Activity instance is used to print Toasts from the background and
+     *     to call runOnUiThread() from a worker thread. We use a WeakReference so
+     *     that we can determine whether or not it is still valid (e.g., a device
+     *     rotation will destroy the current Activity).
+     * @param _a    reference to the current Activity.
+     */
     public ImageLoader(Activity _a) {
         a = _a;
         wrActivity = new WeakReference<>(a);
@@ -105,20 +127,22 @@ public class ImageLoader {
             return;
         }
 
-        // "currentUrl" is directly accessible by background threads
+        // "currentUrl" is directly accessible by background threads.
         currentUrl = url;
 
-			/*
-			 * Background: load from disk or network.
-			 * Both LiThread and LiAsyncTask have to be defined as nested classes so that
-			 * they can have access to "currentUrl".
-			 */
+        /*
+         * Background: load from disk or network.
+         * Both LiThread and LiAsyncTask have to be defined as nested classes so that
+         * they can have access to "currentUrl".
+         */
         if (Settings.isAppUseThreads()) (new LiThread(iv, url)).start();
         else new LiAsyncTask(iv, url).execute();
     }
 
     /**
      * Threads-based version of loading the image in the background.
+     *
+     * @see #load(ImageView, String)
      */
     private class LiThread extends Thread
     {
@@ -187,14 +211,20 @@ public class ImageLoader {
             url = _url;
         }
 
+        /**
+         * Get the image bitmap from the disk cache or the network.
+         *
+         * @see #load(ImageView, String)
+         * @param args  n/a - this is provided but ignored.
+         * @return      image bitmap obtained.
+         */
         @Override
         protected Bitmap doInBackground(String... args) {
-                /*
-                 * We have already tried pulling the bitmap from the memory
-                 * cache (that happens in the foreground), but didn't find it
-                 * there.
-                 */
-
+            /*
+             * We have already tried pulling the bitmap from the memory
+             * cache (that happens in the foreground), but didn't find it
+             * there.
+             */
             Bitmap bitmap;
 
             // Check for a null url.
@@ -212,12 +242,25 @@ public class ImageLoader {
             return bitmap;
         }
 
+        /**
+         * Display the image.
+         *
+         * @param bitmap bitmap to be displayed.
+         */
         @Override
         protected void onPostExecute(Bitmap bitmap) {
                 iv.setImageBitmap(bitmap);
         }
     }
 
+    /**
+     * If no image url was provided, then try to provide a bitmap for default image.
+     *
+     * @param url url for the image.
+     * @return    a default image bitmap if no image url was provided; else null.
+     *            null indicates that the caller should continue processing -- the url is valid
+     *            and we still need the bitmap.
+     */
     private Bitmap setImageNullCheck(String url) {
         if (url == null) {
             trace(String.format("No image provided -- loading default image."));
@@ -226,6 +269,14 @@ public class ImageLoader {
         return null;
     }
 
+    /**
+     * Attempt to get the image bitmap from the disk cache.
+     *
+     * If successful, add it to the memory cache.
+     *
+     * @param url url for the image.
+     * @return    bitmap from the image.
+     */
     private Bitmap setImageDiskCache(String url) {
         Bitmap bitmap = cacheDiskImage.get(url);
         if (bitmap != null) {
@@ -234,6 +285,14 @@ public class ImageLoader {
         return bitmap;
     }
 
+    /**
+     * Attempt to get the image bitmap from the network.
+     *
+     * If successful, add it to the memory and disk caches.
+     *
+     * @param url url for the image.
+     * @return    bitmap from the image.
+     */
     private Bitmap setImageNetwork(String url) {
         Bitmap bitmap;
         try {
@@ -255,7 +314,6 @@ public class ImageLoader {
                  * cases, the default image may stayed displayed. I believe this happens if
                  * this thread ends up executing after the "other" thread. Pragmatically,
                  * that isn't a problem with the memory and disk caches in place.
-                 * NTH: display the proper image if the other thread has already run.
                  */
             String newUrl = Support.truncImageString(currentUrl);
             trace(String.format("Loading default image instead of %s.", newUrl));
@@ -275,19 +333,20 @@ public class ImageLoader {
 
     /** Check to see if the url has changed.
      * <p>
-     * Even though "url" will have just been set to currentUrl before starting the
+     * Even though {@code url} will have just been set to {@code currentUrl} before starting the
      * thread which calls this method, time may have passed and the value of
-     * currentUrl may have changed. This can happen, for example, when the ViewHolder
+     * currentUrl may have changed. This can happen, for example, when the {@code ViewHolder}
      * gets recycled. All of its other fields will have been updated to reflect the
      * new row it is responsible for, but the image field may not have been updated
      * in time. When this occurs, we simply log the event and then try to load the
      * image from the new url instead. (That is a small optimization since that url
-     * would also get loaded subsequently by a newer Thread.) Nost importantly, we
-     * do *not* load the "old" image.
+     * would also get loaded subsequently by a newer thread.) Most importantly, we
+     * do <i>not</i> load the "old" image.
      * <p>
-     * Since "url" is passed in to the constructor and stored locally, it retains
-     * the original value. Since "currentUrl" is a field of ProductListViewHolder,
-     * its current value is accessible to the caller of this method (LiThread's run()).
+     * Since {@code url} is passed in to the constructor and stored locally, it retains
+     * the original value. Since {@code currentUrl} is a field of {@code ProductListViewHolder},
+     * its current value is accessible to the caller of this method
+     * ({@code LiThread}'s {@code run()}).
      *
      * @param url original url
      * @param currentUrl updated (potentially different) url
@@ -305,7 +364,7 @@ public class ImageLoader {
             return url;
     }
 
-    /** Get the default "no image" image. */
+    /** Get the default image. */
     static Bitmap getNoImageBitmap(Resources resources) {
             return BitmapFactory.decodeResource(resources, R.drawable.noimage);
     }
@@ -316,7 +375,7 @@ public class ImageLoader {
     }
 
     /**
-     * Tracing method for app overall.
+     * Tracing method for this class.
      *
      * @param msg message to be logged.
      */

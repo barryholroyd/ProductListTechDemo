@@ -10,6 +10,7 @@ public final class Settings {
     /** Names for the cache directories. */
     static public final String CACHE_DIR = "images";
 
+    /** Keys will be used as Strings for SharePreferences. */
     enum Keys {
         APP_USE_THREADS, APP_TRACE, APP_TRACE_ALC, APP_TRACE_DETAILS, APP_DISPLAY_URL,
         MEMORY_CACHE_ON, MEMORY_CACHE_TRACE, MEMORY_CACHE_SIZE_APPROACH, MEMORY_CACHE_SIZE_PERCENT,
@@ -18,6 +19,11 @@ public final class Settings {
         IMAGE_LOADER_TRACE, NETWORK_TRACE
     }
 
+    /**
+     * Initialize all the local variables that are stored as share preferences.
+     *
+     * @param a the current Activity.
+     */
     static public void init(Activity a) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(a);
 
@@ -39,6 +45,10 @@ public final class Settings {
         networkTrace		    = sp.getBoolean(NETWORK_TRACE.name(), false);
     }
 
+    /*
+     * Conversion routines that take a String key and return a value of the
+     * desired type.
+     */
     static boolean calcAppUseThreads(SharedPreferences sp) {
         return sp.getString(APP_USE_THREADS.name(), "Threads").equals("Threads");
     }
@@ -60,7 +70,7 @@ public final class Settings {
     }
 
     /*
-     * The following methods are necessary because the Preferences
+     * The following method is necessary because the Preferences
      * menu system stores ints and floats as Strings (even though the
      * SharedPreferences system can store integers and provides a
      * getInt() method).

@@ -6,10 +6,16 @@ import android.preference.PreferenceFragment;
 import com.barryholroyd.prodlisthpdemo.R;
 
 /**
- * Created by Barry on 12/6/2016.
+ * Fragment to handle preferences.
  */
-
 public class SettingsFragment extends PreferenceFragment {
+    /**
+     * Standard onCreate() method.
+     *
+     * Adds the preferences from XML.
+     *
+     * @param savedInstanceState    standard Bundle.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

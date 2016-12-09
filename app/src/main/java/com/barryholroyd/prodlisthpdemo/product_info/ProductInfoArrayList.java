@@ -3,7 +3,7 @@ package com.barryholroyd.prodlisthpdemo.product_info;
 import java.util.ArrayList;
 
 /**
- * Created by Barry on 8/17/2016.
+ * Class to enhance type safety and readability.
  */
 public class ProductInfoArrayList extends ArrayList<ProductInfo>
 {

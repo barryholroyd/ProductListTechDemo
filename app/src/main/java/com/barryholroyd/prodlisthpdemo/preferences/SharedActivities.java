@@ -13,7 +13,6 @@ import com.barryholroyd.prodlisthpdemo.R;
  * <p>
  * These can be used by any Activity that wants to display and use the AppBar menu.
  */
-
 public abstract class SharedActivities extends AppCompatActivity {
     /**
      * Create the standard options menu for the app bar.
@@ -25,6 +24,7 @@ public abstract class SharedActivities extends AppCompatActivity {
         return true;
     }
 
+    /** Standard menu item selection callback. */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

@@ -5,6 +5,11 @@ import android.os.Bundle;
 import com.barryholroyd.prodlisthpdemo.config.Settings;
 import com.barryholroyd.prodlisthpdemo.preferences.SharedActivities;
 
+/**
+ * Take an action each time an Activity lifecycle callback is called.
+ *
+ * By default, the action is to print a simple message to the log.
+ */
 abstract public class ActivityPrintStates extends SharedActivities
 {
   // Called at the start of the full lifetime.
@@ -95,12 +100,12 @@ abstract public class ActivityPrintStates extends SharedActivities
     runme("onDestroy()");
   }
 
-  /** default method to execute from each callback. */
+  /** Default method to execute from each callback. */
   protected void runme(String label) {
     trace(label);
   }
 
-    /** standard module-specific trace method for this app */
+    /** Standard module-specific trace method for this app */
     private void trace(String msg) {
       String className = this.getClass().getSimpleName();
       String msg2 = String.format("%s: %s", className, msg);

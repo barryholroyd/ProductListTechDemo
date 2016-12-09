@@ -19,21 +19,31 @@ import static com.barryholroyd.prodlisthpdemo.config.Settings.*;
  * the OnSharedPreferenceChangeListener instance that we pass it, so we need to -- otherwise,
  * it might get garbage collected at any time.
  */
-
 public class SettingsManager {
+    /** Standard share preferences object. */
     static private SharedPreferences sp = null;
-    static private SettingsManager.OnSharedPreferenceChangeListenerWm
-            onSharedPreferenceChangeListenerEm;
 
+    /** Share preferences callback instance. */
+    static private SettingsManager.OnSharedPreferenceChangeListenerWm
+            onSharedPreferenceChangeListenerWm;
+
+    /** Initialization. */
     static public void init(Activity a) {
         // use app-level shared preferences
         sp = PreferenceManager.getDefaultSharedPreferences(a);
 
         // Initialize the callback that handles changes to persistent data.
-        onSharedPreferenceChangeListenerEm = new SettingsManager.OnSharedPreferenceChangeListenerWm();
-        sp.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListenerEm);
+        onSharedPreferenceChangeListenerWm = new SettingsManager.OnSharedPreferenceChangeListenerWm();
+        sp.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListenerWm);
     }
 
+    /**
+     * Share preferences callback.
+     *
+     * Called when the user makes a change to the app's settings. This updates variables stored
+     * statically in Settings as well as takes any action appropriate to the changed setting
+     * (e.g., resetting the memory or disk cache if the cache max size changed).
+     */
     static private class OnSharedPreferenceChangeListenerWm
             implements SharedPreferences.OnSharedPreferenceChangeListener
     {

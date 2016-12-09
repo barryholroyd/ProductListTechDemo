@@ -17,7 +17,7 @@ import com.barryholroyd.prodlisthpdemo.config.Settings;
 import com.barryholroyd.prodlisthpdemo.support.Support;
 
 /**
- * This is the main activity -- it lists the products.
+ * Display a list of products (this is the main Activity).
  * <p>
  * Clicking on a product will call ActivityProductInfo to display product-specific information.
  *

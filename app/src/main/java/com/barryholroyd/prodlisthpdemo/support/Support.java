@@ -51,7 +51,6 @@ public class Support
      * This is called by module-specific trace() methods. Other than that,
 	 * it should not be called directly.
 	 * <p>
-     * NTH: add screen for toggling trace method flags during runtime.
 	 *
 	 * @param flag print the message iff flag is "true".
 	 * @param component the component being traced.
@@ -126,6 +125,8 @@ public class Support
 
     /**
      * "Intent extra" key: identifies product info data when starting ActivityProductInfo activity.
+	 *
+	 * @param c standard Context instance from the current Activity.
      */
     static public String getKeyProductInfo(Context c) { return c.getPackageName() + "_PRODUCTINFO"; }
 }

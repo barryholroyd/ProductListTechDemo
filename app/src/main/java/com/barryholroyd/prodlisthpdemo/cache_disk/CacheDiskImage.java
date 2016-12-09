@@ -157,6 +157,8 @@ public final class CacheDiskImage
 
     /**
      * Change the maximum disk cache size.
+     *
+     * @param _maxCacheSize the maximum cache size.
      */
     static public void setMaxCacheSize(long _maxCacheSize) {
         if (instance == null)
@@ -194,6 +196,15 @@ public final class CacheDiskImage
         return bitmap;
     }
 
+    /**
+     * Add an image bitmap to the disk cache.
+     *
+     * Delete entries for the cache, if/as necessary.
+     *
+     * @param wrActivity    the current Activity.
+     * @param url           the url for the image to be stored.
+     * @param bitmap        the bitmap of the image to be stored.
+     */
     public synchronized void add(WeakReference<Activity> wrActivity, String url, Bitmap bitmap) {
         if (!Settings.isDiskCacheOn())
             return;
@@ -227,9 +238,6 @@ public final class CacheDiskImage
          * assumption that the compressed file will be smaller than the original bitmap
          * and use the original bitmap's size to determine whether or not to delete
          * some of the cached files.
-         *
-         * NTH: It would be nice to delete more than just the minimum necessary from the cache.
-         * Doing that intelligently, however, would take some thought.
          */
         prSizes("Initial", entry);
         if (currentCacheSize + entry.getSizeBitmap() > maxCacheSize) {
@@ -288,6 +296,12 @@ public final class CacheDiskImage
         }
     }
 
+    /**
+     * Log detailed disk caching information.
+     *
+     * @param tag   unique tag to represent the caller.
+     * @param entry the disk cache entry to be logged.
+     */
     private void prSizes(String tag, Entry entry) {
         if (Settings.isAppTraceDetails()) {
             String msg = String.format(
@@ -317,6 +331,13 @@ public final class CacheDiskImage
         return cacheDirName;
     }
 
+    /**
+     * Check to ensure the specified File object exists and is a normal file.
+     *
+     * @param f     the File object of interest (it is for a bitmap).
+     * @param url   the url of the image associated with the bitmap.
+     *              It serves as the unique id for the cached image bitmap.
+     */
     private void fileCheck(File f, String url) {
         if (!f.exists()) {
             throw new CacheDiskImageException(
@@ -401,6 +422,11 @@ public final class CacheDiskImage
         private long sizeFile;          // size of the image file on disk in bytes.
         private boolean stored;         // true iff the image has been stored in the file system.
 
+        /**
+         * Constructor.
+         *
+         * @param _url  Image url. Serves as the unique id for the image's bitmap in the disk cache.
+         */
         private Entry(String _url) {
             url   = _url;
             id    = entryCounter++;
@@ -409,6 +435,9 @@ public final class CacheDiskImage
             icdHm.put(url, this);
         }
 
+        /*
+         * Getters and setters.
+         */
         private long getSizeBitmap() { return sizeBitmap; }
         private void setSizeBitmap(long _sizeBitmap) { sizeBitmap = _sizeBitmap; }
 

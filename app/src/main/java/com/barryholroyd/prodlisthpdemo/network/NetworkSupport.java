@@ -107,7 +107,7 @@ public class NetworkSupport {
      * @param urlStr the url for the image.
      * @param hmax   the maximum size of the image.
      * @param wmax
-     * @return
+     * @return standard BitmapFactory.Options instance.
      */
     static private BitmapFactory.Options setBmfOptions(
             String urlStr, int hmax, int wmax)

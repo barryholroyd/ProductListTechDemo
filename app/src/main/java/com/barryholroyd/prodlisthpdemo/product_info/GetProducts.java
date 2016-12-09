@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * TBD:
+ * Get the list of products from a specific category at Walmart.
  */
 public class GetProducts
 {
@@ -177,6 +177,12 @@ public class GetProducts
 		}
 	}
 
+	/**
+	 * Check to see if we have network connectivity.
+	 *
+	 * @param a the current Activity.
+	 * @return true iff we are connected.
+     */
 	private boolean checkNetworkConnectivity(Activity a) {
 		ConnectivityManager cm = (ConnectivityManager)
 			a.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -184,9 +190,7 @@ public class GetProducts
 		return networkInfo != null && networkInfo.isConnected();
 	}
 
-    /**
-     * Download the JSON, update the list of products and display it.
-     */
+    /** Download the JSON, update the list of products and display it. */
 	private class DownloadJsonTask extends AsyncTask<String, Void, ProductInfoArrayList>
 	{
         /**
@@ -200,10 +204,22 @@ public class GetProducts
         /** Retain Activity on a hook only for the toaster display. */
         Activity a;
 
+		/**
+		 * Constructor.
+		 *
+		 * @param a the current Activity.
+         */
         DownloadJsonTask(Activity a) {
             super();
 			wrActivity = new WeakReference<>(a);
         }
+
+		/**
+		 * Runs tasks in the background.
+		 *
+		 * @param urls first argument is a url representing a request for the Walmart Open API.
+         * @return list of products.
+         */
 		@Override
 		protected ProductInfoArrayList doInBackground(String urls[]) {
             // Download the JSON string from the network.
@@ -237,8 +253,12 @@ public class GetProducts
 		}
 	}
 
+	/**
+	 * Json reader for reading a list of products from the the Walmart Open API.
+	 */
 	private class WmpJsonReader
 	{
+		/** Input stream that will have the Json data returned by the request. */
 		private InputStream is = null;
 
 		/**
@@ -320,6 +340,13 @@ public class GetProducts
 			return to;
 		}
 
+		/**
+		 * Read the list of products returned and return it.
+		 *
+		 * @param reader	the Json reader containing the returned list of products.
+		 * @return			the list of products in a ProductInfoArrayList.
+         * @throws IOException
+         */
 		private ProductInfoArrayList readProducts(JsonReader reader) throws IOException {
 			if (reader.peek() == JsonToken.NULL)
 				return null;
@@ -336,6 +363,13 @@ public class GetProducts
 			return pial;
 		}
 
+		/**
+		 * Read the information for an individual product from the provided Json reader.
+		 *
+		 * @param reader	the Json reader containing the returned list of products.
+		 * @return			an individual ProductInfo object.
+         * @throws IOException
+         */
 		private ProductInfo readProductInfo(JsonReader reader) throws IOException {
 			ProductInfo pi = new ProductInfo();
 
