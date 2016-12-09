@@ -91,8 +91,7 @@ public class ActivityProductList extends ActivityPrintStates
 	 * <p>
 	 * This fails:
          * <pre>
-	 *   ProductInfoArrayList pial = ((ArrayList<ProductInfo>)
-	 *   savedInstanceState.getParcelableArrayList(PIAL));
+	 *   ProductInfoArrayList pial = ((ArrayList<ProductInfo>) savedInstanceState.getParcelableArrayList(PIAL));
          * </pre>
 	 * Reason: {@code ArrayList<ProductInfo>} is not a subclass of {@code ArrayList<Parcelable>}, or
 	 * vice-versa, even though {@code ProductInfo} is a subclass of {@code Parcelable}.
