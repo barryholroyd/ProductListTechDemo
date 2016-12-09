@@ -9,7 +9,7 @@
   <setting name="setup-tab">
     <setting name="setup">
       <setting name="custom-gradle-executor"/>
-      <setting name="current-directory" value="C:\data\dev\Android\projects\AndroidStudio\sandbox\ProductsDemo"/>
+      <setting name="current-directory" value="C:\data\dev\Android\projects\AndroidStudio\sandbox\ProductlistHpDemo"/>
       <setting name="log-level" value="LIFECYCLE"/>
     </setting>
   </setting>

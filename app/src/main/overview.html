@@ -1,51 +1,65 @@
 <html>
   <body>
-    ProductsDemo is a high-performance demo app which lists a sample of
-    products from the cloud.
+    <h1>Description</h1>
+    High performance demo for listing products from Walmart.
+    <h2>Summary</h2>
+    This app demonstrates techniques for downloading and displaying a list of
+    items containing images from the web while maintaining a smooth scrolling
+    experience for the user.
     <p>
-        The data is sample data provided by Walmart -- it does not reflect real products.
-        It is only provided for demonstration purposes.
+    The app specifically is <i>not</i> intended to be a full, consumer-ready
+    app.  Although its functionality could be easily extended, it current
+    only downloads and displays products from Walmart's <i>Electronics</i>
+    category.
+    <h2>Overview</h2>
+    The primary challenge is handling the delayed loading of images. It takes
+    too long to download images when the user is scrolling through the list,
+    so they have to be downloaded in the background and displayed upon
+    arrival. During the delay, RecyclerView may have reallocated the
+    ViewHolder for a given image, resulting in the image being displayed for
+    the wrong product. The app manages this issue by checking to see if the
+    image URL has changed since the original request and does not display the
+    image if it is out-of-date.
     <p>
-        The app is provided for demonstration purposes only -- the products
-        listed are not real products and are not intended to reflect actual
-        products from Walmart. All product information is downloaded as JSON data
-        from a demo server.
+    Images are pre-loaded during the initial scoll to minimize the impact on
+    the user.  In addition, all images are retained in memory and/or disk
+    caches so that this becomes a non-issue after the initial scroll.
     <p>
-        The app is written to provide smooth scrolling and optimize memory and
-        disk usage.
+    Summary of performance mechanisms:
     <ul>
-      <li>Pre-fetching of product descriptions in batches, on demand.
-      <li>Images downloaded separately, in the background.
-      <li>Images scaled down to thumbnail size, if/as necessary.
-      <li>Configurable memory cache.
-      <li>Configurable disk cache.
+        <li> Images downloaded in the background. Two implementations are
+	     provided: AsnycTask-based and threads-based.
+        <li> Initial image url retained as a field and compared to the
+	     (potentially updated) URL of the ViewHolder upon image arrival.
+        <li> Configurable look-ahead pre-loading.
+        <li> Configurable memory cache.
+        <li> Configurable disk cache.
     </ul>
+    <p>
+    The <a href="Walmart Open API">https://developer.walmartlabs.com/</a> is
+    used to download product information. This app accesses the paginated
+    products portion of that API. 100 products are returned in each batch and
+    each batch contains the URL for the next batch.
+    <p>
     There are two separate implementations for downloading images in the
     background: Threads-based and AsyncTask-based. The two are equivalent --
     they are both provided only for demonstration purposes.
-    <p> 
-        There is a well-known issue wherein images downloaded in the background
-        may arrive too late to be used for their product list entries because the
-        relevant product entry is no longer valid -- specifically, in this
-        implementation, the RecyclerView ViewHolder may have been recycled by the
-        time the image arrives. This implementation recognizes and deals with
-        that situation in both the Threads and AsyncTask approaches.
-    <p>
-        Watching the log output can be very instructive, especially with respect
-        to the caching and networking subsystems. Set the log level to verbose
-        and filter on both the package name and "TRACE". The following tracing flags
-        can all be set, along with many other parameters, in
-        {@link com.barryholroyd.walmartproducts.Configure}.
-	<ul>
-        <li>AP_TRACE     (app-level)
-        <li>IL_TRACE     (app-level)
-        <li>DC_TRACE      (disk cache)
-        <li>MC_TRACE      (memory cache)
-        <li>NM_TRACE      (network)
-        <li>TRACE_DETAILS (more detailed tracing)
-	</ul>
-    Finally, <i>NTH:</i> is a custom Android Stdio tag which means <i>Nice to have</i>.
-
+    <h2>Logging</h2>
+    Extensive logging is provided, configurable via the app's run time
+    settings.  Watching the log output can be very instructive, especially
+    with respect to the caching and networking subsystems. Set the log level
+    to verbose and filter on both the package name and "TRACE". The following
+    tracing flags can all be set, along with many other parameters.
+    <ul>
+      <li>AP_TRACE (app-level)
+      <li>IL_TRACE (app-level)
+      <li>DC_TRACE (disk cache)
+      <li>MC_TRACE (memory cache)
+      <li>NM_TRACE (network)
+      <li>TRACE_DETAILS (more detailed tracing)
+    </ul>
     @author Barry Holroyd
+    @see    <a href="https://developer.walmartlabs.com/">Walmart Open API</a>
+    @see    <a href="https://developer.walmartlabs.com/docs/read/Paginated_Products_API">Paginated Products</a>
   </body>
 </html>
