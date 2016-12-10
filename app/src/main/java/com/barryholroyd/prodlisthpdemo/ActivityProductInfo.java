@@ -73,10 +73,9 @@ public class ActivityProductInfo extends ActivityPrintStates
 
     private void setReviewRating(TextView tvReviewRating, String reviewRating, String name) {
         String s = (reviewRating == null)
-                ? "no reviews"
+                ? "--"
                 : String.format(Locale.US, "%.2f", Float.valueOf(reviewRating));
         tvReviewRating.setText(s);
-        Support.logv(String.format(Locale.US, "=== REVIEW RATING: %s->%s", name, s));
     }
 
 	/**
