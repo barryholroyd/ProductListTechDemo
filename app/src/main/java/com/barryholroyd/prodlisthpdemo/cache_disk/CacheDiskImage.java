@@ -326,6 +326,9 @@ public final class CacheDiskImage
         String cachePath = externalStorageAvailable()
                 ? a.getExternalCacheDir().getPath()
                 : a.getCacheDir().getPath();
+        if (cachePath == null) {
+            throw new IllegalStateException("No cache directory available.");
+        }
         String cacheDirName = cachePath + File.separator + cacheSubdirName;
         trace("Cache directory name: " + cacheDirName);
         return cacheDirName;

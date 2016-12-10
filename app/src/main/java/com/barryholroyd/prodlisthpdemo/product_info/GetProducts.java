@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Get the list of products from a specific category at Walmart.

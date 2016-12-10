@@ -55,9 +55,6 @@ public class ImageLoader {
     private static final Bitmap blankImageBitmap =
             Bitmap.createBitmap(IMAGE_WSIZE, IMAGE_HSIZE, Bitmap.Config.ARGB_8888);
 
-    /** Standard Activity instance. */
-    private final Activity a;
-
     /** Weak Reference for using the Activity in background threads. */
     private WeakReference<Activity> wrActivity = null;
 
@@ -80,10 +77,9 @@ public class ImageLoader {
      *     to call runOnUiThread() from a worker thread. We use a WeakReference so
      *     that we can determine whether or not it is still valid (e.g., a device
      *     rotation will destroy the current Activity).
-     * @param _a    reference to the current Activity.
+     * @param a    the current Activity.
      */
-    public ImageLoader(Activity _a) {
-        a = _a;
+    public ImageLoader(Activity a) {
         wrActivity = new WeakReference<>(a);
         resources = a.getResources();
         if (cacheMemory == null) {
@@ -299,8 +295,7 @@ public class ImageLoader {
             bitmap = NetworkSupport.getImageFromNetwork(url, IMAGE_HSIZE, IMAGE_WSIZE);
         }
         catch (NetworkSupportException nse) {
-            String msg = String.format(String.format(
-                    "NetworkSupportException: %s", nse.getMessage()));
+            String msg = String.format("NetworkSupportException: %s", nse.getMessage());
             Support.loge(msg);
             Toaster.display(wrActivity, msg);
             return getNoImageBitmap(resources);
