@@ -2,6 +2,8 @@ package com.barryholroyd.prodlisthpdemo.cache_memory;
 
 import android.graphics.Bitmap;
 
+import java.util.Locale;
+
 /**
  * Memory cache system extending CacheMemoryBlob to be specific to a String
  * (url) for the key and a Bitmap for the blob. sizeOf() is overridden so that
@@ -52,7 +54,7 @@ public class CacheMemoryImage extends CacheMemoryBlob<String, Bitmap> {
         long maxMemory = Runtime.getRuntime().maxMemory();
         long maxCacheSize = (long) ((percent / 100f) * maxMemory);
 
-        trace(String.format("Calculating maximum cache size: %d (%d%% of %d)",
+        trace(String.format(Locale.US, "Calculating maximum cache size: %d (%d%% of %d)",
                 maxCacheSize, percent, maxMemory));
 
         return maxCacheSize;

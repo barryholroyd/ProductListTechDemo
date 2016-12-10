@@ -38,7 +38,7 @@
             />
         <TextView
             style="@style/PiTextView"
-            android:id="@+id/rating"
+            android:id="@+id/review_rating"
             />
         <TextView
             style="@style/PiTextView"

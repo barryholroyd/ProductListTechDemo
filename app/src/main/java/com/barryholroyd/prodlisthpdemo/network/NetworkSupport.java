@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 
 import static com.barryholroyd.prodlisthpdemo.support.Support.truncImageString;
 
@@ -38,7 +39,7 @@ public class NetworkSupport {
             response = c.getResponseCode();
             if (response != 200) {
                 throw new NetworkSupportException(
-                    String.format("getInputStreamFromUrl() - bad response code: %d", response));
+                    String.format(Locale.US, "getInputStreamFromUrl() - bad response code: %d", response));
             }
             return c.getInputStream();
         }
@@ -182,7 +183,7 @@ public class NetworkSupport {
      */
     static private void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
         if (Settings.isAppTraceDetails()) {
-            trace(String.format(
+            trace(String.format(Locale.US,
                     "  DETAILS: Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
                     truncImageString(url), opts.outMimeType,
                     bitmap.getConfig(), bitmap.getByteCount()));

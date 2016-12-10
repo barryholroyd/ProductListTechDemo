@@ -19,6 +19,7 @@ import com.barryholroyd.prodlisthpdemo.config.Settings;
 import com.barryholroyd.prodlisthpdemo.support.Support;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Recycler adapter to display the list of products.
@@ -109,7 +110,7 @@ public class ProductListRecyclerAdapter
 	public void onBindViewHolder(ProductListViewHolder viewHolder, int position) {
 		if (position >= (getItemCount())) {
 			throw new IndexOutOfBoundsException(
-				String.format("ProductInfo has %d products; product %d requested.",
+				String.format(Locale.US, "ProductInfo has %d products; product %d requested.",
 					pial.size(), position));
 		}
 		if (position == 0) {

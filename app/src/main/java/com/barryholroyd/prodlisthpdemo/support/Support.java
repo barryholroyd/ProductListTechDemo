@@ -38,14 +38,21 @@ public class Support
      */
     static public void logd(String msg) { Log.d(ActivityProductList.LOGTAG, msg); }
 
-    /**
-     * Logs an information message.
-     *
-     * @param msg the message to be logged.
-     */
-    static public void logi(String msg) { Log.i(ActivityProductList.LOGTAG, msg); }
+	/**
+	 * Logs an information message.
+	 *
+	 * @param msg the message to be logged.
+	 */
+	static public void logi(String msg) { Log.i(ActivityProductList.LOGTAG, msg); }
 
-    /**
+	/**
+	 * Logs a "verbose" message.
+	 *
+	 * @param msg the message to be logged.
+	 */
+	static public void logv(String msg) { Log.v(ActivityProductList.LOGTAG, msg); }
+
+	/**
 	 * Workhorse trc method -- toggle-controlled logging.
      * <p>
      * This is called by module-specific trace() methods. Other than that,

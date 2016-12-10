@@ -14,6 +14,8 @@ import com.barryholroyd.prodlisthpdemo.product_info.ProductInfo;
 import com.barryholroyd.prodlisthpdemo.support.ActivityPrintStates;
 import com.barryholroyd.prodlisthpdemo.support.Support;
 
+import java.util.Locale;
+
 /**
  * Display information about a specific product.
  */
@@ -54,20 +56,28 @@ public class ActivityProductInfo extends ActivityPrintStates
 	private void setFields(ProductInfo pi) {
 		TextView  tvName               = (TextView)  findViewById(R.id.name);
 		TextView  tvPrice              = (TextView)  findViewById(R.id.price);
-		TextView  tvRating             = (TextView)  findViewById(R.id.rating);
+		TextView  tvReviewRating       = (TextView)  findViewById(R.id.review_rating);
 		TextView  tvReviewCount        = (TextView)  findViewById(R.id.review_count);
 		TextView  tvInStock            = (TextView)  findViewById(R.id.in_stock);
 		ImageView tvProductImage       = (ImageView) findViewById(R.id.product_image);
 		TextView  tvProductDescription = (TextView)  findViewById(R.id.product_description);
 
 		tvName.setText(pi.getName());
-		tvPrice.setText("$"+Double.toString(pi.getPrice()));
-		tvRating.setText(pi.getReviewRating());
-		tvReviewCount.setText(Integer.toString(pi.getNumReviews()));
+		tvPrice.setText(String.format(Locale.US, "$%.2f", pi.getPrice()));
+        setReviewRating(tvReviewRating, pi.getReviewRating(), pi.getName());
+		tvReviewCount.setText(String.format(Locale.US, "%d", pi.getNumReviews()));
 		tvInStock.setText(pi.getInStock());
 		imageLoader.load(tvProductImage, pi.getImageUrl());
 		tvProductDescription.setText(pi.getLongDescription());
 	}
+
+    private void setReviewRating(TextView tvReviewRating, String reviewRating, String name) {
+        String s = (reviewRating == null)
+                ? "no reviews"
+                : String.format(Locale.US, "%.2f", Float.valueOf(reviewRating));
+        tvReviewRating.setText(s);
+        Support.logv(String.format(Locale.US, "=== REVIEW RATING: %s->%s", name, s));
+    }
 
 	/**
 	 * Callback method to start the activity which displays the full list of products.

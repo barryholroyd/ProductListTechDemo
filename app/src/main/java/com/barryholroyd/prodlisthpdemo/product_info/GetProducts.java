@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Get the list of products from a specific category at Walmart.
@@ -401,7 +402,7 @@ public class GetProducts
                             break;
                         case "customerRating":
                             pi.setReviewRating(reader.nextString());
-                            break;
+							break;
                         case "numReviews":
                             pi.setNumReviews(reader.nextInt());
                             break;

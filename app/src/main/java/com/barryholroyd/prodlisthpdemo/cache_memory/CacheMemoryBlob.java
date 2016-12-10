@@ -5,6 +5,7 @@ import com.barryholroyd.prodlisthpdemo.support.Support;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 
 /**
  * Cache objects in memory.
@@ -51,7 +52,7 @@ public class CacheMemoryBlob<K,V>
     /** Create new instances using factory methods. */
     CacheMemoryBlob(long _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
-        trace(String.format("Setting maximum memory cache size: %d", maxCacheSize));
+        trace(String.format(Locale.US, "Setting maximum memory cache size: %d", maxCacheSize));
     }
 
     /**
@@ -119,7 +120,7 @@ public class CacheMemoryBlob<K,V>
                 }
                 V lastVal = bcmHm.remove(lastKey);
                 long lastValSize = sizeOf(lastKey, lastVal);
-                trace(String.format("Removing: %s (oldCacheSize-imageSize=newCacheSize: %d-%d=%d).",
+                trace(String.format(Locale.US, "Removing: %s (oldCacheSize-imageSize=newCacheSize: %d-%d=%d).",
                         lastKey,
                         currentCacheSize, lastValSize,
                         currentCacheSize - lastValSize));

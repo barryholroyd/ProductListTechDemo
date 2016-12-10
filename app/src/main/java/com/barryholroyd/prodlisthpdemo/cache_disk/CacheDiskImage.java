@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 
 import static com.barryholroyd.prodlisthpdemo.support.Support.truncImageString;
 
@@ -95,7 +96,7 @@ public final class CacheDiskImage
      */
     private CacheDiskImage(Activity a, String cacheSubdirName, long _maxCacheSize) {
         maxCacheSize = _maxCacheSize;
-        trace(String.format("Setting maximum disk cache size: %d", maxCacheSize));
+        trace(String.format(Locale.US, "Setting maximum disk cache size: %d", maxCacheSize));
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
         cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
@@ -164,7 +165,7 @@ public final class CacheDiskImage
         if (instance == null)
             throw new CacheDiskImageException("null instance");
         instance.maxCacheSize = _maxCacheSize;
-        trace(String.format("Setting maximum disk cache size: %d", instance.maxCacheSize));
+        trace(String.format(Locale.US, "Setting maximum disk cache size: %d", instance.maxCacheSize));
     }
 
     /**
@@ -304,7 +305,7 @@ public final class CacheDiskImage
      */
     private void prSizes(String tag, Entry entry) {
         if (Settings.isAppTraceDetails()) {
-            String msg = String.format(
+            String msg = String.format(Locale.US,
                     "  DETAILS: %s: Cur:Max=%d:%d [File=%s  Url=%s] [File=%d, Bitmap=%d]",
                     tag, currentCacheSize, maxCacheSize,
                     entry.shortName, truncImageString(entry.url),
@@ -430,7 +431,7 @@ public final class CacheDiskImage
         private Entry(String _url) {
             url   = _url;
             id    = entryCounter++;
-            shortName = String.format("%s-%d", FILENAME_BASE, id);
+            shortName = String.format(Locale.US, "%s-%d", FILENAME_BASE, id);
             longName = cacheDirName + File.separator + shortName;
             icdHm.put(url, this);
         }
