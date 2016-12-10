@@ -25,6 +25,9 @@ import java.util.List;
 
 /**
  * Get the list of products from a specific category at Walmart.
+ * <p>
+ *     The products are read from the network in batches of 100. The Walmart Open API
+ *     automatically returns that many in each batch -- the batch size is not configurable.
  */
 public class GetProducts
 {
