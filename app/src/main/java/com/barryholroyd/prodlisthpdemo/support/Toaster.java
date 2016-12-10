@@ -17,13 +17,13 @@ import static android.widget.Toast.LENGTH_LONG;
  */
 public class Toaster {
     /** Distance in pixels between top edge of successive toasts. */
-    static private final int YINC = 100;
+    private static final int YINC = 100;
 
     /** Maximum distance to offset before restarting at the top again. */
-    static private final int YMAX  = YINC * 5;
+    private static final int YMAX  = YINC * 5;
 
     /** Current offset from the top position. */
-    static private int offset = 0;
+    private static int offset = 0;
 
     /**
      * Display a pop-up message to the user.
@@ -35,7 +35,7 @@ public class Toaster {
      * @param wrActivity weak reference for the calling activity.
      * @param msg message to be displayed.
      */
-    static public void display(WeakReference<Activity> wrActivity, final String msg) {
+    public static void display(WeakReference<Activity> wrActivity, final String msg) {
         offset = (offset > YMAX) ? 0 : offset + YINC;
         final Activity a = Support.getActivity(wrActivity,
                 "Activity is gone so could not create toast. Msg: " + msg);

@@ -41,13 +41,13 @@ public class CacheMemoryBlob<K,V>
      * When we need to make room in the cache, we'll make enough for at least this many
      * additional images the size of the one being added.
      */
-    static final int IMAGE_SIZE_MULTIPLIER = 10;
+    private static final int IMAGE_SIZE_MULTIPLIER = 10;
 
     /** Maximum size of the cache in bytes. */
-    protected long maxCacheSize = 0;
+    private long maxCacheSize = 0;
 
     /** Current cache size in bytes. */
-    protected long currentCacheSize;
+    private long currentCacheSize;
 
     /** Create new instances using factory methods. */
     CacheMemoryBlob(long _maxCacheSize) {
@@ -140,7 +140,7 @@ public class CacheMemoryBlob<K,V>
      *
      * @param msg message to be logged.
      */
-    static protected void trace(String msg) {
+    protected static void trace(String msg) {
         Support.trc(Settings.isMemoryCacheTrace(), "Cache Memory", msg);
     }
 }

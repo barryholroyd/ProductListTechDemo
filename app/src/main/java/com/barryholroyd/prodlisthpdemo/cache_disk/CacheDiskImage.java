@@ -57,20 +57,17 @@ public final class CacheDiskImage
      * This does not have to be synchronized since all accesses of it
      * come from within synchronized methods (get() and add()).
      */
-    final HashMap<String,Entry> icdHm  = new HashMap<>();
+    private final HashMap<String,Entry> icdHm  = new HashMap<>();
 
     /**
      * First in / first out tracking for deleting cache entries.
      * This does not have to be synchronized since all accesses of it
      * come from within add(), which is already synchronized.
      */
-    final LinkedList<String> icdLl = new LinkedList<>();
+    private final LinkedList<String> icdLl = new LinkedList<>();
 
     /** Full file name for the cache subdirectory. */
     private final String cacheDirName;
-
-    /** File handle for the disk cache subdirectory. */
-    private final File cacheDir;
 
     /** Maximum sizeBitmap of the cache in bytes. */
     private long maxCacheSize = 0;
@@ -82,7 +79,7 @@ public final class CacheDiskImage
      * When we need to make room in the cache, we'll make enough for at least this many
      * additional images the size of the one being added.
      */
-    static final int IMAGE_SIZE_MULTIPLIER = 10;
+    static final private int IMAGE_SIZE_MULTIPLIER = 10;
 
     /**
      * Constructor.
@@ -98,7 +95,8 @@ public final class CacheDiskImage
         maxCacheSize = _maxCacheSize;
         trace(String.format(Locale.US, "Setting maximum disk cache size: %d", maxCacheSize));
         cacheDirName = getDiskCacheDirName(a, cacheSubdirName);
-        cacheDir = new File(cacheDirName);
+        /* File handle for the disk cache subdirectory. */
+        File cacheDir = new File(cacheDirName);
         if (cacheDir.exists()) {
             if (Settings.isDiskCacheClear()) {
                 trace(String.format("Deleting cache directory: %s", cacheDirName));
@@ -129,7 +127,7 @@ public final class CacheDiskImage
      *
      * @param f the File instance for the file to be deleted.
      */
-    static private void deleteFile(File f) {
+    private static void deleteFile(File f) {
         if (!f.delete()) {
             throw new CacheDiskImageException(
                     String.format("Could not delete file: %s", f.getName()));
@@ -145,7 +143,7 @@ public final class CacheDiskImage
      * @param cacheDirName  subdirectory name for the cache -- unique to this app/usage.
      * @return  singleton instance.
      */
-    static public CacheDiskImage makeInstance(Activity a, String cacheDirName, long maxCacheSize) {
+    public static CacheDiskImage makeInstance(Activity a, String cacheDirName, long maxCacheSize) {
         if (instance != null)
             return instance;
 
@@ -161,7 +159,7 @@ public final class CacheDiskImage
      *
      * @param _maxCacheSize the maximum cache size.
      */
-    static public void setMaxCacheSize(long _maxCacheSize) {
+    public static void setMaxCacheSize(long _maxCacheSize) {
         if (instance == null)
             throw new CacheDiskImageException("null instance");
         instance.maxCacheSize = _maxCacheSize;
@@ -385,7 +383,7 @@ public final class CacheDiskImage
      *
      * @param msg message to be logged.
      */
-    static private void trace(String msg) {
+    private static void trace(String msg) {
         Support.trc(Settings.isDiskCacheTrace(), "Cache Disk", msg);
     }
 

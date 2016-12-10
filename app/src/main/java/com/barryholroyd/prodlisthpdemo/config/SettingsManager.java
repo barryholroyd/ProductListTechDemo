@@ -21,19 +21,15 @@ import static com.barryholroyd.prodlisthpdemo.config.Settings.*;
  */
 public class SettingsManager {
     /** Standard share preferences object. */
-    static private SharedPreferences sp = null;
-
-    /** Share preferences callback instance. */
-    static private SettingsManager.OnSharedPreferenceChangeListenerWm
-            onSharedPreferenceChangeListenerWm;
+    private static SharedPreferences sp = null;
 
     /** Initialization. */
-    static public void init(Activity a) {
+    public static void init(Activity a) {
         // use app-level shared preferences
         sp = PreferenceManager.getDefaultSharedPreferences(a);
 
         // Initialize the callback that handles changes to persistent data.
-        onSharedPreferenceChangeListenerWm = new SettingsManager.OnSharedPreferenceChangeListenerWm();
+        OnSharedPreferenceChangeListenerWm onSharedPreferenceChangeListenerWm = new OnSharedPreferenceChangeListenerWm();
         sp.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListenerWm);
     }
 
@@ -44,7 +40,7 @@ public class SettingsManager {
      * statically in Settings as well as takes any action appropriate to the changed setting
      * (e.g., resetting the memory or disk cache if the cache max size changed).
      */
-    static private class OnSharedPreferenceChangeListenerWm
+    private static class OnSharedPreferenceChangeListenerWm
             implements SharedPreferences.OnSharedPreferenceChangeListener
     {
         @Override

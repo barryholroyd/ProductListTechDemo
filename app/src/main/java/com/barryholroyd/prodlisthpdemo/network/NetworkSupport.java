@@ -25,7 +25,7 @@ public class NetworkSupport {
      * @param urlStr the URL (in String form) to get the JSON product info. from.
      * @return the input stream created to read data from the specified URL.
      */
-    static public InputStream getInputStreamFromUrl(String urlStr)
+    public static InputStream getInputStreamFromUrl(String urlStr)
         throws NetworkSupportException {
         try {
             int response;
@@ -74,7 +74,7 @@ public class NetworkSupport {
      * @param requestedWidth  maximum width of the image (in pixels)
      * @return  the bitmap obtained from the network.
      */
-    static public Bitmap getImageFromNetwork(String urlStr, int requestedHeight, int requestedWidth)
+    public static Bitmap getImageFromNetwork(String urlStr, int requestedHeight, int requestedWidth)
         throws NetworkSupportException {
         trace(String.format("Getting: %s", urlStr));
 
@@ -110,7 +110,7 @@ public class NetworkSupport {
      * @param wmax
      * @return standard BitmapFactory.Options instance.
      */
-    static private BitmapFactory.Options setBmfOptions(
+    private static BitmapFactory.Options setBmfOptions(
             String urlStr, int hmax, int wmax)
         throws NetworkSupportException  {
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -150,7 +150,7 @@ public class NetworkSupport {
      * @param requestedWidth requested width in pixels.
      * @return the inSampleSize scaling factor to be passed to BitmapFactory.
      */
-    static private int calculateInSampleSize(
+    private static int calculateInSampleSize(
             BitmapFactory.Options opts, int requestedHeight, int requestedWidth) {
         final int height = opts.outHeight;  // pre-scaled height of the image.
         final int width  = opts.outWidth;   // pre-scaled width of the image.
@@ -181,7 +181,7 @@ public class NetworkSupport {
      * @param bitmap    the bitmap created from the image.
      * @param opts      the options used to create the bitmap.
      */
-    static private void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
+    private static void logBitmapInfo(String url, Bitmap bitmap, BitmapFactory.Options opts) {
         if (Settings.isAppTraceDetails()) {
             trace(String.format(Locale.US,
                     "  DETAILS: Url=%s Mime=%s BitmapFormat=%s BitmapSize=%d",
@@ -195,7 +195,7 @@ public class NetworkSupport {
      *
      * @param msg message to be logged.
      */
-    static private void trace(String msg) {
+    private static void trace(String msg) {
         Support.trc(Settings.isNetworkTrace(), "Network", msg);
     }
 }

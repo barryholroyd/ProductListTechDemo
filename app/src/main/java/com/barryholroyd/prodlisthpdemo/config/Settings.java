@@ -8,7 +8,7 @@ import static com.barryholroyd.prodlisthpdemo.config.Settings.Keys.*;
 /** Class with static constants to configure the app. */
 public final class Settings {
     /** Names for the cache directories. */
-    static public final String CACHE_DIR = "images";
+    public static final String CACHE_DIR = "images";
 
     /** Keys will be used as Strings for SharePreferences. */
     enum Keys {
@@ -24,7 +24,7 @@ public final class Settings {
      *
      * @param a the current Activity.
      */
-    static public void init(Activity a) {
+    public static void init(Activity a) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(a);
 
         appUseThreads	        = calcAppUseThreads(sp);
@@ -75,7 +75,7 @@ public final class Settings {
      * SharedPreferences system can store integers and provides a
      * getInt() method).
      */
-    static private int readPrefInt(SharedPreferences settings, String key, int default_val) {
+    private static int readPrefInt(SharedPreferences settings, String key, int default_val) {
     	String val_str = settings.getString(key, Integer.toString(default_val));
     	return Integer.parseInt(val_str);
     }

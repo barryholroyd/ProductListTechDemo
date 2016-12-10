@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,11 +24,11 @@
             style="@style/PiImageView"
             android:contentDescription="Thumbnail Product Image"
             android:id="@+id/product_image"
-            />
+            tools:ignore="HardcodedText" />
         <TextView
             style="@style/PiTextView"
             android:text="Price: "
-            />
+            tools:ignore="HardcodedText" />
         <TextView
             style="@style/PiTextView"
             android:id="@+id/price"
@@ -35,7 +36,7 @@
         <TextView
             style="@style/PiTextView"
             android:text="Rating: "
-            />
+            tools:ignore="HardcodedText" />
         <TextView
             style="@style/PiTextView"
             android:id="@+id/review_rating"
@@ -43,7 +44,7 @@
         <TextView
             style="@style/PiTextView"
             android:text="Reviews: "
-            />
+            tools:ignore="HardcodedText" />
         <TextView
             style="@style/PiTextView"
             android:id="@+id/review_count"
@@ -51,7 +52,7 @@
         <TextView
             style="@style/PiTextView"
             android:text="In Stock: "
-            />
+            tools:ignore="HardcodedText" />
         <TextView
             style="@style/PiTextView"
             android:id="@+id/in_stock"
@@ -79,7 +80,7 @@
                 android:text="All Products"
                 android:onClick="displayProductList"
                 android:id="@+id/button_display_productlist"
-                />
+                tools:ignore="HardcodedText" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

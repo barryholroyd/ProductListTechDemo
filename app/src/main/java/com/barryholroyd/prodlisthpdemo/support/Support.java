@@ -22,35 +22,35 @@ public class Support
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static public void logw(String msg) { Log.w(ActivityProductList.LOGTAG, msg); }
+	public static void logw(String msg) { Log.w(ActivityProductList.LOGTAG, msg); }
 
 	/**
 	 * Logs an error.
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static public void loge(String msg) { Log.e(ActivityProductList.LOGTAG, msg); }
+	public static void loge(String msg) { Log.e(ActivityProductList.LOGTAG, msg); }
 
 	/**
      * Logs a debug message.
      *
      * @param msg the message to be logged.
      */
-    static public void logd(String msg) { Log.d(ActivityProductList.LOGTAG, msg); }
+    public static void logd(String msg) { Log.d(ActivityProductList.LOGTAG, msg); }
 
 	/**
 	 * Logs an information message.
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static public void logi(String msg) { Log.i(ActivityProductList.LOGTAG, msg); }
+	public static void logi(String msg) { Log.i(ActivityProductList.LOGTAG, msg); }
 
 	/**
 	 * Logs a "verbose" message.
 	 *
 	 * @param msg the message to be logged.
 	 */
-	static public void logv(String msg) { Log.v(ActivityProductList.LOGTAG, msg); }
+	public static void logv(String msg) { Log.v(ActivityProductList.LOGTAG, msg); }
 
 	/**
 	 * Workhorse trc method -- toggle-controlled logging.
@@ -63,7 +63,7 @@ public class Support
 	 * @param component the component being traced.
 	 * @param msg the message to be logged.
 	 */
-	static public void trc(boolean flag, String component, String msg) {
+	public static void trc(boolean flag, String component, String msg) {
 		if (flag) {
 			Log.v(ActivityProductList.LOGTAG,
 					String.format("TRACE [%-12s]: %s", component, msg));
@@ -83,7 +83,7 @@ public class Support
      * @param msg   error message to print out if the Activity has gone away.
      * @return  the Activity, if still valid; else null.
      */
-    static public Activity getActivity(WeakReference<Activity> wrActivity, String msg) {
+    public static Activity getActivity(WeakReference<Activity> wrActivity, String msg) {
         Activity a = wrActivity.get();
         if (a == null)
             Support.logw(msg);
@@ -96,7 +96,7 @@ public class Support
 	 * @param name name to be truncated. Must have "images" just before the last component.
 	 * @return the trailing component (e.g., image.jpeg, image-5).
      */
-	static public String truncImageString(String name) {
+	public static String truncImageString(String name) {
 		return name.replaceFirst(".*/", ".../").replaceFirst("\\?.*", "");
 	}
 
@@ -109,7 +109,7 @@ public class Support
 	 * @return      output text (without HTML tags).
 	 */
 	@SuppressWarnings("deprecation")
-	static public String htmlToText(String in) {
+	public static String htmlToText(String in) {
 		if (in == null)
 			return "";
 
@@ -135,5 +135,5 @@ public class Support
 	 *
 	 * @param c standard Context instance from the current Activity.
      */
-    static public String getKeyProductInfo(Context c) { return c.getPackageName() + "_PRODUCTINFO"; }
+    public static String getKeyProductInfo(Context c) { return c.getPackageName() + "_PRODUCTINFO"; }
 }

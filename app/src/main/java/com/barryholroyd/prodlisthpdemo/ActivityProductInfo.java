@@ -22,7 +22,7 @@ import java.util.Locale;
 public class ActivityProductInfo extends ActivityPrintStates
 {
 	/** Object to load and display a product image. */
-	ImageLoader imageLoader;
+	private ImageLoader imageLoader;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

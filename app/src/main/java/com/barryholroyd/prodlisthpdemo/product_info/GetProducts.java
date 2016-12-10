@@ -36,7 +36,7 @@ public class GetProducts
 	 *     and it makes it easier to access from anywhere in the app. This singleton
      *     exists independently of any particular Activity instance.
 	 */
-	static public final GetProducts instance = new GetProducts();
+	public static final GetProducts instance = new GetProducts();
 
 	/**
 	 * Private constructor to prevent external instantiation. The check for null isn't
@@ -141,7 +141,7 @@ public class GetProducts
 	 * When that happens, the app needs to understand whether or not its static data has
 	 * already been initialized and, if necessary, reset it.
 	 */
-	static public void reset() {
+	public static void reset() {
 		if (instance != null) {
 			instance.allItemsRead = false;
             instance.urlNextPage = createUrlInitial(API_CATEGORY);
@@ -149,14 +149,14 @@ public class GetProducts
 	}
 
 	/** Create initial paginated products list request. */
-    static public String createUrlInitial(String category) {
+    private static String createUrlInitial(String category) {
         return String.format("%s/%s/%s?category=%s&apiKey=%s&format=%s",
                 API_BASE_URL, API_VERSION, API_PAGINATED_ITEMS,
                 category, API_KEY, API_FORMAT);
     }
 
 	/** Create "new page" paginated products list request. */
-	static private String createUrlNextPage(String nextPage) {
+	private static String createUrlNextPage(String nextPage) {
 		return String.format("%s%s", API_BASE_URL, nextPage);
 	}
 

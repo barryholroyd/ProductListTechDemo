@@ -29,7 +29,7 @@ public class CacheMemoryImage extends CacheMemoryBlob<String, Bitmap> {
      * @param percent percentage of the available memory to use for
      *                the memory cache.
      */
-    static public CacheMemoryImage createWithPercent(int  percent) {
+    public static CacheMemoryImage createWithPercent(int  percent) {
         return createWithBytes(convertPercentToBytes(percent));
     }
 
@@ -38,9 +38,8 @@ public class CacheMemoryImage extends CacheMemoryBlob<String, Bitmap> {
      *
      * @param maxCacheSize maximum cache size in bytes
      */
-    static public CacheMemoryImage createWithBytes(long maxCacheSize) {
-        CacheMemoryImage icm = new CacheMemoryImage(maxCacheSize);
-        return icm;
+    public static CacheMemoryImage createWithBytes(long maxCacheSize) {
+        return new CacheMemoryImage(maxCacheSize);
     }
 
     /** Calculate the number of bytes for the cache based on a percentage
@@ -50,7 +49,7 @@ public class CacheMemoryImage extends CacheMemoryBlob<String, Bitmap> {
      *                the memory cache.
      * @return bytes for the cache.
      */
-    static private long convertPercentToBytes(int percent) {
+    private static long convertPercentToBytes(int percent) {
         long maxMemory = Runtime.getRuntime().maxMemory();
         long maxCacheSize = (long) ((percent / 100f) * maxMemory);
 

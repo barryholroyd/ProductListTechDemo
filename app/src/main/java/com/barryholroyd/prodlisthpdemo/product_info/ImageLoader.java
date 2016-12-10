@@ -40,29 +40,29 @@ public class ImageLoader {
      * Image (bitmap) size: 100 * 100 * 4 = 40,000 bytes.
      */
     /** Max. number of height pixels in product image. */
-    static final int IMAGE_HSIZE = 100;
+    static private final int IMAGE_HSIZE = 100;
 
     /** Max. number of width pixels in product image. */
-    static final int IMAGE_WSIZE = 100;
+    static private final int IMAGE_WSIZE = 100;
 
     /** In-memory caching instance. */
     public static CacheMemoryImage cacheMemory = null;
 
     /** Disk caching instance (singleton). */
-    public static CacheDiskImage cacheDiskImage = null;
+    private static CacheDiskImage cacheDiskImage = null;
 
     /** Blank image bitmap used to fill the header "image" slot. */
     private static Bitmap blankImageBitmap =
             Bitmap.createBitmap(IMAGE_WSIZE, IMAGE_HSIZE, Bitmap.Config.ARGB_8888);
 
     /** Standard Activity instance. */
-    Activity a;
+    private Activity a;
 
     /** Weak Reference for using the Activity in background threads. */
-    WeakReference<Activity> wrActivity = null;
+    private WeakReference<Activity> wrActivity = null;
 
     /** Resources hook. */
-    Resources resources = null;
+    private Resources resources = null;
 
     /**
      * This stores the most current requested url for the ViewHolder instance.
@@ -365,7 +365,7 @@ public class ImageLoader {
     }
 
     /** Get the default image. */
-    static Bitmap getNoImageBitmap(Resources resources) {
+    static private Bitmap getNoImageBitmap(Resources resources) {
             return BitmapFactory.decodeResource(resources, R.drawable.noimage);
     }
 
@@ -379,7 +379,7 @@ public class ImageLoader {
      *
      * @param msg message to be logged.
      */
-    static private void trace(String msg) {
+    private static void trace(String msg) {
         Support.trc(Settings.isImageLoaderTrace(), "Image Loader", msg);
     }
 }

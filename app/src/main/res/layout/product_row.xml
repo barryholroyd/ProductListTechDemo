@@ -4,6 +4,7 @@ It would be nice to use WebView to display product names and descriptions.
 The problem is that WebView doesn't play well with RecyclerView.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -34,7 +35,7 @@ The problem is that WebView doesn't play well with RecyclerView.
             android:maxWidth="@dimen/pl_image_width"
             android:contentDescription="Thumbnail Product Image"
             android:id="@+id/pd_product_image"
-            />
+            tools:ignore="HardcodedText" />
     </FrameLayout>
     <FrameLayout
         android:layout_width="0dp"

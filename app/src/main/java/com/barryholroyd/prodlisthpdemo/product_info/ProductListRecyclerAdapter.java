@@ -1,5 +1,6 @@
 package com.barryholroyd.prodlisthpdemo.product_info;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -33,7 +34,7 @@ public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
     /** "No image" string constant for memory cache. */
-    static private final String NO_IMAGE = "NO IMAGE";
+    private static final String NO_IMAGE = "NO IMAGE";
 
 	/** Standard Activity instance. */
 	private Activity a;
@@ -208,7 +209,7 @@ public class ProductListRecyclerAdapter
 		/**
 		 * Binds column names to the header row.
 		 */
-		protected void bindHeader() {
+		void bindHeader() {
             ivProductImage.setImageBitmap(ImageLoader.getBlankImageBitmap());
 			formatHeaderField(tvName, "Name");
 			formatHeaderField(tvShortDescription, "Description");
@@ -240,8 +241,9 @@ public class ProductListRecyclerAdapter
 		 * @param pi the product info for a specific product,
 		 *                 read in as JSON from the cloud.
 		 */
-		protected void bindData(ProductInfo pi) {
-			tvId.setText(Integer.toString(pi.getId()));
+		@SuppressLint("SetTextI18n")
+		void bindData(ProductInfo pi) {
+			tvId.setText(String.format(Locale.US, "%d", pi.getId()));
 
             // Optionally display image url, for debugging purposes.
             String name = Settings.isAppDisplayUrl()

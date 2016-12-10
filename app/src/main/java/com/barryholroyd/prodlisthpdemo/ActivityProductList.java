@@ -33,13 +33,13 @@ public class ActivityProductList extends ActivityPrintStates
 	/**
 	 * RecyclerView used to display the list of products pulled from the cloud.
 	 */
-	RecyclerView recyclerView;
+	private RecyclerView recyclerView;
 
 	/**
 	 * Key for storing an instance of the ProductInfoArrayList object. Get
 	 * it with getParcelableArrayList().
 	 */
-	static final String PIAL = "PIAL";
+	static final private String PIAL = "PIAL";
 
 	/** Getter for recyclerView. */
 	final public RecyclerView getRecyclerView() { return recyclerView; }
@@ -147,7 +147,7 @@ public class ActivityProductList extends ActivityPrintStates
      *
      * @param msg message to be logged.
      */
-    static public void trace(String msg) {
+    public static void trace(String msg) {
         Support.trc(Settings.isAppTrace(), "App", msg);
     }
 }
