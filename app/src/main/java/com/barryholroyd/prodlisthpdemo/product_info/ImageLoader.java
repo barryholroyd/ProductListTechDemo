@@ -52,11 +52,11 @@ public class ImageLoader {
     private static CacheDiskImage cacheDiskImage = null;
 
     /** Blank image bitmap used to fill the header "image" slot. */
-    private static Bitmap blankImageBitmap =
+    private static final Bitmap blankImageBitmap =
             Bitmap.createBitmap(IMAGE_WSIZE, IMAGE_HSIZE, Bitmap.Config.ARGB_8888);
 
     /** Standard Activity instance. */
-    private Activity a;
+    private final Activity a;
 
     /** Weak Reference for using the Activity in background threads. */
     private WeakReference<Activity> wrActivity = null;
@@ -146,7 +146,7 @@ public class ImageLoader {
      */
     private class LiThread extends Thread
     {
-        private ImageView iv;
+        private final ImageView iv;
         private String url;
 
         LiThread(ImageView _iv, String _url) {
@@ -203,7 +203,7 @@ public class ImageLoader {
      */
     private class LiAsyncTask extends AsyncTask<String, Void, Bitmap>
     {
-        private ImageView iv;
+        private final ImageView iv;
         private String url;
 
         LiAsyncTask(ImageView _iv, String _url) {
@@ -263,7 +263,7 @@ public class ImageLoader {
      */
     private Bitmap setImageNullCheck(String url) {
         if (url == null) {
-            trace(String.format("No image provided -- loading default image."));
+            trace("No image provided -- loading default image.");
             return getNoImageBitmap(resources);
         }
         return null;
@@ -365,7 +365,7 @@ public class ImageLoader {
     }
 
     /** Get the default image. */
-    static private Bitmap getNoImageBitmap(Resources resources) {
+    static Bitmap getNoImageBitmap(Resources resources) {
             return BitmapFactory.decodeResource(resources, R.drawable.noimage);
     }
 

@@ -53,7 +53,7 @@ public class ProductListOnScrollListener extends RecyclerView.OnScrollListener
 	private boolean loading = true;
 
 	/** Context for GetProducts method calls. */
-	private Activity a;
+	private final Activity a;
 
 	public ProductListOnScrollListener(Activity _a) {
 		super();

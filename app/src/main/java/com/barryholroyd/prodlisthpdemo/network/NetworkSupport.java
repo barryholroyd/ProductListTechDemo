@@ -85,8 +85,7 @@ public class NetworkSupport {
             bitmap = BitmapFactory.decodeStream(is, null, opts);
         }
         catch (IOException ioe) {
-            String msg = String.format(String.format(
-                    "IOException: %s", ioe.getMessage()));
+            String msg = String.format("IOException: %s", ioe.getMessage());
             throw new NetworkSupportException(msg);
         }
 
@@ -106,8 +105,8 @@ public class NetworkSupport {
      * dimensions.
      *
      * @param urlStr the url for the image.
-     * @param hmax   the maximum size of the image.
-     * @param wmax
+     * @param hmax   the maximum height of the image.
+     * @param wmax   the maximum width of the image.
      * @return standard BitmapFactory.Options instance.
      */
     private static BitmapFactory.Options setBmfOptions(
@@ -120,8 +119,7 @@ public class NetworkSupport {
             BitmapFactory.decodeStream(is, null, opts);
         }
         catch (IOException ioe) {
-            String msg = String.format(String.format(
-                    "IOException: %s", ioe.getMessage()));
+            String msg = String.format("IOException: %s", ioe.getMessage());
             throw new NetworkSupportException(msg);
         }
 

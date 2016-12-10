@@ -142,10 +142,8 @@ public class GetProducts
 	 * already been initialized and, if necessary, reset it.
 	 */
 	public static void reset() {
-		if (instance != null) {
-			instance.allItemsRead = false;
-            instance.urlNextPage = createUrlInitial(API_CATEGORY);
-		}
+		instance.allItemsRead = false;
+		instance.urlNextPage = createUrlInitial(API_CATEGORY);
 	}
 
 	/** Create initial paginated products list request. */
@@ -167,7 +165,7 @@ public class GetProducts
 	 *    complete first. This will the run smoothly, based on information updated
 	 *    from the previous run(s).
 	 *
-     * @param a
+     * @param a the current Activity.
      */
     public synchronized void getProductBatch(Activity a) {
 		if (!checkNetworkConnectivity(a)) {
@@ -200,10 +198,7 @@ public class GetProducts
          *     This is only used for Toaster.display(), but it is necessary so that
          *     Toaster.display() doesn't crash if the Activity is gone.
          */
-        private WeakReference<Activity> wrActivity;
-
-        /** Retain Activity on a hook only for the toaster display. */
-        Activity a;
+        private final WeakReference<Activity> wrActivity;
 
 		/**
 		 * Constructor.
@@ -229,7 +224,7 @@ public class GetProducts
 				return jr.parse();
 			}
 			catch (NetworkSupportException | IOException e) {
-				String msg = String.format(String.format("GetProducts: %s", e.getMessage()));
+				String msg = String.format("GetProducts: %s", e.getMessage());
 				Support.loge(msg);
                 Toaster.display(wrActivity, msg);
                 return null;

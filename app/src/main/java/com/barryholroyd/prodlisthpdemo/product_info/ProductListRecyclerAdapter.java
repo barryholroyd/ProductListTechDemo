@@ -33,11 +33,8 @@ import java.util.Locale;
 public class ProductListRecyclerAdapter
 	extends RecyclerView.Adapter<ProductListRecyclerAdapter.ProductListViewHolder>
 {
-    /** "No image" string constant for memory cache. */
-    private static final String NO_IMAGE = "NO IMAGE";
-
 	/** Standard Activity instance. */
-	private Activity a;
+	private final Activity a;
 
     public ProductListRecyclerAdapter(Activity _a) {
         a = _a;
@@ -63,12 +60,12 @@ public class ProductListRecyclerAdapter
 	 * Array of products. Each cell contains information about the specific product.
 	 * This is filled in, in batches, from JSON pulled from the cloud.
 	 */
-	private ProductInfoArrayList pial = new ProductInfoArrayList();
+	private final ProductInfoArrayList pial = new ProductInfoArrayList();
 
 	/**
 	 * Mapping table of ProductId to ProductInfo, for quick lookup.
 	 */
-	private HashMap<Integer,ProductInfo> pihm = new HashMap<>();
+	private final HashMap<Integer,ProductInfo> pihm = new HashMap<>();
 
 	/**
 	 * Getter for the backing array list. Needed for bundling/unbundling across

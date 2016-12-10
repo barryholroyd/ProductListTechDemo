@@ -209,9 +209,10 @@ public final class CacheDiskImage
             return;
 
         if (url == null) {
-            trace(String.format("Adding: %s", url));
             throw new CacheDiskImageException("null url");
         }
+
+        trace(String.format("Adding: %s", url));
 
         Entry entry = getEntry(url);   // this always returns a valid entry.
         String filename = entry.longName;
@@ -222,7 +223,7 @@ public final class CacheDiskImage
         }
 
         if (entry.isStored()) {
-            trace(String.format("Already added this image... returning\n"));
+            trace("Already added this image... returning\n");
             return;
         }
 
