@@ -29,7 +29,7 @@ public class ActivityProductList extends ActivityPrintStates
 	/**
 	 * Logger tag for this application.
 	 */
-	static final public String LOGTAG = "ProductDemo";
+	static final public String LOGTAG = "ProdlistHpDemo";
 	/**
 	 * RecyclerView used to display the list of products pulled from the cloud.
 	 */

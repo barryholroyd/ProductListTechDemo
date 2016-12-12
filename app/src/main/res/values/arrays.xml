@@ -43,7 +43,7 @@
         <item>50</item>
     </string-array>
 
-    <string-array name="memory_cache_megabytes_options">
+    <string-array name="memory_cache_options">
         <item>1 MB</item>
         <item>2 MB</item>
         <item>3 MB</item>
@@ -53,7 +53,7 @@
         <item>7 MB</item>
         <item>8 MB</item>
     </string-array>
-    <string-array name="memory_cache_megabytes_values">
+    <string-array name="memory_cache_values">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -64,24 +64,21 @@
         <item>8</item>
     </string-array>
 
-    <string-array name="disk_cache_kilobytes_options">
-        <item> 100 KB</item>
-        <item> 200 KB</item>
-        <item> 300 KB</item>
-        <item> 400 KB</item>
-        <item> 500 KB</item>
-        <item>1000 KB</item>
-        <item>1500 KB</item>
-        <item>2000 KB</item>
+    <string-array name="disk_cache_options">
+        <item>  1 MB</item>
+        <item>  5 MB</item>
+        <item> 10 MB</item>
+        <item> 50 MB</item>
+        <item>100 MB</item>
+        <item>500 MB</item>
     </string-array>
-    <string-array name="disk_cache_kilobytes_values">
+    <!-- kilobytes -->
+    <string-array name="disk_cache_values">
+        <item>1</item>
+        <item>5</item>
+        <item>10</item>
+        <item>50</item>
         <item>100</item>
-        <item>200</item>
-        <item>300</item>
-        <item>400</item>
         <item>500</item>
-        <item>1000</item>
-        <item>1500</item>
-        <item>2000</item>
     </string-array>
 </resources>

@@ -14,8 +14,8 @@ public final class Settings {
     enum Keys {
         APP_USE_THREADS, APP_TRACE, APP_TRACE_ALC, APP_TRACE_DETAILS, APP_DISPLAY_URL,
         MEMORY_CACHE_ON, MEMORY_CACHE_TRACE, MEMORY_CACHE_SIZE_APPROACH, MEMORY_CACHE_SIZE_PERCENT,
-        MEMORY_CACHE_SIZE_MEGABYTES,
-        DISK_CACHE_ON, DISK_CACHE_TRACE, DISK_CACHE_DC_SIZE_KILOBYTES, DISK_CACHE_CLEAR,
+        MEMORY_CACHE_SIZE,
+        DISK_CACHE_ON, DISK_CACHE_TRACE, DISK_CACHE_SIZE, DISK_CACHE_CLEAR,
         IMAGE_LOADER_TRACE, NETWORK_TRACE
     }
 
@@ -27,6 +27,9 @@ public final class Settings {
     public static void init(Activity a) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(a);
 
+        /*
+         * NOTE: initial default values are set in preferences.xml.
+         */
         appUseThreads	        = calcAppUseThreads(sp);
         appTrace		        = sp.getBoolean(APP_TRACE.name(), true);
         appTraceAlc		        = sp.getBoolean(APP_TRACE_ALC.name(), false);
@@ -34,7 +37,7 @@ public final class Settings {
         appDisplayUrl		    = sp.getBoolean(APP_DISPLAY_URL.name(), false);
         memoryCacheOn		    = sp.getBoolean(MEMORY_CACHE_ON.name(), true);
         memoryCacheTrace	    = sp.getBoolean(MEMORY_CACHE_TRACE.name(), false);
-        memoryCacheByBytes = calcMemoryCacheByBytes(sp);
+        memoryCacheByBytes      = calcMemoryCacheByBytes(sp);
         memoryCacheSizePercent	= calcMemoryCacheSizePercent(sp);
         memoryCacheSizeBytes    = calcMemoryCacheSizeBytes(sp);
         diskCacheOn		        = sp.getBoolean(DISK_CACHE_ON.name(), true);
@@ -62,11 +65,11 @@ public final class Settings {
     }
 
     static long calcMemoryCacheSizeBytes(SharedPreferences sp) {
-        return readPrefInt(sp, MEMORY_CACHE_SIZE_MEGABYTES.name(), 2) * 1024 * 1024;
+        return readPrefInt(sp, MEMORY_CACHE_SIZE.name(), 2) * 1024 * 1024;
     }
 
     static int calcDiskCacheSizeBytes(SharedPreferences sp) {
-        return readPrefInt(sp, DISK_CACHE_DC_SIZE_KILOBYTES.name(), 500) * 1024;
+        return readPrefInt(sp, DISK_CACHE_SIZE.name(), 50) * 1024 * 1024;
     }
 
     /*

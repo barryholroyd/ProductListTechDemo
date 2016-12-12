@@ -23,13 +23,21 @@ public class SettingsManager {
     /** Standard share preferences object. */
     private static SharedPreferences sp = null;
 
+    /**
+     * OnSharedPreferenceChangeListener instance.
+     * It must be stored as a static field (as opposed to a local variable) because
+     * registerOnSharedPreferenceChangeListener() does not retain a strong reference to it.
+     */
+    static private SettingsManager.OnSharedPreferenceChangeListenerWm
+            onSharedPreferenceChangeListenerWm;
+
     /** Initialization. */
     public static void init(Activity a) {
         // use app-level shared preferences
         sp = PreferenceManager.getDefaultSharedPreferences(a);
 
         // Initialize the callback that handles changes to persistent data.
-        OnSharedPreferenceChangeListenerWm onSharedPreferenceChangeListenerWm = new OnSharedPreferenceChangeListenerWm();
+        onSharedPreferenceChangeListenerWm = new OnSharedPreferenceChangeListenerWm();
         sp.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListenerWm);
     }
 
@@ -80,7 +88,7 @@ public class SettingsManager {
                                 memoryCacheSizePercent);
                     }
                     break;
-                case MEMORY_CACHE_SIZE_MEGABYTES:
+                case MEMORY_CACHE_SIZE:
                     Settings.memoryCacheSizeBytes = Settings.calcMemoryCacheSizeBytes(sp);
                     if (Settings.isMemoryCacheByBytes()) {
                         ImageLoader.cacheMemory =
@@ -93,7 +101,7 @@ public class SettingsManager {
                 case DISK_CACHE_TRACE:
                     Settings.diskCacheTrace = sp.getBoolean(key, false);
                     break;
-                case DISK_CACHE_DC_SIZE_KILOBYTES:
+                case DISK_CACHE_SIZE:
                     Settings.diskCacheSizeBytes = Settings.calcDiskCacheSizeBytes(sp);
                     CacheDiskImage.setMaxCacheSize(Settings.diskCacheSizeBytes);
                     break;

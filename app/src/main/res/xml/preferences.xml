@@ -70,9 +70,9 @@
         <ListPreference
             android:title="Memory Cache Size in Megabytes"
             android:summary="Size of memory cache in megabytes (see Memory Cache Size Approach)"
-            android:key="MEMORY_CACHE_SIZE_MEGABYTES"
-            android:entries="@array/memory_cache_megabytes_options"
-            android:entryValues="@array/memory_cache_megabytes_values"
+            android:key="MEMORY_CACHE_SIZE"
+            android:entries="@array/memory_cache_options"
+            android:entryValues="@array/memory_cache_values"
             android:dialogTitle="Select Memory Cache Size in Megabytes"
             android:defaultValue="2"
             />
@@ -92,13 +92,13 @@
             android:defaultValue="false"
             />
         <ListPreference
-            android:title="Disk Cache Size in Kilobytes"
-            android:summary="Size of disk cache in kilobytes"
-            android:key="DISK_CACHE_DC_SIZE_KILOBYTES"
-            android:entries="@array/disk_cache_kilobytes_options"
-            android:entryValues="@array/disk_cache_kilobytes_values"
-            android:dialogTitle="Select Disk Cache Size in Kilobytes"
-            android:defaultValue="500"
+            android:title="Disk Cache Size in Megabytes"
+            android:summary="Size of disk cache in megabytes."
+            android:key="DISK_CACHE_SIZE"
+            android:entries="@array/disk_cache_options"
+            android:entryValues="@array/disk_cache_values"
+            android:dialogTitle="Select Disk Cache Size in Megabytes"
+            android:defaultValue="50"
             />
         <CheckBoxPreference
             android:title="Disk Cache Clear"

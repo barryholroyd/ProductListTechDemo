@@ -62,11 +62,20 @@ public class ImageLoader {
     private Resources resources = null;
 
     /**
-     * This stores the most current requested url for the ViewHolder instance.
+     * imageUrl is the image url used to download a product's image. If this ImageLoader
+     * instance is owned by a ViewHolder, then the main (foreground) thread could
+     * reallocate the ViewHolder while the image is being loaded in the background,
+     * resulting in the image being associated with the wrong row in the list
+     * display.
+     * <p>
+     *     This imageUrl field contains the "correct" image imageUrl for the ViewHolder; if
+     *     the ViewHolder gets reallocated, then the imageUrl will be updated appropriately.
+     *     We should always use this field for loading the image, even if its value has
+     *     changed.
      *
-     * @see #checkUrlChanged(String, String, String)
+     * @see #urlChanged(String, String, String)
      */
-    private String currentUrl;
+    private String imageUrl;
 
     /**
      * Standard constructor.
@@ -123,16 +132,22 @@ public class ImageLoader {
             return;
         }
 
-        // "currentUrl" is directly accessible by background threads.
-        currentUrl = url;
+        /*
+         * "imageUrl" is directly accessible by background threads.
+         * It is possible that this might change before being used, but
+         * it should still be used.
+         */
+        imageUrl = url;
 
         /*
          * Background: load from disk or network.
          * Both LiThread and LiAsyncTask have to be defined as nested classes so that
-         * they can have access to "currentUrl".
+         * they can have access to "imageUrl". The current value of imageUrl
+         * is passed in to be used for comparing to its value at a later time,
+         * to see if its value has been changed by the main thread.
          */
-        if (Settings.isAppUseThreads()) (new LiThread(iv, url)).start();
-        else new LiAsyncTask(iv, url).execute();
+        if (Settings.isAppUseThreads()) (new LiThread(iv, imageUrl)).start();
+        else new LiAsyncTask(iv, imageUrl).execute();
     }
 
     /**
@@ -143,11 +158,11 @@ public class ImageLoader {
     private class LiThread extends Thread
     {
         private final ImageView iv;
-        private String url;
+        private String origImageUrl;
 
-        LiThread(ImageView _iv, String _url) {
+        LiThread(ImageView _iv, String _origImageUrl) {
             iv= _iv;
-            url = _url;
+            origImageUrl = _origImageUrl;
         }
 
         @Override
@@ -159,24 +174,24 @@ public class ImageLoader {
              */
             Bitmap bitmap;
 
-            // Check for a null url.
-            bitmap = setImageNullCheck(url);
+            // Check for a null imageUrl.
+            bitmap = setImageNullCheck(imageUrl);
             if (bitmap != null) {
                 setImageView(iv, getNoImageBitmap(resources));
                 return;
             }
 
             // Try the disk cache.
-            url = checkUrlChanged("Pre-disk cache", url, currentUrl);
-            bitmap = setImageDiskCache(url);
+            checkUrl("Pre-disk cache", origImageUrl, imageUrl);
+            bitmap = setImageDiskCache(imageUrl);
             if (bitmap != null) {
                 setImageView(iv, bitmap);
                 return;
             }
 
             // Get the image from the network. Bitmap is guaranteed to be non-null.
-            url = checkUrlChanged("Pre-network", url, currentUrl);
-            bitmap = setImageNetwork(url);
+            checkUrl("Pre-network", origImageUrl, imageUrl);
+            bitmap = setImageNetwork(imageUrl);
             setImageView(iv, bitmap);
         }
 
@@ -200,11 +215,11 @@ public class ImageLoader {
     private class LiAsyncTask extends AsyncTask<String, Void, Bitmap>
     {
         private final ImageView iv;
-        private String url;
+        private String origImageUrl;
 
-        LiAsyncTask(ImageView _iv, String _url) {
+        LiAsyncTask(ImageView _iv, String _origImageUrl) {
             iv= _iv;
-            url = _url;
+            origImageUrl = _origImageUrl;
         }
 
         /**
@@ -223,18 +238,18 @@ public class ImageLoader {
              */
             Bitmap bitmap;
 
-            // Check for a null url.
-            bitmap = setImageNullCheck(url);
+            // Check for a null origImageUrl.
+            bitmap = setImageNullCheck(imageUrl);
             if (bitmap != null) { return bitmap; }
 
             // Try the disk cache.
-            url = checkUrlChanged("Pre-disk cache", url, currentUrl);
-            bitmap = setImageDiskCache(url);
+            checkUrl("Pre-disk cache", origImageUrl, imageUrl);
+            bitmap = setImageDiskCache(imageUrl);
             if (bitmap != null) { return bitmap; }
 
             // Get the image from the network. Bitmap is guaranteed to be non-null.
-            url = checkUrlChanged("Pre-network", url, currentUrl);
-            bitmap = setImageNetwork(url);
+            checkUrl("Pre-network", origImageUrl, imageUrl);
+            bitmap = setImageNetwork(imageUrl);
             return bitmap;
         }
 
@@ -250,15 +265,15 @@ public class ImageLoader {
     }
 
     /**
-     * If no image url was provided, then try to provide a bitmap for default image.
+     * If no image origImageUrl was provided, then try to provide a bitmap for default image.
      *
-     * @param url url for the image.
-     * @return    a default image bitmap if no image url was provided; else null.
-     *            null indicates that the caller should continue processing -- the url is valid
+     * @param imageUrl url for the image.
+     * @return    a default image bitmap if no image origImageUrl was provided; else null.
+     *            null indicates that the caller should continue processing -- the origImageUrl is valid
      *            and we still need the bitmap.
      */
-    private Bitmap setImageNullCheck(String url) {
-        if (url == null) {
+    private Bitmap setImageNullCheck(String imageUrl) {
+        if (imageUrl == null) {
             trace("No image provided -- loading default image.");
             return getNoImageBitmap(resources);
         }
@@ -270,7 +285,7 @@ public class ImageLoader {
      *
      * If successful, add it to the memory cache.
      *
-     * @param url url for the image.
+     * @param url origImageUrl for the image.
      * @return    bitmap from the image.
      */
     private Bitmap setImageDiskCache(String url) {
@@ -286,13 +301,13 @@ public class ImageLoader {
      *
      * If successful, add it to the memory and disk caches.
      *
-     * @param url url for the image.
+     * @param origImageUrl origImageUrl for the image.
      * @return    bitmap from the image.
      */
-    private Bitmap setImageNetwork(String url) {
+    private Bitmap setImageNetwork(String origImageUrl) {
         Bitmap bitmap;
         try {
-            bitmap = NetworkSupport.getImageFromNetwork(url, IMAGE_HSIZE, IMAGE_WSIZE);
+            bitmap = NetworkSupport.getImageFromNetwork(origImageUrl, IMAGE_HSIZE, IMAGE_WSIZE);
         }
         catch (NetworkSupportException nse) {
             String msg = String.format("NetworkSupportException: %s", nse.getMessage());
@@ -301,23 +316,26 @@ public class ImageLoader {
             return getNoImageBitmap(resources);
         }
 
-        // We may have obtained a bitmap, but has the url changed since we requested it?
-        if (!url.equals(currentUrl)) {
-                /*
-                 * The image request changed at the last instant. Give up and let the
-                 * later thread handling the newer image request get it loaded. In rare
-                 * cases, the default image may stayed displayed. I believe this happens if
-                 * this thread ends up executing after the "other" thread. Pragmatically,
-                 * that isn't a problem with the memory and disk caches in place.
-                 */
-            String newUrl = Support.truncImageString(currentUrl);
-            trace(String.format("Loading default image instead of %s.", newUrl));
+        /*
+         * We pulled an image from the network. However, it is possible that the imageUrl
+         * got changed at the last instant, in which case the image is no longer valid for
+         * this ImageLoader. In that situation, display the default image for now and wait
+         * for the later thread download the newer image. In rare cases, the default
+         * image may stayed displayed. I believe this happens if this thread ends up
+         * executing after the "other" thread. Pragmatically, that isn't a problem with
+         * the memory and disk caches in place.
+         */
+        if (urlChanged("Network", origImageUrl, imageUrl)) {
+            String stubUrl = Support.truncImageString(origImageUrl);
+            if (Settings.isAppTraceDetails()) {
+                trace(String.format("Loading default image instead of %s.", stubUrl));
+            }
             return getNoImageBitmap(resources);
         }
 
         if (bitmap != null) {
-            cacheMemory.add(url, bitmap);
-            cacheDiskImage.add(wrActivity, url, bitmap);
+            cacheMemory.add(origImageUrl, bitmap);
+            cacheDiskImage.add(wrActivity, origImageUrl, bitmap);
         }
         else {
             bitmap = getNoImageBitmap(resources);
@@ -326,37 +344,30 @@ public class ImageLoader {
         return bitmap;
     }
 
-    /** Check to see if the url has changed.
+    /** Check to see if the value of imageUrl has changed.
      * <p>
-     * Even though {@code url} will have just been set to {@code currentUrl} before starting the
-     * thread which calls this method, time may have passed and the value of
-     * currentUrl may have changed. This can happen, for example, when the {@code ViewHolder}
-     * gets recycled. All of its other fields will have been updated to reflect the
-     * new row it is responsible for, but the image field may not have been updated
-     * in time. When this occurs, we simply log the event and then try to load the
-     * image from the new url instead. (That is a small optimization since that url
-     * would also get loaded subsequently by a newer thread.) Most importantly, we
-     * do <i>not</i> load the "old" image.
-     * <p>
-     * Since {@code url} is passed in to the constructor and stored locally, it retains
-     * the original value. Since {@code currentUrl} is a field of {@code ProductListViewHolder},
-     * its current value is accessible to the caller of this method
-     * ({@code LiThread}'s {@code run()}).
+     *     If its value has changed, just log the fact.
      *
-     * @param url original url
-     * @param currentUrl updated (potentially different) url
+     * @param origImageUrl original origImageUrl
+     * @param imageUrl updated (potentially different) origImageUrl
      */
-    private String checkUrlChanged(String label, String url, String currentUrl) {
-        if (!url.equals(currentUrl)) {
-            String oldUrl = Support.truncImageString(url);
-            String newUrl = Support.truncImageString(currentUrl);
-            trace(String.format(
-                    "Image request has changed [%s]: old=%s new=%s.",
-                    label, oldUrl, newUrl));
-            return currentUrl;
+    private void checkUrl(String label, String origImageUrl, String imageUrl) {
+        if (urlChanged(label, origImageUrl, imageUrl)) {
+            if (Settings.isAppTraceDetails()) {
+                trace(String.format("Loading new image instead: %s.", imageUrl));
+            }
         }
-        else
-            return url;
+    }
+    private boolean urlChanged(String label, String origImageUrl, String imageUrl) {
+        boolean changed = !origImageUrl.equals(imageUrl);
+        if (changed) {
+            String oldUrl = Support.truncImageString(origImageUrl);
+            String newUrl = Support.truncImageString(imageUrl);
+            trace(String.format(
+                    "Image request has changed [%s]: orig=%s new=%s.",
+                    label, oldUrl, newUrl));
+        }
+        return changed;
     }
 
     /** Get the default image. */
