@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:tools="http://schemas.android.com/tools"
-    package="com.barryholroyd.prodlisthpdemo"
+    package="com.barryholroyd.productlisttechdemo"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,16 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.barryholroyd.prodlisthpdemo.ActivityProductList">
+        <activity android:name="com.barryholroyd.productlisttechdemo.ActivityProductList">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.barryholroyd.prodlisthpdemo.ActivityProductInfo">
+        <activity android:name="com.barryholroyd.productlisttechdemo.ActivityProductInfo">
         </activity>
         <activity
-            android:name="com.barryholroyd.prodlisthpdemo.preferences.SettingsActivity"
+            android:name="com.barryholroyd.productlisttechdemo.preferences.SettingsActivity"
             android:label="@string/preferences_title"
             android:theme="@style/AppTheme"
             >
