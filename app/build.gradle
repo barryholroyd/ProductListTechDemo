@@ -2,12 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
 
     defaultConfig {
         applicationId "com.barryholroyd.productlisttechdemo"
         minSdkVersion 23
-        targetSdkVersion 24
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -21,12 +20,12 @@ android {
     }
 }
 
-apply from: 'c:/data/dev/java/gradle/includes/barryandroid.gradle'
+apply from: 'c:/cloud/GoogleDrive/data/dev/java/gradle/includes/barryandroid.gradle'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:recyclerview-v7:24.2.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:24.2.1'
+    implementation 'com.android.support:recyclerview-v7:24.2.1'
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }
